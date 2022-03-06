@@ -1,0 +1,68 @@
+﻿@model LoginViewModel
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+
+    <link rel="stylesheet" href="~/css/bootstrap.css">
+    <link rel="stylesheet" href="~/css/all.min.css">
+    <link rel="stylesheet" href="~/css/style.css">
+</head>
+
+<body>
+    <section class="login">
+        <div class="container">
+                <div class="row">
+                <form class="" form method="post" asp-controller="Account" asp-action="Login"asp-route-returnUrl="@Model.ReturnUrl">
+                <div asp-validation-summary="ModelOnly"></div>
+                    <h2>Войти</h2>
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email адрес</label>
+                        <input asp-for="Email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                         <span asp-validation-for="Email"></span>
+                        <div id="emailHelp" class="form-text">Мы никогда никому не передадим вашу электронную почту.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">Пароль</label>
+                        <input asp-for="Password" type="password" class="form-control" id="exampleInputPassword1">
+                         <span asp-validation-for="Password"></span>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input asp-for="RememberMe" type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label asp-for="RememberMe" class="form-check-label" for="exampleCheck1">Запомнить меня</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                    @Html.ActionLink("Зарегистрироваться", "Register", "Account", null, new {@class="btn btn-light"})
+                    @Html.ActionLink("Забыли пароль?", "ForgotPassword", "Account", null, new {@class="btn btn-light"})
+
+                    @*<h6 class="btn-lonig__title">Войдите с помощью учетной записи в других сервисах</h6>
+                    <ul class="btn-lonig list-reset">
+                        <li class="btn-lonig__item">
+                            <a class="btn-lonig__link btn-lonig__link--google" href="#"><i class="fab fa-google"></i></a>
+                        </li>
+                        <li class="btn-lonig__item">
+                            <a class="btn-lonig__link btn-lonig__link--twitter" href="#"><i class="fab fa-twitter"></i></a>
+                        </li>
+                        <li class="btn-lonig__item">
+                            <a class="btn-lonig__link btn-lonig__link--facebook" href="#"><i class="fab fa-facebook-f"></i></a>
+                        </li>
+                    </ul>*@
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://unpkg.com/popperjs/core@2"></script>
+    <script src="~/js/bootstrap.bundle.js"></script>
+</body>
+
+</html>

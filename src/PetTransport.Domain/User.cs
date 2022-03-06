@@ -4,14 +4,14 @@ namespace PetTransport.Domain;
 
 public class User : IdentityUser
 {
-    public string FirstName { get; private set; }
-    public string LastName { get; private set; }
-    public string Location { get; private set; }
+    public string FirstName { get;  set; }
+    public string LastName { get;  set; }
+    public string Location { get;  set; }
     public List<UserTrip> UserTrips { get; set; }
-    public string ImageUrl { get; private set; }
-    public bool IsDeleted { get; private set; }
+    public string ImageUrl { get;  set; }
+    public bool IsDeleted { get;  set; }
 
-    private User() { }
+   
 
 
     public void UpdateProfileInfo(string firstName, string lastName, string location)

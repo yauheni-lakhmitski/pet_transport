@@ -1,0 +1,66 @@
+﻿@model RegisterViewModel
+@{
+    Layout=null;
+}
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+
+    <link rel="stylesheet" href="~/css/bootstrap.css">
+    <link rel="stylesheet" href="~/css/style.css">
+</head>
+
+<body>
+    <section class="login">
+        <div class="container">
+                <div class="row">
+                <form class="" method="post" asp-controller="Account" asp-action="Register">
+                    <h2 class="login__title">Зарегистрироваться</h2>
+                    <div class="mb-3">
+                        <label asp-for="FirstName" class="form-label">Имя</label>
+                        <input asp-for="FirstName" type="text" class="form-control" id="exampleInputName" aria-describedby="namelHelp">
+                        <span asp-validation-for="FirstName"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="LastName" class="form-label">Фамилия</label>
+                        <input asp-for="LastName" type="text" class="form-control" id="exampleInputName1" aria-describedby="nameHelp">
+                                 <span asp-validation-for="LastName"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email адрес</label>
+                        <input asp-for="Email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <span asp-validation-for="Email"></span>
+                        <div id="emailHelp" class="form-text">Мы никогда никому не передадим вашу электронную почту.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">Пароль</label>
+                        <input asp-for="Password" type="password" class="form-control" id="exampleInputPassword1">
+                        <span asp-validation-for="Password"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="PasswordConfirm" class="form-label">Повторите пароль</label>
+                        <input asp-for="PasswordConfirm" type="password" class="form-control" id="exampleInputPassword1">
+                               <span asp-validation-for="PasswordConfirm"></span>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input asp-for="IsPrivacyPolicyAccepted" type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label asp-for="IsPrivacyPolicyAccepted" class="form-check-label" for="exampleCheck1">Принимаю условия пользовательского соглашения</label>
+                               <span asp-validation-for="IsPrivacyPolicyAccepted"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                                        @Html.ActionLink("Войти", "Login", "Account", null, new {@class="btn btn-outline-primary"})
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://unpkg.com/popperjs/core@2"></script>
+    <script src="~/js/bootstrap.bundle.js"></script>
+</body>
+
+</html>

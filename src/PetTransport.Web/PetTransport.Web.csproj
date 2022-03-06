@@ -9,10 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.2" />
@@ -27,7 +23,28 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\PetTransport.Domain\PetTransport.Domain.csproj" />
       <ProjectReference Include="..\PetTransport.Infrastructure\PetTransport.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\TaskLists\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\TaskLists\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\TaskLists\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\TaskLists\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\TaskLists\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Tasks\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Tasks\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Tasks\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Tasks\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Tasks\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Trips\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Trips\CreateInvite.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Trips\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Trips\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Trips\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Trips\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Trips\PostInvite.cshtml" />
     </ItemGroup>
 
 </Project>

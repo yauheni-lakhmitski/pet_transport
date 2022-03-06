@@ -1,0 +1,353 @@
+﻿@model UpdateProfileViewModel
+
+    <section class="user__main">
+        <div class="container">
+            <div class="row">
+                <div class="d-flex align-items-start tab-mobille">
+                    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist"
+                        aria-orientation="vertical">
+                        <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home"
+                            aria-selected="true">Личная информация</button>
+                        <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile"
+                            aria-selected="false">Контакты</button>
+                        <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages"
+                            aria-selected="false">Смена пароля</button>
+                        <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings"
+                            aria-selected="false">Удаление
+                            аккаунта</button>
+                    </div>
+                    <div class="tab-content" id="v-pills-tabContent">
+                        <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+                            aria-labelledby="v-pills-home-tab">
+
+                            <div class="user__section">
+                                <div class="head">
+                                    <h3 class="title">Личная информация</h3>
+                                </div>
+                                <div class="body">
+                                    <form method="post" asp-controller="Account" asp-action="UpdateProfile"  enctype="multipart/form-data">
+                                        <div class="fields_group">
+                                            <div class="field">
+                                                <div class="image_uploader">
+                                                    <img src="~/img/@Model.ProfileImage" alt="">
+                                                    <p class="descr">
+                                                        Ваша фотография. Формат: jpg, png. Максимальный
+                                                        размер
+                                                        файла: 2Mb.
+                                                    </p>
+                                                    <div class="controls_buttons">
+                                                        <input asp-for="File" accept="image/*" type="file">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label asp-for="FirstName" class="required user-caption"></label>
+                                                </div>
+                                                <div class="description">
+                                                    Может состоять только из букв. Мы не принимаем
+                                                    цифры и
+                                                    специальные символы в&nbsp;этом поле
+                                                </div>
+                                                <div class="input">
+                                                    <input asp-for="FirstName" class="form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="required user-caption"
+                                                           asp-for="LastName"></label>
+                                                </div>
+                                                <div class="description">
+                                                    Может состоять только из букв. Мы не принимаем
+                                                    цифры и
+                                                    специальные символы в&nbsp;этом поле
+                                                </div>
+                                                <div class="input">
+                                                    <input asp-for="LastName" class="form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="user-caption"
+                                                           asp-for="Status"></label>
+                                                </div>
+                                                <div class="input">
+                                                    <input asp-for="Status" class="form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="user-caption" asp-for="Sex"></label>
+                                                </div>
+                                                <div class="radio_list">
+                                                    <div class="radio_single">
+                                                        <input class="form-check-input" type="radio" value="male" checked="checked"
+                                                               name="user[gender]" id="user_gender_male">
+                                                        <label for="user_gender_male">Мужской</label>
+                                                    </div>
+                                                    <div class="radio_single">
+                                                        <input class="form-check-input" type="radio" value="female" name="user[gender]"
+                                                               id="user_gender_female">
+                                                        <label for="user_gender_female">Женский</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="user-caption"
+                                                           asp-for="Location"></label>
+                                                </div>
+                                                <div class="input">
+                                                    <div class="location-field">
+                                                        <input asp-for="Location" class="form-control" type="text" name="location"
+                                                               id="location">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="btn-reset">
+                                            <input type="submit" name="commit" value="Сохранить"
+                                                class="btn btn-success">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel"
+                            aria-labelledby="v-pills-profile-tab">
+
+                            <div class="user__section">
+                                <div class="head">
+                                    <h3 class="title">Контактная информация</h3>
+                                </div>
+                                <div class="body">
+                                    <form action="">
+                                        <div class="fields_group">
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="required user-caption"
+                                                        for="user_last_name">Телефон</label>
+                                                </div>
+                                                <div class="input">
+                                                    <input class="form-control" value="" type="text"
+                                                        placeholder="Например: +375 (29) 200-56-52">
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="user-caption" for="user_email">Email</label>
+                                                </div>
+                                                <div class="input">
+                                                    <input class="form-control" type="email" value="dimonnn26@gmail.com"
+                                                        name="user[email]" id="user_email">
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="user-caption" for="user_insta">Instagram</label>
+                                                </div>
+                                                <div class="input">
+                                                    <input class="form-control" type="text" value="" name="user[insta]"
+                                                        id="user_insta">
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="user-caption" for="user_telega">Telegram</label>
+                                                </div>
+                                                <div class="input">
+                                                    <input class="form-control" type="text" value="hvatit_admin"
+                                                        name="user[telega]" id="user_telega">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="btn-reset">
+                                            <input type="submit" name="commit" value="Сохранить"
+                                                class="btn btn-success">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel"
+                            aria-labelledby="v-pills-messages-tab">
+
+                            <div class="user__section">
+                                <div class="head">
+                                    <h3 class="title">Смена пароля</h3>
+                                </div>
+                                <div class="body">
+                                    <form action="">
+                                        <div class="fields_group">
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="required user-caption">Текущий пароль</label>
+                                                </div>
+                                                <div class="input">
+                                                    <input class="form-control" type="password">
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="required user-caption">Новый пароль</label>
+                                                </div>
+                                                <div class="input">
+                                                    <input class="form-control" type="password">
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="required user-caption">Ещё раз новый пароль</label>
+                                                </div>
+                                                <div class="input">
+                                                    <input class="form-control" type="password">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="btn-reset">
+                                            <input type="submit" name="commit" value="Сохранить"
+                                                class="btn btn-success">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            @*<div class="user__section">
+                                <div class="head">
+                                    <h3 class="title">Смена почтового адреса</h3>
+                                </div>
+                                <div class="body">
+                                    <form action="">
+                                        <div class="fields_group">
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="required user-caption">Текущий почтовый адрес</label>
+                                                </div>
+                                                <div class="input">
+                                                    <input class="form-control" value="dimonnn.26@gmail.com" disabled="disabled"
+                                                        type="text">
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="required user-caption">Новый почтовый адрес</label>
+                                                </div>
+                                                <div class="input">
+                                                    <input class="form-control" type="email">
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="required user-caption">Текущий пароль</label>
+                                                </div>
+                                                <div class="input">
+                                                    <input class="form-control" type="password">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="btn-reset">
+                                            <input type="submit" name="commit" value="Сохранить"
+                                                class="btn btn-success">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>*@
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
+                            aria-labelledby="v-pills-settings-tab">
+                        
+                            <div class="user__section">
+                                <div class="head">
+                                    <h3 class="title">Удаление вашего аккаунта</h3>
+                                    <p class="descr">Удаляя свой аккаунт, вы соглашаетесь с тем, что безвозвратно теряете все
+                                        данные вашего аккаунта на сервисе United Travel и больше никогда не сможете
+                                        авторизовываться в нём.</p>
+                                </div>
+                                <div class="body">
+                                    <form action="">
+                                        <div class="fields_group">
+                                            <div class="field">
+                                                <div class="label">
+                                                    <label class="required user-caption">Введите ваш пароль</label>
+                                                </div>
+                                                <div class="input">
+                                                    <input class="form-control" type="password">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="btn-reset">
+                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Удалить мой аккаунт</button>
+                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                  <div class="modal-content">
+                                                    <div class="modal-header">
+                                                      <h5 class="modal-title" id="exampleModalLabel">Вы действительно ходите удалить аккаунт?</h5>
+                                                        <a asp-action="DeleteAccount">
+                                                      УДЛАТИЬ
+                                                      </a>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                                      <button type="button" class="btn btn-primary">Да</button>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+@* <h2>Обновление профиля</h2> *@
+@* <img src="@Model.ProfileImage" /> *@
+@* <form method="post" asp-controller="Account" asp-action="UpdateProfile"  enctype="multipart/form-data"> *@
+@*     <div asp-validation-summary="ModelOnly"></div> *@
+@*     <div> *@
+@*         <label asp-for="FirstName"></label><br /> *@
+@*         <input asp-for="FirstName" /> *@
+@*         <span asp-validation-for="FirstName"></span> *@
+@*     </div> *@
+@*     <div> *@
+@*         <label asp-for="LastName"></label><br /> *@
+@*         <input asp-for="LastName" /> *@
+@*         <span asp-validation-for="LastName"></span> *@
+@*     </div> *@
+@*     <div> *@
+@*         <label asp-for="PatronymicName"></label><br /> *@
+@*         <input asp-for="PatronymicName" /> *@
+@*         <span asp-validation-for="PatronymicName"></span> *@
+@*     </div> *@
+@* *@
+@*     <div> *@
+@*         <label asp-for="File"></label><br /> *@
+@*         <input asp-for="File" /> *@
+@*         <span asp-validation-for="File"></span> *@
+@*     </div> *@
+@* *@
+@*     <div> *@
+@*         <input type="submit" value="Регистрация" /> *@
+@*     </div> *@
+@* *@
+@* </form> *@
+@* *@
+@* *@
+@* *@
+@* <form method="post" asp-controller="Account" asp-action="UpdateProfileImage" enctype="multipart/form-data"> *@
+@*     <div asp-validation-summary="ModelOnly"></div> *@
+@* *@
+@*     <div> *@
+@*         <input type="submit" value="Загрузить изображение" /> *@
+@*     </div> *@
+@* *@
+@*     <input type="file" name="file" id="file" /> *@
+@* </form> *@
