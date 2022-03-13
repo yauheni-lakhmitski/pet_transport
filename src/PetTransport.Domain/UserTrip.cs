@@ -6,5 +6,4 @@ public class UserTrip
     public Trip Trip { get; set; }
     public string UserId { get; set; }
     public User User { get; set; }
-    public Role RoleId { get; set; }
 }

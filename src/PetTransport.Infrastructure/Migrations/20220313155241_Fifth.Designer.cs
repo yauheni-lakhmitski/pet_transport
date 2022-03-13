@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetTransport.Infrastructure.Data;
 
@@ -10,9 +11,10 @@ using PetTransport.Infrastructure.Data;
 namespace PetTransport.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220313155241_Fifth")]
+    partial class Fifth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
@@ -298,115 +300,43 @@ namespace PetTransport.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Address")
+                    b.Property<string>("CityReceiver")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("Airport")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Breed")
+                    b.Property<string>("CitySender")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ChipNumber")
+                    b.Property<string>("FirstNameReceiver")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Color")
+                    b.Property<string>("FirstNameSender")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("CountryOfDestination")
+                    b.Property<string>("LastNameReceiver")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("Courier")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DateOfChip")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DepartureDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("LastNameSender")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("RailwayStation")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("RecipientEmail")
+                    b.Property<string>("PetName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RecipientFullName")
+                    b.Property<string>("PetType")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RecipientPhoneNumber")
+                    b.Property<string>("PhoneNumberReceiver")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RecipientStreet")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RecipientWhatsApp")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RecipientZip")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SenderCity")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SenderEmail")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SenderFullName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SenderPhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SenderRegion")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SenderStreet")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SenderWhatsApp")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Sex")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("ShelterFrom")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TransferPhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Zip")
+                    b.Property<string>("PhoneNumberSender")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -467,35 +397,6 @@ namespace PetTransport.Infrastructure.Migrations
                     b.ToTable("TaskLists");
                 });
 
-            modelBuilder.Entity("PetTransport.Domain.Transportation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Transportations");
-                });
-
             modelBuilder.Entity("PetTransport.Domain.UserTrip", b =>
                 {
                     b.Property<string>("UserId")
@@ -538,14 +439,9 @@ namespace PetTransport.Infrastructure.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("TransportationId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CarId");
-
-                    b.HasIndex("TransportationId");
 
                     b.ToTable("Routes");
                 });
@@ -742,15 +638,7 @@ namespace PetTransport.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PetTransport.Domain.Transportation", "Transportation")
-                        .WithMany("Routes")
-                        .HasForeignKey("TransportationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Car");
-
-                    b.Navigation("Transportation");
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Car", b =>
@@ -761,11 +649,6 @@ namespace PetTransport.Infrastructure.Migrations
             modelBuilder.Entity("PetTransport.Domain.TaskList", b =>
                 {
                     b.Navigation("Tasks");
-                });
-
-            modelBuilder.Entity("PetTransport.Domain.Transportation", b =>
-                {
-                    b.Navigation("Routes");
                 });
 
             modelBuilder.Entity("Trip", b =>

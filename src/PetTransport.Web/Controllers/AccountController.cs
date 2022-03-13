@@ -124,11 +124,9 @@ public class AccountController : Controller
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (ModelState.IsValid)
-            {
+            model.ReturnUrl = "/Home/Index";
                 var user = await _userManager.FindByNameAsync(model.Email);
                 if (user != null)
                 {
@@ -150,9 +148,8 @@ public class AccountController : Controller
                     ModelState.AddModelError("", "Неправильный логин и (или) пароль");
                     return View(model);
                 }
-            }
 
-            return View(model);
+                return View(model);
         }
 
         [HttpGet]

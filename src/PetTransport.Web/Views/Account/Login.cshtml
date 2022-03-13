@@ -1,28 +1,15 @@
 ﻿@model LoginViewModel
 @{
-    Layout = null;
+    ViewBag.Title = "Login";
+    Layout = "_Layout";
 }
 
 
-<!DOCTYPE html>
-<html lang="ru">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login</title>
-
-    <link rel="stylesheet" href="~/css/bootstrap.css">
-    <link rel="stylesheet" href="~/css/all.min.css">
-    <link rel="stylesheet" href="~/css/style.css">
-</head>
-
-<body>
     <section class="login">
         <div class="container">
                 <div class="row">
-                <form class="" form method="post" asp-controller="Account" asp-action="Login"asp-route-returnUrl="@Model.ReturnUrl">
+                <form class="" form method="post" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl">
                 <div asp-validation-summary="ModelOnly"></div>
                     <h2>Войти</h2>
                     <div class="mb-3">
@@ -60,9 +47,3 @@
             </div>
         </div>
     </section>
-
-    <script src="https://unpkg.com/popperjs/core@2"></script>
-    <script src="~/js/bootstrap.bundle.js"></script>
-</body>
-
-</html>

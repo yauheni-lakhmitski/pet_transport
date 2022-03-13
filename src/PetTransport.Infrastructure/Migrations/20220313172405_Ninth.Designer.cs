@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetTransport.Infrastructure.Data;
 
@@ -10,9 +11,10 @@ using PetTransport.Infrastructure.Data;
 namespace PetTransport.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220313172405_Ninth")]
+    partial class Ninth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
@@ -298,115 +300,43 @@ namespace PetTransport.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Address")
+                    b.Property<string>("AddressReceiver")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("Airport")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Breed")
+                    b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ChipNumber")
+                    b.Property<string>("FullNameReceiver")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Color")
+                    b.Property<string>("PetBreed")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("CountryOfDestination")
+                    b.Property<string>("PetColor")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("Courier")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DateOfChip")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DepartureDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("PetDateOfBirth")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("RailwayStation")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("RecipientEmail")
+                    b.Property<string>("PetSex")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RecipientFullName")
+                    b.Property<string>("PhoneNumberReceiver")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RecipientPhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RecipientStreet")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RecipientWhatsApp")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RecipientZip")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SenderCity")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SenderEmail")
+                    b.Property<string>("PhoneNumberSender")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SenderFullName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SenderPhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SenderRegion")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SenderStreet")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SenderWhatsApp")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Sex")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("ShelterFrom")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TransferPhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Zip")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

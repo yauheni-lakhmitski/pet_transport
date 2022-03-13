@@ -1,0 +1,177 @@
+@model PetTransport.Domain.Order
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Order</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="CountryOfDestination" class="control-label"></label>
+                <input asp-for="CountryOfDestination" class="form-control" />
+                <span asp-validation-for="CountryOfDestination" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DepartureDate" class="control-label"></label>
+                <input asp-for="DepartureDate" class="form-control" />
+                <span asp-validation-for="DepartureDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Airport" /> @Html.DisplayNameFor(model => model.Airport)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="RailwayStation" /> @Html.DisplayNameFor(model => model.RailwayStation)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Courier" /> @Html.DisplayNameFor(model => model.Courier)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransferPhoneNumber" class="control-label"></label>
+                <input asp-for="TransferPhoneNumber" class="form-control" />
+                <span asp-validation-for="TransferPhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ShelterFrom" class="control-label"></label>
+                <input asp-for="ShelterFrom" class="form-control" />
+                <span asp-validation-for="ShelterFrom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SenderFullName" class="control-label"></label>
+                <input asp-for="SenderFullName" class="form-control" />
+                <span asp-validation-for="SenderFullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SenderStreet" class="control-label"></label>
+                <input asp-for="SenderStreet" class="form-control" />
+                <span asp-validation-for="SenderStreet" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SenderCity" class="control-label"></label>
+                <input asp-for="SenderCity" class="form-control" />
+                <span asp-validation-for="SenderCity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SenderRegion" class="control-label"></label>
+                <input asp-for="SenderRegion" class="form-control" />
+                <span asp-validation-for="SenderRegion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Zip" class="control-label"></label>
+                <input asp-for="Zip" class="form-control" />
+                <span asp-validation-for="Zip" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SenderPhoneNumber" class="control-label"></label>
+                <input asp-for="SenderPhoneNumber" class="form-control" />
+                <span asp-validation-for="SenderPhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SenderEmail" class="control-label"></label>
+                <input asp-for="SenderEmail" class="form-control" />
+                <span asp-validation-for="SenderEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SenderWhatsApp" class="control-label"></label>
+                <input asp-for="SenderWhatsApp" class="form-control" />
+                <span asp-validation-for="SenderWhatsApp" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Breed" class="control-label"></label>
+                <input asp-for="Breed" class="form-control" />
+                <span asp-validation-for="Breed" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Sex" class="control-label"></label>
+                <input asp-for="Sex" class="form-control" />
+                <span asp-validation-for="Sex" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Color" class="control-label"></label>
+                <input asp-for="Color" class="form-control" />
+                <span asp-validation-for="Color" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateOfBirth" class="control-label"></label>
+                <input asp-for="DateOfBirth" class="form-control" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ChipNumber" class="control-label"></label>
+                <input asp-for="ChipNumber" class="form-control" />
+                <span asp-validation-for="ChipNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateOfChip" class="control-label"></label>
+                <input asp-for="DateOfChip" class="form-control" />
+                <span asp-validation-for="DateOfChip" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RecipientFullName" class="control-label"></label>
+                <input asp-for="RecipientFullName" class="form-control" />
+                <span asp-validation-for="RecipientFullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RecipientStreet" class="control-label"></label>
+                <input asp-for="RecipientStreet" class="form-control" />
+                <span asp-validation-for="RecipientStreet" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RecipientZip" class="control-label"></label>
+                <input asp-for="RecipientZip" class="form-control" />
+                <span asp-validation-for="RecipientZip" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RecipientPhoneNumber" class="control-label"></label>
+                <input asp-for="RecipientPhoneNumber" class="form-control" />
+                <span asp-validation-for="RecipientPhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RecipientEmail" class="control-label"></label>
+                <input asp-for="RecipientEmail" class="form-control" />
+                <span asp-validation-for="RecipientEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RecipientWhatsApp" class="control-label"></label>
+                <input asp-for="RecipientWhatsApp" class="form-control" />
+                <span asp-validation-for="RecipientWhatsApp" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

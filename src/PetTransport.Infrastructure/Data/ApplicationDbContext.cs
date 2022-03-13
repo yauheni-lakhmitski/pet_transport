@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PetTransport.Domain;
@@ -12,10 +13,16 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<InviteCode> InviteCodes { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<TaskList> TaskLists { get; set; }
-    
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<Car> Cars { get; set; }
+    public DbSet<Route> Routes { get; set; }
+    public DbSet<Transportation> Transportations { get; set; }
+
+
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
+        Database.Migrate();
     }
     
     protected override void OnModelCreating(ModelBuilder builder)
@@ -32,7 +39,7 @@ public class ApplicationDbContext : IdentityDbContext
             .HasOne(pt => pt.User)
             .WithMany(t => t.UserTrips)
             .HasForeignKey(pt => pt.UserId);
-
+        
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
