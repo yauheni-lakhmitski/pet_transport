@@ -1,176 +1,201 @@
-@model PetTransport.Domain.Order
+@model PetTransport.Domain.Entities.Order
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
-
-<h4>Order</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="CountryOfDestination" class="control-label"></label>
-                <input asp-for="CountryOfDestination" class="form-control" />
-                <span asp-validation-for="CountryOfDestination" class="text-danger"></span>
+            <div class="container">
+                <div class="application__text">
+                    <p class="application__desc">
+                        Заявка выполняется <span class="application__span application__span--bold">Латинскими буквами</span>
+                    </p>
+                    <p class="application__desc">К заявочному листу прилоить копии заполненных страниц ветеринарного паспорта (обязательно) и <span class="application__span--bold">любую фотографию питомца (требуется для таможни)</span></p>
+                </div>
+                <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="mb-3">
+                      <label for="deliveryCountry" class="form-label">Страна доставки</label>
+                      <input asp-for="CountryOfDestination" class="form-control" placeholder="(может отличаться от адреса проживания получателя)" aria-describedby="" />
+                      <span asp-validation-for="CountryOfDestination" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                      <label for="dateOfDeparture" class="form-label">Дата выезда</label>
+                      <input asp-for="DepartureDate" class="form-control"/>
+                       <span asp-validation-for="DepartureDate" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="costOfDelivery" class="form-label">Стоимость доставки</label>
+                      <input asp-for="Price" class="form-control" aria-describedby=""/>
+                      <span asp-validation-for="Price" class="text-danger"></span>
+                      </div>
+                      <h2 class="application__title">Дополнительные услуги / additional services</h2>
+                      <span class="application__caption">Встреча (доп оплата):</span>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="radioAirport">
+                        <label class="form-check-label" for="radioAirport">
+                          Аэропорт
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="radioRailwayStation">
+                        <label class="form-check-label" for="radioRailwayStation">
+                          Вокзал
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="radioCourier">
+                        <label class="form-check-label" for="radioCourier">
+                          Курьер
+                        </label>
+                      </div>
+                      <div class="mb-3">
+                        <label for="address" class="form-label">Адрес</label>
+                        <input asp-for="Address" class="form-control" aria-describedby=""/>
+                          <span asp-validation-for="Address" class="text-danger"></span>
+                      </div>
+                    <div class="mb-3">
+                        <label for="carrierPhone" class="form-label">Телефон перевозчика</label>
+                      <input asp-for="TransferPhoneNumber" class="form-control" aria-describedby=""/>
+                                <span asp-validation-for="TransferPhoneNumber" class="text-danger"></span>
+                    </div>
+                      <div class="mb-3">
+                        <label for="exampleInputDate2" class="form-label">Передержка (доп оплата) с какого числа</label>
+                        <input type="date" class="form-control" id="exampleInputDate2" aria-describedby="">
+                      </div>
+                      <h2 class="application__title">sender / отправитель</h2>
+                      <div class="mb-3">
+                        <label for="surname" class="form-label">Name, Surname / Имя Фамилия</label>
+                        <input asp-for="SenderFullName" class="form-control" aria-describedby=""/>
+                        <span asp-validation-for="SenderFullName" class="text-danger"></span>
+                      </div>
+                      <div class="mb-3">
+                        <label for="street" class="form-label">Street, house-apartment / Улица дома-квартира</label>
+                        <input asp-for="SenderStreet" class="form-control" aria-describedby=""/>
+                             <span asp-validation-for="SenderStreet" class="text-danger"></span>
+                      </div>
+                      <div class="mb-3">
+                        <label for="city" class="form-label">City / Город (посёлокб CНТ)</label>
+                        <input asp-for="SenderCity" class="form-control" aria-describedby=""/>
+                                <span asp-validation-for="SenderCity" class="text-danger"></span>
+                      </div>
+                      <div class="mb-3">
+                        <label for="region" class="form-label">Region / Область (край)</label>
+                        <input asp-for="SenderRegion" class="form-control" aria-describedby=""/>
+                            <span asp-validation-for="SenderRegion" class="text-danger"></span>
+                      </div>
+                      <div class="mb-3">
+                        <label for="postcode" class="form-label">Postcode, country / Индекс, страна</label>
+                        <input asp-for="Zip" class="form-control" aria-describedby=""/>
+                          <span asp-validation-for="Zip" class="text-danger"></span>
+                      </div>
+                      <div class="mb-3">
+                        <label for="senderTelephone" class="form-label">Telephone / Телефон</label>
+                        <input asp-for="SenderPhoneNumber" class="form-control" aria-describedby=""/>
+                         <span asp-validation-for="SenderPhoneNumber" class="text-danger"></span>
+                      </div>
+                      <div class="mb-3">
+                        <label for="senderEmail" class="form-label">E-mail</label>
+                        <input asp-for="SenderEmail" class="form-control" aria-describedby=""/>
+                            <span asp-validation-for="SenderEmail" class="text-danger"></span>
+                      </div>
+                      <div class="mb-3">
+                        <label for="senderWhatsApp" class="form-label">WhatsApp</label>
+                        <input asp-for="SenderWhatsApp" class="form-control" aria-describedby=""/>
+                           <span asp-validation-for="SenderWhatsApp" class="text-danger"></span>
+                      </div>
+                      <h2 class="application__title">Pet / Животное</h2>
+                      <div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="flexRadioAnimals" id="flexRadioDog">
+                          <label class="form-check-label" for="flexRadioDog">
+                            Dog/Собака
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="flexRadioAnimals" id="flexRadioCat">
+                          <label class="form-check-label" for="flexRadioCat">
+                            Cat/Кот
+                          </label>
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <label for="petName" class="form-label">Name/Кличка</label>
+                        <input asp-for="Name" class="form-control" aria-describedby=""/>
+                        
+                      </div>
+                      <div class="mb-3">
+                        <label for="petBreed" class="form-label">Breed/Порода</label>
+                        <input asp-for="Breed" class="form-control" aria-describedby=""/>
+                         <span asp-validation-for="Breed" class="text-danger"></span>
+                      </div>
+                    <div class="mb-3">
+                      <label for="petSex" class="form-label">Sex/Пол</label>
+                      <div class="form-check">
+                        @Html.RadioButtonFor(m => m.Sex, "Male")
+                        <label class="form-check-label" for="petSex">
+                          Male
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        @Html.RadioButtonFor(m => m.Sex, "Female")
+                        <label class="form-check-label" for="petSex">
+                          Female
+                        </label>
+                      </div>
+                      <span asp-validation-for="Sex" class="text-danger"></span>
+                    </div>
+                      <div class="mb-3">
+                        <label for="petColor" class="form-label">Color/Окрас</label>
+                        <input asp-for="Color" class="form-control" aria-describedby=""/>
+                         <span asp-validation-for="Color" class="text-danger"></span>
+                      </div>
+                      <div class="mb-3">
+                        <label for="petDate" class="form-label">Date of birth/Дата рождения</label>
+                        <input asp-for="DateOfBirth" class="form-control" aria-describedby=""/>
+                           <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                      </div>
+                      <div class="mb-3">
+                        <label for="petChip" class="form-label">Chip/Номер чипа</label>
+                        <input asp-for="ChipNumber" class="form-control" aria-describedby=""/>
+                        <span asp-validation-for="ChipNumber" class="text-danger"></span>
+                      </div>
+                      <div class="mb-3">
+                        <label for="petDateChip" class="form-label">Date chip/Дата чипирования</label>
+                        <input asp-for="DateOfChip" class="form-control" aria-describedby=""/>
+                              <span asp-validation-for="DateOfChip" class="text-danger"></span>
+                      </div>
+                    <h2 class="application__title">recipient / получатель</h2>
+                    <div class="mb-3">
+                        <label for="recipientName" class="form-label">Full name/Полное имя</label>
+                      <input asp-for="RecipientFullName" class="form-control" aria-describedby=""/>
+                          <span asp-validation-for="RecipientFullName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipientAddress" class="form-label">Address/Полный Адрес</label>
+                      <input asp-for="RecipientStreet" class="form-control" aria-describedby=""/>
+                       <span asp-validation-for="RecipientStreet" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipientPostcode" class="form-label">Postcode/Индекс</label>
+                      <input asp-for="RecipientZip" class="form-control" aria-describedby=""/>
+                        <span asp-validation-for="RecipientZip" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipientTelephone" class="form-label">Telephone/Телефон</label>
+                      <input asp-for="RecipientPhoneNumber" class="form-control" aria-describedby=""/>
+                       <span asp-validation-for="RecipientPhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipientEmail" class="form-label">E-mail</label>
+                      <input asp-for="RecipientEmail" class="form-control" aria-describedby=""/>
+                                             <span asp-validation-for="RecipientEmail" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipientWhatsApp" class="form-label">WhatsApp</label>
+                      <input asp-for="RecipientWhatsApp" class="form-control" aria-describedby=""/>
+                      <span asp-validation-for="RecipientWhatsApp" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="DepartureDate" class="control-label"></label>
-                <input asp-for="DepartureDate" class="form-control" />
-                <span asp-validation-for="DepartureDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Airport" /> @Html.DisplayNameFor(model => model.Airport)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="RailwayStation" /> @Html.DisplayNameFor(model => model.RailwayStation)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Courier" /> @Html.DisplayNameFor(model => model.Courier)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TransferPhoneNumber" class="control-label"></label>
-                <input asp-for="TransferPhoneNumber" class="form-control" />
-                <span asp-validation-for="TransferPhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ShelterFrom" class="control-label"></label>
-                <input asp-for="ShelterFrom" class="form-control" />
-                <span asp-validation-for="ShelterFrom" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SenderFullName" class="control-label"></label>
-                <input asp-for="SenderFullName" class="form-control" />
-                <span asp-validation-for="SenderFullName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SenderStreet" class="control-label"></label>
-                <input asp-for="SenderStreet" class="form-control" />
-                <span asp-validation-for="SenderStreet" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SenderCity" class="control-label"></label>
-                <input asp-for="SenderCity" class="form-control" />
-                <span asp-validation-for="SenderCity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SenderRegion" class="control-label"></label>
-                <input asp-for="SenderRegion" class="form-control" />
-                <span asp-validation-for="SenderRegion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Zip" class="control-label"></label>
-                <input asp-for="Zip" class="form-control" />
-                <span asp-validation-for="Zip" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SenderPhoneNumber" class="control-label"></label>
-                <input asp-for="SenderPhoneNumber" class="form-control" />
-                <span asp-validation-for="SenderPhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SenderEmail" class="control-label"></label>
-                <input asp-for="SenderEmail" class="form-control" />
-                <span asp-validation-for="SenderEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SenderWhatsApp" class="control-label"></label>
-                <input asp-for="SenderWhatsApp" class="form-control" />
-                <span asp-validation-for="SenderWhatsApp" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Breed" class="control-label"></label>
-                <input asp-for="Breed" class="form-control" />
-                <span asp-validation-for="Breed" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Sex" class="control-label"></label>
-                <input asp-for="Sex" class="form-control" />
-                <span asp-validation-for="Sex" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Color" class="control-label"></label>
-                <input asp-for="Color" class="form-control" />
-                <span asp-validation-for="Color" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateOfBirth" class="control-label"></label>
-                <input asp-for="DateOfBirth" class="form-control" />
-                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ChipNumber" class="control-label"></label>
-                <input asp-for="ChipNumber" class="form-control" />
-                <span asp-validation-for="ChipNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateOfChip" class="control-label"></label>
-                <input asp-for="DateOfChip" class="form-control" />
-                <span asp-validation-for="DateOfChip" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RecipientFullName" class="control-label"></label>
-                <input asp-for="RecipientFullName" class="form-control" />
-                <span asp-validation-for="RecipientFullName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RecipientStreet" class="control-label"></label>
-                <input asp-for="RecipientStreet" class="form-control" />
-                <span asp-validation-for="RecipientStreet" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RecipientZip" class="control-label"></label>
-                <input asp-for="RecipientZip" class="form-control" />
-                <span asp-validation-for="RecipientZip" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RecipientPhoneNumber" class="control-label"></label>
-                <input asp-for="RecipientPhoneNumber" class="form-control" />
-                <span asp-validation-for="RecipientPhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RecipientEmail" class="control-label"></label>
-                <input asp-for="RecipientEmail" class="form-control" />
-                <span asp-validation-for="RecipientEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RecipientWhatsApp" class="control-label"></label>
-                <input asp-for="RecipientWhatsApp" class="form-control" />
-                <span asp-validation-for="RecipientWhatsApp" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-

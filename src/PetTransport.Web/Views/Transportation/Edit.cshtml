@@ -1,8 +1,14 @@
-@model PetTransport.Domain.Transportation
+@using PetTransport.Domain.Entities
+@model PetTransport.Web.Commands.Transportations.UpdateTransportationCommand
 
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    IEnumerable<Route> routes = new List<Route>();
+    if (ViewBag.Routes != null)
+    {
+        routes = ViewBag.Routes as IEnumerable<PetTransport.Domain.Entities.Route>;
+    }
 }
 
 <h1>Редактировать информацию о поездке</h1>
@@ -30,16 +36,6 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedAt" class="control-label"></label>
-                <input asp-for="UpdatedAt" class="form-control" />
-                <span asp-validation-for="UpdatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -51,37 +47,37 @@
     <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Routes.FirstOrDefault().Name)
+            Название
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Routes.FirstOrDefault().Source)
+            Откуда
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Routes.FirstOrDefault().Destination)
+            Куда
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Routes.FirstOrDefault().Car)
+            Автомобиль
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Routes.FirstOrDefault().StartTime)
+             Старт
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Routes.FirstOrDefault().EndTime)
+            Конец
         </th>
         <th></th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.Routes) {
+    @foreach (var item in routes) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Source)
+                 @Html.DisplayFor(modelItem => item.Source)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Destination)
+            @Html.DisplayFor(modelItem => item.Destination)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Car.Make) @Html.DisplayFor(modelItem => item.Car.Model) @Html.DisplayFor(modelItem => item.Car.RegistrationNumber)

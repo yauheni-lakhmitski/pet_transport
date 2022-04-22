@@ -1,14 +1,33 @@
+using System.Reflection;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PetTransport.Domain;
+using PetTransport.Domain.Entities;
 using PetTransport.Infrastructure.Data;
+using PetTransport.Web;
+using PetTransport.Web.Attributes;
+using PetTransport.Web.Behaviours;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehavior<,>));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CommandHandlingBehavior<,>));
+
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+
+
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 builder.Services.AddDefaultIdentity<User>(options =>
 {
@@ -21,8 +40,13 @@ builder.Services.AddDefaultIdentity<User>(options =>
     options.Password.RequireDigit = false;
     options.SignIn.RequireConfirmedAccount = true;
 })
+    .AddRoles<IdentityRole>()
+    .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(x=>x.Filters.Add(typeof(ApiExceptionFilterAttribute)))
+    .AddFluentValidation();
+
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<User>, AdditionalUserClaimsPrincipalFactory>();
 
 var app = builder.Build();
 

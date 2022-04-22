@@ -1,0 +1,306 @@
+::-webkit-scrollbar {
+    width: 8px;
+    height: 3px;
+    background-color: rgba(6,116,236,0.1);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(255,255,255,0.856);
+    box-shadow: inset 0 0 6px rgba(194, 194, 194, 0.856);
+    border-radius: 10px
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(33,116,236,0.5);
+    box-shadow: inset 0 0 26px rgba(1, 96, 228, 0.795)
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        -webkit-box-shadow: inset 0 0 6px #2174ec;
+        box-shadow: inset 0 0 6px #2174ec
+    }
+
+.btn-reset {
+    margin-top: 14px;
+}
+
+.list-reset {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/*.navbar-collapse {
+    display: flex;
+}*/
+
+.login {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    border: 4px solid rgb(13 110 253);
+}
+
+.btn-lonig__title {
+    padding: 24px 0 0 0;
+}
+
+.btn-lonig {
+    display: flex;
+    padding: 0;
+}
+
+.btn-lonig__item {
+    display: block;
+    padding-right: 10px;
+}
+.btn-lonig__link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 46px;
+    height: 46px;
+    background-color: #a1a1a1;
+    border-radius: 50%;
+    font-size: 26px;
+    color: white;
+}
+
+.btn-lonig__link--google:hover {
+    background-color: #dd564d;
+    color: white;
+}
+.btn-lonig__link--twitter:hover {
+    background-color: #62aadc;
+    color: white;
+}
+.btn-lonig__link--facebook:hover {
+    background-color: #3c5b97;
+    color: white;
+}
+
+.user__img {
+    border-radius: 50%;
+    width: 46px;
+    height: 46px;
+    object-fit: cover;
+}
+
+.user__link .dropdown-toggle::after {
+    content: none;
+}
+
+/* .user-settings__list {
+    margin-bottom: 14px;
+} */
+
+.dropdown-item input {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.user__main {
+    padding-top: 30px;
+}
+
+.user__section {
+    margin-left: 100px;
+    margin-bottom: 40px;
+    /* border: 1px solid gray; */
+}
+
+.user__section .title{
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgb(235, 235, 235);
+}
+.user__section .descr{
+    max-width: 700px;
+}
+.user__section .image_uploader {
+    text-align: center;
+}
+
+.user__section .user-caption {
+    font-size: 20px;
+    margin: 20px 0 10px 0;
+    display: block;
+}
+
+.user__section .description {
+    font-size: 14px;
+    color: gray;
+}
+
+.image_uploader img {
+    width: 240px;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #dadada;
+}
+/* index.html  */
+/* баннер */
+.banner {
+    height: 90vh;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    color: white;
+    background: linear-gradient( 90deg, rgb(35 35 35 / 80%) 0%, #dadada52 100%), url('../img/banner-bg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.banner__name {
+    font-size: 48px;
+    display: inline-block;
+    border-bottom: 6px solid white;
+    letter-spacing: 2px;
+    font-weight: 700;
+}
+/*конец баннер */
+.content__avia {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('/img/luggage.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 80vh;
+}
+
+.avia {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.article {
+    background-image: url('/img/travel-pattern.jpg');
+}
+
+.disclaimer {
+    padding: 30px 0 10px;
+}
+
+.article h2 {
+    margin: 0 auto 50px;
+    max-width: 1200px;
+}
+
+.article .descr {
+    max-width: 1200px;
+    margin: 0 auto 50px;
+}
+
+.article__inner {
+    padding: 30px 0;
+    background-color: rgba(255, 255, 255, 0.603);
+}
+
+.article__wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.article__country {
+    padding: 30px;
+    margin: 20px;
+    box-shadow: 0px 1px 5px rgb(0 0 0 / 25%);
+    transition: box-shadow 0.3s ease-out;
+    background-color: white;
+}
+
+    .article__country:hover {
+        box-shadow: rgb(0 0 0 / 35%) 4px 4px 15px 2px;
+    }
+
+@media (max-width: 1368px) {
+    .trip__card {
+        width: 300px;
+        box-shadow: 0px 1px 5px rgb(0 0 0 / 25%);
+    }
+    .trip-users__wrapper {
+        flex-wrap: wrap;
+    }
+
+    .trip-user {
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .trip__subject {
+        margin: 30px 0;
+        text-align: center;
+    }
+    .trip__wrapper {
+        justify-content: center;
+    }
+    .trip__card {
+        margin: 0 0 20px 0;
+    }
+    .tab-mobille {
+        flex-direction: column;
+    }
+
+    .nav-pills {
+        align-self: center;
+        margin-bottom: 14px;
+    }
+
+    .user__section {
+        margin-left: 0;
+    }
+
+    .tab-content {
+        align-self: center;
+    }
+}
+@media (max-width: 576px) {
+    .content__avia {
+        height: 100%;
+    }
+    .trip__title {
+        font-size: 38px;
+        margin: 0;
+    }
+    .trip-user {
+        margin-bottom: 10px;
+    }
+    .trip__descr {
+        margin-bottom: 0;
+    }
+    .trip-user {
+        padding: 7px;
+    }
+    .trip-user__avatar img {
+        width: 40px;
+        height: 40px;
+    }
+    .trip-user-btn {
+        font-size: 28px;
+        width: 58px;
+        height: 58px;
+    }
+    .chat__title {
+        padding: 10px 0;
+    }
+    .task-lists__wrapper {
+        justify-content: center;
+    }
+    .task__list {
+        max-width: 300px;
+        margin-right: 0;
+    }
+}

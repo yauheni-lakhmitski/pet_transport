@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PetTransport.Domain;
+using PetTransport.Domain.Entities;
 using PetTransport.Infrastructure.Data;
 using PetTransport.Infrastructure.Email;
 using PetTransport.Web.Models;
@@ -139,7 +140,6 @@ public class AccountController : Controller
 
                     var result =
                         await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
-
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -343,6 +343,8 @@ public class AccountController : Controller
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
+
+            var res = HttpContext.User.Claims;
 
             return RedirectToAction("UpdateProfile", "Account");
         }

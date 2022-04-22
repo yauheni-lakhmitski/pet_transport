@@ -3,21 +3,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetTransport.Domain;
+using PetTransport.Domain.Entities;
 using PetTransport.Infrastructure.Data;
+using PetTransport.Web.Commands.Transportations;
+using Route = PetTransport.Domain.Entities.Route;
 
 namespace PetTransport.Web.Controllers
 {
     public class TransportationController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMediator _mediator;
 
-        public TransportationController(ApplicationDbContext context)
+        public TransportationController(ApplicationDbContext context, IMediator mediator)
         {
             _context = context;
+            _mediator = mediator;
         }
 
         // GET: Transportation
@@ -55,16 +61,14 @@ namespace PetTransport.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Name,Description,CreatedAt,UpdatedAt")] Transportation transportation)
+        public async Task<IActionResult> Create(CreateTransportationCommand command)
         {
             if (ModelState.IsValid)
             {
-                transportation.Id = Guid.NewGuid();
-                _context.Add(transportation);
-                await _context.SaveChangesAsync();
+                await _mediator.Send(command);
                 return RedirectToAction(nameof(Index));
             }
-            return View(transportation);
+            return View(command);
         }
 
         // GET: Transportation/Edit/5
@@ -76,9 +80,19 @@ namespace PetTransport.Web.Controllers
             }
 
             var transportation = await _context.Transportations
+                .Where(x=>x.Id == id)
                 .Include(x=>x.Routes)
                 .ThenInclude(x=>x.Car)
-                .FirstOrDefaultAsync(x=>x.Id == id);
+                .Select(x=> new UpdateTransportationCommand(x.Id, x.Title, x.Name, x.Description))
+                .FirstOrDefaultAsync();
+            
+            
+            ViewBag.Routes = await _context.Routes
+                .Include(x=>x.Car).
+                Where(x => x.TransportationId == transportation.Id).
+                OrderBy(x=>x.Name).
+                ToListAsync();
+            
             if (transportation == null)
             {
                 return NotFound();
@@ -91,8 +105,9 @@ namespace PetTransport.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Name,Description,CreatedAt,UpdatedAt")] Transportation transportation)
+        public async Task<IActionResult> Edit(Guid id, UpdateTransportationCommand transportation)
         {
+            
             if (id != transportation.Id)
             {
                 return NotFound();
@@ -102,8 +117,7 @@ namespace PetTransport.Web.Controllers
             {
                 try
                 {
-                    _context.Update(transportation);
-                    await _context.SaveChangesAsync();
+                    await _mediator.Send(transportation);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -118,6 +132,13 @@ namespace PetTransport.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            
+            ViewBag.Routes = _context.Routes
+                .Include(x=>x.Car).
+                Where(x => x.TransportationId == transportation.Id).
+                OrderBy(x=>x.Name).
+                ToListAsync();
+
             return View(transportation);
         }
 

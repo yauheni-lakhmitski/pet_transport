@@ -1,0 +1,311 @@
+.trip__subject {
+    margin: 50px 0;
+}
+
+.trip__wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.trip__card {
+    display: flex;
+    flex-direction: column;
+    width: 310px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0px 1px 15px rgb(0 0 0 / 25%);
+    border-radius: 8px;
+    text-align: center;
+    margin: 0 10px 10px 0;
+    transition: box-shadow 0.4s;
+}
+
+.trip__card p {
+    flex: 1 0 auto;
+    }
+
+.trip__card:hover {
+    box-shadow: rgb(0 0 0 / 35%) 4px 4px 15px 2px;
+}
+
+.trip-btn__list {
+    display: flex;
+    justify-content: space-between;
+    flex: 0 0 auto;
+}
+.trip__card--create,
+.trip__card--added {
+    align-items: center;
+    justify-content: center;
+}
+
+.trip__card--create button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: green;
+    background: transparent;
+    border: none;
+    margin: 0 auto;
+}
+
+.trip__card--added button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #5454eb;
+    background: transparent;
+    border: none;
+    margin: 0 auto;
+}
+
+.trip__card--create svg {
+    width: 80px;
+}
+
+    .trip__card--create svg path {
+        fill: green;
+    }
+
+.trip__card--added svg {
+    width: 80px;
+}
+
+    .trip__card--added svg path {
+        fill: #5454eb;
+    }
+
+
+.trip-users {
+    padding: 20px 0;
+}
+
+.trip-users__wrapper {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.trip-user {
+    background-color: #f5f5f5;
+    padding: 14px;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 8px;
+    box-shadow: 0px 1px 10px rgb(0 0 0 / 20%);
+    transition: box-shadow 0.3s ease-out;
+}
+
+    .trip-user:hover {
+        box-shadow: 0px 1px 15px rgb(0 0 0 / 20%);
+    }
+
+.trip-user-btn {
+    font-size: 44px;
+    color: #6c757d;
+    background-color: #f5f5f5;
+    width: 108px;
+    height: 108px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid transparent;
+    border-radius: 50%;
+    transition: color 0.3s ease-out, border 0.3s ease-out, box-shadow 0.3s ease-out;
+    box-shadow: 0px 1px 10px rgb(0 0 0 / 20%);
+}
+
+    .trip-user-btn:hover {
+        color: green;
+        border: 4px solid green;
+        box-shadow: 0px 1px 15px rgb(0 0 0 / 20%);
+    }
+
+.trip-user__avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid white;
+    object-fit: cover; 
+    /* изменил */
+}
+
+.trip-user__text p {
+    text-align: center;
+    margin: 0;
+    padding-left: 10px;
+}
+
+.trip-user__name {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.trip-user__stats {
+    font-size: 14px;
+    font-weight: 400;
+}
+.invite-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+.invite-item {
+    margin: 0 4px 4px 0;
+    background: whitesmoke;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.invite-cod {
+    font-weight: 800;
+}
+
+/* Трип заголовки начало  */
+.trip__title {
+    font-size: 48px;
+    margin: 40px 0 0 0;
+}
+
+.trip__descr {
+    font-size: 24px;
+}
+/* Трип заголовки конец  */
+
+.task-lists {
+    padding: 20px 0;
+}
+
+.task-lists__wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.task__list {
+    max-width: 280px;
+    background-color: #f5f5f5;
+    padding: 16px;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+
+.task__list {
+    display: flex;
+    flex-direction: column;
+    max-width: 280px;
+    background-color: #f5f5f5;
+    padding: 16px;
+    border-radius: 8px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+.task__inner {
+    flex: 1 0 auto;
+    max-height: 300px;
+    overflow-x: hidden;
+    margin: 10px;
+}
+
+.task__bottom {
+    flex: 0 0 auto;
+}
+
+.task__list h6 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.task__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+/* начало чата */
+.chat {
+    max-width: 600px;
+}
+
+.chat__title {
+    text-align: center;
+    font-size: 24px;
+    background-color: #fff;
+    padding: 20px 0 15px;
+    box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
+}
+
+.chat__messages {
+    overflow-y: scroll;
+    min-height: 360px;
+    max-height: 360px;
+}
+
+.messages {
+    display: flex;
+    align-items: center;
+    padding: 4px 0;
+    margin-bottom: 4px;
+    background-color: #f8f8f8;
+}
+
+.message-people {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0 0 12px;
+}
+
+.message-name {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.message-avatar img {
+    width: 46px;
+    height: 46px;
+    background-color: white;
+    border-radius: 50%;
+    border: 2px solid white;
+    object-fit: cover;
+}
+
+.chat__info {
+    width: 100%;
+    background-color: white;
+    padding: 12px;
+    margin: 0 12px;
+    border-radius: 3px;
+}
+
+.text__message {
+    font-size: 16px;
+}
+
+.text-time {
+    font-size: 10px;
+    font-weight: 300;
+    text-align: right;
+}
+
+.bottom_wrapper {
+    background-color: #eaeaea;;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.message-input {
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #bcbdc0;
+    width: 100%;
+    padding: 6px;
+    margin-right: 10px;
+}
+
+/* конец чата */

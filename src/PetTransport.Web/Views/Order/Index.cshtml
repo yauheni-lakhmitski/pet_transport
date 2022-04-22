@@ -1,4 +1,4 @@
-@model IEnumerable<PetTransport.Domain.Order>
+@model IEnumerable<PetTransport.Domain.Entities.Order>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,6 +13,9 @@
 <table class="table">
     <thead>
         <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SenderCity)
+                    </th>
             <th>
                 @Html.DisplayNameFor(model => model.CountryOfDestination)
             </th>
@@ -20,40 +23,10 @@
                 @Html.DisplayNameFor(model => model.DepartureDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Airport)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RailwayStation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Courier)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Address)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TransferPhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ShelterFrom)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.SenderFullName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SenderStreet)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SenderCity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SenderRegion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Zip)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.SenderPhoneNumber)
@@ -77,38 +50,23 @@
                 @Html.DisplayNameFor(model => model.Color)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateOfBirth)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ChipNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateOfChip)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RecipientFullName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RecipientStreet)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RecipientZip)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RecipientPhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RecipientEmail)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RecipientWhatsApp)
-            </th>
+                            @Html.DisplayNameFor(model => model.Airport)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.RailwayStation)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Courier)
+                        </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SenderCity)
+                    </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CountryOfDestination)
             </td>
@@ -116,40 +74,10 @@
                 @Html.DisplayFor(modelItem => item.DepartureDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Airport)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RailwayStation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Courier)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Address)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TransferPhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ShelterFrom)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.SenderFullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SenderStreet)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SenderCity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SenderRegion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Zip)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SenderPhoneNumber)
@@ -172,33 +100,15 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Color)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateOfBirth)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ChipNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateOfChip)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RecipientFullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RecipientStreet)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RecipientZip)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RecipientPhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RecipientEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RecipientWhatsApp)
-            </td>
+              <td>
+                            @Html.DisplayFor(modelItem => item.Airport)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RailwayStation)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Courier)
+                        </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

@@ -9,6 +9,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="10.4.0" />
+        <PackageReference Include="FluentValidation.AspNetCore" Version="10.4.0" />
+        <PackageReference Include="MediatR" Version="10.0.1" />
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.2" />
@@ -16,13 +20,16 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.2" />
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.2" />
+        <PackageReference Include="Syncfusion.DocIO.Net.Core" Version="20.1.0.48" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Data" />
+      <Folder Include="Extensions" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\PetTransport.Application\PetTransport.Application.csproj" />
       <ProjectReference Include="..\PetTransport.Domain\PetTransport.Domain.csproj" />
       <ProjectReference Include="..\PetTransport.Infrastructure\PetTransport.Infrastructure.csproj" />
     </ItemGroup>

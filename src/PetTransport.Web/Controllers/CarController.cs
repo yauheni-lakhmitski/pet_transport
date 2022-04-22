@@ -3,21 +3,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetTransport.Domain;
+using PetTransport.Domain.Entities;
 using PetTransport.Infrastructure.Data;
+using PetTransport.Web.Commands.Cars;
 
 namespace PetTransport.Web.Controllers
 {
     public class CarController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMediator _mediator;
 
-        public CarController(ApplicationDbContext context)
+        public CarController(ApplicationDbContext context, IMediator mediator)
         {
             _context = context;
+            _mediator = mediator;
         }
 
         // GET: Car
@@ -55,15 +60,14 @@ namespace PetTransport.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Make,Model,RegistrationNumber")] Car car)
+        public async Task<IActionResult> Create(CreateCarCommand car)
         {
             if (ModelState.IsValid)
             {
-                car.Id = Guid.NewGuid();
-                _context.Add(car);
-                await _context.SaveChangesAsync();
+                await _mediator.Send(new CreateCarCommand(car.Make, car.Model, car.RegistrationNumber));
                 return RedirectToAction(nameof(Index));
             }
+            
             return View(car);
         }
 

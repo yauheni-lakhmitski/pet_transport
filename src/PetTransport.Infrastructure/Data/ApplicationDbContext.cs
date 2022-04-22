@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PetTransport.Domain;
+using PetTransport.Domain.Entities;
 
 namespace PetTransport.Infrastructure.Data;
 
@@ -27,6 +28,8 @@ public class ApplicationDbContext : IdentityDbContext
     
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.UseEntityTypeConfiguration();
+        
         builder.Entity<UserTrip>()
             .HasKey(t => new { t.UserId, t.TripId });
 
