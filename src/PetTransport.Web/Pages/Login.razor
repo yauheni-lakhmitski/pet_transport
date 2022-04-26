@@ -1,0 +1,27 @@
+﻿<div class="col-xl-4 p-3">
+    <RadzenCard>
+        <h2 class="mb-4">Register and password reset</h2>
+        <RadzenTemplateForm Data=@("LoginWithRegisterAndReset")>
+            <RadzenLogin Login=@(args => OnLogin(args, "Login with register and password reset")) 
+                         ResetPassword=@(args => OnResetPassword(args, "Login with register and password reset"))
+                         Register=@(args => OnRegister("Login with register and password reset")) />
+        </RadzenTemplateForm>
+    </RadzenCard>
+</div>
+
+@code {
+    string userName = "admin";
+    string password = "admin";
+
+    void OnLogin(LoginArgs args, string name)
+    {
+    }
+
+    void OnRegister(string name)
+    {
+    }
+
+    void OnResetPassword(string value, string name)
+    {
+    }
+}

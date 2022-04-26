@@ -1,0 +1,163 @@
+﻿@page "/transportations"
+
+@using Microsoft.EntityFrameworkCore
+@using PetTransport.Domain.Entities
+@using PetTransport.Infrastructure.Data
+@using Microsoft.AspNetCore.Components
+@using Task = System.Threading.Tasks.Task
+
+@inject ApplicationDbContext dbContext
+
+<h1>Редактирование записей о поездках</h1>
+
+<RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Создать новую поездку" Click="@InsertRow" Disabled=@(transportationToInsert != null)/>
+<RadzenDataGrid @ref="transportationsGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
+                Data="@transportations" TItem="Transportation" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+    <Columns>
+        <RadzenDataGridColumn TItem="Transportation" Property="Id" Title="Order ID" Width="120px"/>
+        <RadzenDataGridColumn TItem="Transportation" Property="Name" Title="Название поездки">
+            <EditTemplate Context="transportation">
+                <RadzenTextBox @bind-Value="transportation.Name" Style="width:100%; display: block" Name="Name"/>
+                <RadzenRequiredValidator Text="Название обязательно к заполнению" Component="Name" Popup="true"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+
+        <RadzenDataGridColumn TItem="Transportation" Property="Title" Title="заголовок поездки">
+            <EditTemplate Context="transportation">
+                <RadzenTextBox @bind-Value="transportation.Title" Style="width:100%; display: block" Name="Title"/>
+                <RadzenRequiredValidator Text="Заголовок обязателен к заполнению" Component="Name" Popup="true"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+
+        <RadzenDataGridColumn TItem="Transportation" Property="Description" Title="Описание поездки">
+            <EditTemplate Context="transportation">
+                <RadzenTextBox @bind-Value="transportation.Description" Style="width:100%; display: block" Name="Description"/>
+                <RadzenRequiredValidator Text="Описание обязательно к заполнению" Component="Name" Popup="true"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Transportation" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+            <Template Context="order">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@((args) => SaveRow(order))">
+                </RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(order))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Transportation" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+            <Template Context="order">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    RadzenDataGrid<Transportation> transportationsGrid;
+    List<Transportation> transportations;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+    // For demo purposes only
+        transportations = dbContext.Transportations.ToList();
+    }
+
+    async Task EditRow(Transportation transportation)
+    {
+        await transportationsGrid.EditRow(transportation);
+    }
+
+    void OnUpdateRow(Transportation transportation)
+    {
+        if (transportation == transportationToInsert)
+        {
+            transportationToInsert = null;
+        }
+
+        dbContext.Update(transportation);
+
+
+        dbContext.SaveChanges();
+    }
+
+    async Task SaveRow(Transportation transportation)
+    {
+        if (transportation == transportationToInsert)
+        {
+            transportationToInsert = null;
+        }
+
+        await transportationsGrid.UpdateRow(transportation);
+    }
+
+    void CancelEdit(Transportation transportation)
+    {
+        if (transportation == transportationToInsert)
+        {
+            transportationToInsert = null;
+        }
+
+        transportationsGrid.CancelEditRow(transportation);
+
+    // For production
+        var orderEntry = dbContext.Entry(transportation);
+        if (orderEntry.State == EntityState.Modified)
+        {
+            orderEntry.CurrentValues.SetValues(orderEntry.OriginalValues);
+            orderEntry.State = EntityState.Unchanged;
+        }
+    }
+
+    async Task DeleteRow(Transportation transportation)
+    {
+        if (transportation == transportationToInsert)
+        {
+            transportationToInsert = null;
+        }
+
+        if (transportations.Contains(transportation))
+        {
+            dbContext.Remove<Transportation>(transportation);
+
+    // For demo purposes only
+            transportations.Remove(transportation);
+
+    // For production
+    //dbContext.SaveChanges();
+
+            await transportationsGrid.Reload();
+        }
+        else
+        {
+            transportationsGrid.CancelEditRow(transportation);
+        }
+    }
+
+    Transportation transportationToInsert;
+
+    async Task InsertRow()
+    {
+        transportationToInsert = new Transportation();
+        await transportationsGrid.InsertRow(transportationToInsert);
+    }
+
+    void OnCreateRow(Transportation transportation)
+    {
+        dbContext.Add(transportation);
+
+        dbContext.SaveChanges();
+    }
+
+}

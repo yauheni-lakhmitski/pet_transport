@@ -43,7 +43,12 @@ public class ApplicationDbContext : IdentityDbContext
             .WithMany(t => t.UserTrips)
             .HasForeignKey(pt => pt.UserId);
         
+
+        
         base.OnModelCreating(builder);
+        
+
+        
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

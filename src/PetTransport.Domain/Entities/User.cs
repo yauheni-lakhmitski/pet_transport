@@ -11,10 +11,7 @@ public class User : IdentityUser
     public string ImageUrl { get;  set; }
     public bool IsDeleted { get;  set; }
     public List<Route> Routes { get; set; }
-
    
-
-
     public void UpdateProfileInfo(string firstName, string lastName, string location)
     {
         FirstName = firstName;

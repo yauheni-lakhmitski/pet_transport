@@ -1,0 +1,158 @@
+﻿@page "/cars"
+
+@using Microsoft.EntityFrameworkCore
+@using PetTransport.Domain.Entities
+@using PetTransport.Infrastructure.Data
+@using Microsoft.AspNetCore.Components
+@using Task = System.Threading.Tasks.Task
+
+@inject ApplicationDbContext dbContext
+
+<h1>Редактирование записей об автомобилях</h1>
+
+    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Добавить новую машину" Click="@InsertRow" Disabled=@(carToInsert != null) />
+    <RadzenDataGrid @ref="carsGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
+                Data="@cars" TItem="Car" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+        <Columns>
+            <RadzenDataGridColumn TItem="Car" Property="Id" Title="Order ID" Width="120px" />
+            <RadzenDataGridColumn TItem="Car" Property="Make" Title="Марка">
+                <EditTemplate Context="car">
+                    <RadzenTextBox @bind-Value="car.Make" Style="width:100%; display: block" Name="Make" />
+                    <RadzenRequiredValidator Text="Марка обязательна к заполнению" Component="Make" Popup="true" />
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Car" Property="Model" Title="Модель">
+                <EditTemplate Context="car">
+                    <RadzenTextBox @bind-Value="car.Model" Style="width:100%; display: block" Name="Model"/>
+                    <RadzenRequiredValidator Text="Модель обязательна к заполнению" Component="Model" Popup="true"/>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Car" Property="RegistrationNumber" Title="Регистрационный номер">
+                <EditTemplate Context="car">
+                    <RadzenTextBox @bind-Value="car.RegistrationNumber" Style="width:100%; display: block" Name="RegistrationNumber"/>
+                    <RadzenRequiredValidator Text="Регистрационный номер обязателен к заполнению" Component="Model" Popup="true"/>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Car" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+                <Template Context="order">
+                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
+                    </RadzenButton>
+                </Template>
+                <EditTemplate Context="order">
+                    <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@((args) => SaveRow(order))">
+                    </RadzenButton>
+                    <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(order))">
+                    </RadzenButton>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Car" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+                <Template Context="order">
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))"  @onclick:stopPropagation="true">
+                    </RadzenButton>
+                </Template>
+                <EditTemplate Context="order">
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))">
+                    </RadzenButton>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+
+@code {
+    RadzenDataGrid<Car> carsGrid;
+    IList<Car> cars;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        // For demo purposes only
+        cars = dbContext.Cars.ToList();
+    }
+
+    async Task EditRow(Car car)
+    {
+        await carsGrid.EditRow(car);
+    }
+
+    void OnUpdateRow(Car car)
+    {
+        if (car == carToInsert)
+        {
+            carToInsert = null;
+        }
+
+        dbContext.Update(car);
+
+
+        dbContext.SaveChanges();
+    }
+
+    async Task SaveRow(Car car)
+    {
+        if (car == carToInsert)
+        {
+            carToInsert = null;
+        }
+
+        await carsGrid.UpdateRow(car);
+    }
+
+    void CancelEdit(Car car)
+    {
+        if (car == carToInsert)
+        {
+            carToInsert = null;
+        }
+
+        carsGrid.CancelEditRow(car);
+
+        // For production
+        var orderEntry = dbContext.Entry(car);
+        if (orderEntry.State == EntityState.Modified)
+        {
+            orderEntry.CurrentValues.SetValues(orderEntry.OriginalValues);
+            orderEntry.State = EntityState.Unchanged;
+        }
+    }
+
+    async Task DeleteRow(Car car)
+    {
+        if (car == carToInsert)
+        {
+            carToInsert = null;
+        }
+
+        if (cars.Contains(car))
+        {
+            dbContext.Remove<Car>(car);
+
+            // For demo purposes only
+            cars.Remove(car);
+
+            // For production
+            //dbContext.SaveChanges();
+
+            await carsGrid.Reload();
+        }
+        else
+        {
+            carsGrid.CancelEditRow(car);
+        }
+    }
+
+    Car carToInsert;
+
+    async Task InsertRow()
+    {
+        carToInsert = new Car();
+        await carsGrid.InsertRow(carToInsert);
+    }
+
+    void OnCreateRow(Car car)
+    {
+        dbContext.Add(car);
+
+        dbContext.SaveChanges();
+    }
+}
