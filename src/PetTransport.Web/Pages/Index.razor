@@ -1,9 +1,44 @@
 ﻿@page "/"
+@using PetTransport.Infrastructure.Data
+@using PetTransport.Domain.Entities
+@inject ApplicationDbContext _context
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Сводка по заказам</h1>
 
-Welcome to your new app.
+Заказы ожидающие обработки: @pendingOrders
+<br>
+Заказы ожидающий оплаты: @notPaid
+<br>
+Заказы в работе: @inProgress
+<br>
+Завершенные заказы: @completed
+<br>
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+
+
+@code{
+
+    int pendingOrders = 0;
+    int notPaid = 0;
+    int inProgress = 0;
+    int completed = 0;
+
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+    // For demo purposes only
+        pendingOrders = _context.Applications.Count(x => x.Status == ApplicationStatus.Pending);
+        notPaid = _context.Applications.Count(x => x.Status == ApplicationStatus.NotPaid);
+        inProgress =_context.Applications.Count(x => x.Status == ApplicationStatus.InProgress);
+        completed =_context.Applications.Count(x => x.Status == ApplicationStatus.Completed);
+    }
+    
+
+}
+

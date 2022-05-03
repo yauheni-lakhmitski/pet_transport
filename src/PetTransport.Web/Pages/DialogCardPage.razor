@@ -1,0 +1,118 @@
+﻿@page "/dialogcard/{OrderID}"
+
+@using PetTransport.Domain.Entities
+@using PetTransport.Infrastructure.Data
+@using Microsoft.EntityFrameworkCore
+@using Task = System.Threading.Tasks.Task
+@using System.Linq
+@using PetTransport.Web.Extensions
+@using PetTransport.Web.Models
+@inject LinkGenerator LinkGenerator
+
+@inject ApplicationDbContext dbContext
+@inject Radzen.DialogService dialogService
+
+
+<style>
+    form .row {
+        margin-bottom: 16px;
+    }
+</style>
+
+<RadzenDataGrid @ref="grid" AllowRowSelectOnRowClick="@allowRowSelectOnRowClick" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="4"
+                AllowSorting="true" Data="@applications" TItem="Application" ColumnWidth="200px"
+                SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@SelectedApplications>
+    <Template Context="application">
+        <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@application.OrderItems" TItem="ApplicationItem">
+            <Columns>
+                <RadzenDataGridColumn TItem="Application" Width="40px" Sortable="false" Filterable="false">
+                                <HeaderTemplate>
+                                    <RadzenCheckBox TriState="false" TValue="bool" Value="@(applications.Any(i => SelectedApplications != null && SelectedApplications.Contains(i)))"
+                                                    Change="@(args => SelectedApplications = args ? applications.ToList() : null)" />
+                                </HeaderTemplate>
+                                <Template Context="data">
+                                    <RadzenCheckBox TriState="false" Value="@(SelectedApplications != null && SelectedApplications.Contains(data))" 
+                                        TValue="bool" Change=@(args => { if(!false) { grid.SelectRow(data); }}) />
+                                </Template>
+                            </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Id"/>
+                <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType" Title="Тип животного"/>
+                <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalName" Title="Название животного"/>
+                <RadzenDataGridColumn TItem="ApplicationItem" Property="ChipNumber" Title="Номер чипа"/>
+            </Columns>
+        </RadzenDataGrid>
+    </Template>
+    <Columns>
+         <RadzenDataGridColumn TItem="Application" Width="40px" Sortable="false" Filterable="false">
+                        <HeaderTemplate>
+                            <RadzenCheckBox TriState="false" TValue="bool" Value="@(applications.Any(i => SelectedApplications != null && SelectedApplications.Contains(i)))"
+                                            Change="@(args => SelectedApplications = args ? applications.ToList() : null)" />
+                        </HeaderTemplate>
+                        <Template Context="data">
+                            <RadzenCheckBox TriState="false" Value="@(SelectedApplications != null && SelectedApplications.Contains(data))" 
+                                TValue="bool" Change=@(args => { if(!allowRowSelectOnRowClick) { grid.SelectRow(data); }}) />
+                        </Template>
+                    </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Application" Property="Id" Title="Id"/>
+        <RadzenDataGridColumn TItem="Application" Property="OrderNumber" Title="Номер заказа"/>
+        @* <RadzenDataGridColumn TItem="Application" Property="Employee.LastName" Title="Employee" Width="200px" > *@
+        @*     <Template Context="application"> *@
+        @*         <RadzenImage Path="@application.Employee?.Photo" style="width: 32px; height: 32px; bapplication-radius: 16px; margin-right: 6px;" /> *@
+        @*         @application.Employee?.FirstName @application.Employee?.LastName *@
+        @*     </Template> *@
+        @* </RadzenDataGridColumn> *@
+        <RadzenDataGridColumn TItem="Application" Property="Status" Title="Статус заказа">
+            <Template Context="application">
+                @application.Status.GetEnumDescription()
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Application" Property="PickUpDate" Title="Дата отправки" FormatString="{0:d}"/>
+        <RadzenDataGridColumn TItem="Application" Property="DeliveryDate" Title="Дата получения" FormatString="{0:d}"/>
+        <RadzenDataGridColumn TItem="Application" Property="SourcePoint" Title="Место отправления"/>
+        <RadzenDataGridColumn TItem="Application" Property="DestinationPoint" Title="Место получения"/>
+        <RadzenDataGridColumn TItem="Application" Title="Количество животных">
+            <Template Context="application">
+                @application.OrderItems.Count
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+<div class="row">
+    <div class="col-md-12 text-right">
+        <RadzenButton Click="@((args) => dialogService.Close(SelectedApplications))" ButtonStyle="ButtonStyle.Secondary" Text="Cancel" Style="width: 120px" Class="mr-1" />
+        <RadzenButton Click="@((args) => dialogService.Close(SelectedApplications))" Text="OK" Style="width: 120px" />
+    </div>
+</div>
+
+@code {
+    bool allowRowSelectOnRowClick = false;
+
+    [Parameter]
+    public IList<Application> SelectedApplications  { get; set; }
+    
+    
+    IEnumerable<Application> applications;
+    RadzenDataGrid<ApplicationItem> applcationItemsGrid;
+    RadzenDataGrid<Application> grid;
+
+
+    protected override void OnInitialized()
+    {
+        applications = dbContext.Applications
+            .Where(x=>x.Status== ApplicationStatus.Paid)
+            .Include(x => x.OrderItems).OrderBy(x=>x.CreatedAt).ToList();
+    }
+
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            StateHasChanged();
+        }
+
+        base.OnAfterRender(firstRender);
+    }
+}

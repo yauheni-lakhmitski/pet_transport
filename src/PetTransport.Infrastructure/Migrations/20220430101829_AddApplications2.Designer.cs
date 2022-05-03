@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetTransport.Infrastructure.Data;
 
@@ -10,9 +11,10 @@ using PetTransport.Infrastructure.Data;
 namespace PetTransport.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220430101829_AddApplications2")]
+    partial class AddApplications2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
@@ -221,12 +223,6 @@ namespace PetTransport.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("TEXT");
 
@@ -241,9 +237,6 @@ namespace PetTransport.Infrastructure.Migrations
                     b.Property<DateTime>("PickUpDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("RideId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("SourcePoint")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -253,11 +246,7 @@ namespace PetTransport.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("RideId");
-
-                    b.ToTable("Application");
+                    b.ToTable("Applications");
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.ApplicationItem", b =>
@@ -279,6 +268,9 @@ namespace PetTransport.Infrastructure.Migrations
 
                     b.Property<string>("ChipNumber")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Discount")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Price")
@@ -311,43 +303,6 @@ namespace PetTransport.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cars");
-                });
-
-            modelBuilder.Entity("PetTransport.Domain.Entities.Customer", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ContantPerson")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("CustomerType")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OrganizationNumber")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Customer");
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.InviteCode", b =>
@@ -397,50 +352,6 @@ namespace PetTransport.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Message");
-                });
-
-            modelBuilder.Entity("PetTransport.Domain.Entities.Ride", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("CarId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("From")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("To")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CarId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Rides", (string)null);
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.Route", b =>
@@ -690,21 +601,6 @@ namespace PetTransport.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PetTransport.Domain.Entities.Application", b =>
-                {
-                    b.HasOne("PetTransport.Domain.Entities.Customer", "Customer")
-                        .WithMany("Applications")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PetTransport.Domain.Entities.Ride", null)
-                        .WithMany("Applications")
-                        .HasForeignKey("RideId");
-
-                    b.Navigation("Customer");
-                });
-
             modelBuilder.Entity("PetTransport.Domain.Entities.ApplicationItem", b =>
                 {
                     b.HasOne("PetTransport.Domain.Entities.Application", null)
@@ -738,25 +634,6 @@ namespace PetTransport.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Trip");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PetTransport.Domain.Entities.Ride", b =>
-                {
-                    b.HasOne("PetTransport.Domain.Entities.Car", "Car")
-                        .WithMany("Rides")
-                        .HasForeignKey("CarId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PetTransport.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Car");
 
                     b.Navigation("User");
                 });
@@ -832,21 +709,6 @@ namespace PetTransport.Infrastructure.Migrations
             modelBuilder.Entity("PetTransport.Domain.Entities.Application", b =>
                 {
                     b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("PetTransport.Domain.Entities.Car", b =>
-                {
-                    b.Navigation("Rides");
-                });
-
-            modelBuilder.Entity("PetTransport.Domain.Entities.Customer", b =>
-                {
-                    b.Navigation("Applications");
-                });
-
-            modelBuilder.Entity("PetTransport.Domain.Entities.Ride", b =>
-                {
-                    b.Navigation("Applications");
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.TaskList", b =>

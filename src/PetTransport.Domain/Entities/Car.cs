@@ -10,4 +10,6 @@ public class Car:DomainEntity
     public string Model { get; set; }
     [DisplayName("Регистрационный номер")]
     public string RegistrationNumber { get; set; }
+
+    public List<Ride> Rides { get; set; }
 }

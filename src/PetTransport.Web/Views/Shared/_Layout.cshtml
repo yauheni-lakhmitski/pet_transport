@@ -24,21 +24,21 @@
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Transportation" asp-action="Index">Поездки</a>
-                        </li>
+                        @* <li class="nav-item"> *@
+                        @*     <a class="nav-link" asp-controller="Transportation" asp-action="Index">Поездки</a> *@
+                        @* </li> *@
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Car" asp-action="Index">Автомобили</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Route" asp-action="Index">Маршруты</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Order" asp-action="Index">Заявки</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Order" asp-action="Create">Создать заявку</a>
-                        </li>
+                        @* <li class="nav-item"> *@
+                        @*     <a class="nav-link" asp-area="" asp-controller="Route" asp-action="Index">Маршруты</a> *@
+                        @* </li> *@
+                        @* <li class="nav-item"> *@
+                        @*     <a class="nav-link" asp-area="" asp-controller="Order" asp-action="Index">Заявки</a> *@
+                        @* </li> *@
+                        @* <li class="nav-item"> *@
+                        @*     <a class="nav-link" asp-area="" asp-controller="Order" asp-action="Create">Создать заявку</a> *@
+                        @* </li> *@
                     </ul>
                     @if (User.Identity.IsAuthenticated)
                     {

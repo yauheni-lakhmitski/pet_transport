@@ -1,0 +1,237 @@
+﻿@page "/create-ride"
+@inject DialogService DialogService
+@using PetTransport.Domain.Entities
+@using Microsoft.AspNetCore.Components
+@using PetTransport.Infrastructure.Data
+@using PetTransport.Web.Extensions
+@using PetTransport.Web.Models
+@using Task = System.Threading.Tasks.Task
+@inject ApplicationDbContext dbContext
+
+<style>
+    form .row {
+        margin-bottom: 16px;
+    }
+</style>
+
+<h1>Создание поездки</h1>
+<RadzenTemplateForm Data="@_ride" Submit="@((Ride args) => { Submit(args); })">
+    <div class="row">
+        <div class="col-md-6">
+            <RadzenFieldset Text="Информация о поездке">
+                @* <div class="row"> *@
+                @*     <div class="col-md-4 align-items-center d-flex"> *@
+                @*         <RadzenLabel Text="Номер поездки" /> *@
+                @*     </div> *@
+                @*     <div class="col-md-8"> *@
+                @*         <RadzenTextBox style="width: 100%;" Name="RideId" @bind-Value="_ride.Id" Disabled="true" /> *@
+                @*     </div> *@
+                @* </div> *@
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                        <RadzenLabel Text="Место отправления"/>
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenTextBox style="width: 100%;" Name="SourcePoint" @bind-Value="_ride.From"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                        <RadzenLabel Text="Место получения"/>
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenTextBox style="width: 100%;" Name="DestinationPoint" @bind-Value="_ride.To"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                        <RadzenLabel Text="Название поездки" />
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenTextBox style="width: 100%;" DateFormat="d"  Name="RideName" @bind-Value="_ride.Name" />
+                    </div>
+                </div>
+                <div class="row">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Описание поездки"/>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="Description" @bind-Value="_ride.Description"/>
+                                    </div>
+                                </div>
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                        <RadzenLabel Text="Дата создания поездки"/>
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenDatePicker style="width: 100%;" DateFormat="d"  Name="CreateAt" @bind-Value="_ride.CreatedAt"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                        <RadzenLabel Text="Выберите водителя"/>
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenDropDown @bind-Value="_ride.UserId"  AllowClear="true" TValue="string" AllowVirtualization="true" Class="w-100"
+                                        AllowFiltering="true" Data=@users.Select(x => new CommonViewModel() {Id = x.Id, Name = $"{x.FirstName} {x.LastName}"}) TextProperty="Name" ValueProperty="Id"
+                                        Change=@(args => OnChange(args, "DropDown with virtualization")) />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                        <RadzenLabel Text="Выберите автомобиль"/>
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenDropDown @bind-Value="_ride.CarId" AllowClear="true" TValue="Guid" AllowVirtualization="true" Class="w-100"
+                                        AllowFiltering="true" Data=@cars.Select(x => new CommonGuidViewModel() {Id = x.Id, Name = $"{x.Make} {x.Model} {x.RegistrationNumber}"}) TextProperty="Name" ValueProperty="Id"
+                                        Change=@(args => OnChange(args, "DropDown with virtualization")) />
+                    </div>
+                </div>
+                         <div class="row">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Выберите заказы"/>
+                                    </div>
+                                    <div class="col-md-8">
+                   <RadzenButton Text=@($"Добавить заказы в поездку") Style="background-color: #34094a;" ButtonStyle="ButtonStyle.Secondary" Click=@OpenOrder />
+                                    </div>
+                                </div>
+                            
+            </RadzenFieldset>
+            
+        </div>
+        <div class="col-md-6"></div>
+    </div>
+</RadzenTemplateForm>
+
+@if (_applications.Any())
+{
+    
+    <RadzenDataGrid @ref="applicationsGrid" AllowFiltering="true" AllowPaging="true" PageSize="25" AllowSorting="true"  
+                    Data="@_applications" TItem="Application">
+        <Columns>
+            <RadzenDataGridColumn TItem="Application" Property="Id" Title="Id"  />
+            <RadzenDataGridColumn TItem="Application" Property="OrderNumber" Title="Номер заказа" />
+            @* <RadzenDataGridColumn TItem="Application" Property="Employee.LastName" Title="Employee" Width="200px" > *@
+            @*     <Template Context="application"> *@
+            @*         <RadzenImage Path="@application.Employee?.Photo" style="width: 32px; height: 32px; bapplication-radius: 16px; margin-right: 6px;" /> *@
+            @*         @application.Employee?.FirstName @application.Employee?.LastName *@
+            @*     </Template> *@
+            @* </RadzenDataGridColumn> *@
+            <RadzenDataGridColumn TItem="Application" Property="Status" Title="Статус заказа">
+                <Template Context="application">
+                    @application.Status.GetEnumDescription()
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Application" Property="PickUpDate" Title="Дата отправки" FormatString="{0:d}"  />
+            <RadzenDataGridColumn TItem="Application" Property="DeliveryDate" Title="Дата получения" FormatString="{0:d}"/>
+            <RadzenDataGridColumn TItem="Application" Property="SourcePoint" Title="Место отправления" />
+            <RadzenDataGridColumn TItem="Application" Property="DestinationPoint" Title="Место получения" />
+            <RadzenDataGridColumn TItem="Application" Title="Количество животных">
+                <Template Context="application">
+                    @application.OrderItems.Count
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Application" Context="application" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+                            <Template Context="application">
+                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(application))"  @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            </Template>
+                            <EditTemplate Context="application">
+                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(application))">
+                                </RadzenButton>
+                            </EditTemplate>
+                        </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+    
+    
+    
+    <hr/>
+    <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="save" style="margin-bottom: 10px; width: 100%; background-color: #34094a;" Text="Создать поездку" Click="@SaveRide" />
+}
+
+
+
+@code {
+    
+    RadzenDataGrid<Application> applicationsGrid;
+    
+    
+    string value = string.Empty;
+    
+    Ride _ride = new Ride()
+    {
+        Id = Guid.NewGuid(),
+        CreatedAt = DateTime.Now,
+    };
+
+    List<Application> _applications;
+    List<User> users;
+    List<Car> cars;
+
+    void Submit(Ride arg)
+    {
+   
+    }
+    
+    protected override void OnInitialized()
+    {
+        
+        base.OnInitialized();
+        _applications = new List<Application>();
+
+    users = dbContext.Users.ToList();
+        cars = dbContext.Cars.ToList();
+    }
+    
+    void OnChange(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+
+    }
+    
+    public async Task OpenOrder()
+    {
+        var res = await DialogService.OpenAsync<DialogCardPage>($"Добавить заказ в поездку",
+            new Dictionary<string, object>() { {"SelectedApplications",_applications} },
+            new DialogOptions() { Width = "700px", Height = "570px", Resizable = true, Draggable = true });
+
+        var result = res as List<Application>;
+        _applications = res ?? new List<Application>();
+    }
+    
+    async Task SaveRide()
+    {
+        foreach (var application in _applications)
+        {
+            application.Status = ApplicationStatus.InProgress;
+        }
+        
+        _ride.AddApplications(_applications);
+        dbContext.Rides.Add(_ride);
+        await dbContext.SaveChangesAsync();
+
+    // TODO: HANDLE
+    }
+    
+    async Task DeleteRow(Application application)
+    {
+       
+        if (_applications.Contains(application))
+        {
+            dbContext.Remove<Application>(application);
+
+    // For demo purposes only
+            _applications.Remove(application);
+
+    // For production
+    //dbContext.SaveChanges();
+
+            await applicationsGrid.Reload();
+        }
+        else
+        {
+            applicationsGrid.CancelEditRow(application);
+        }
+    }
+}

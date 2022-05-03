@@ -1,0 +1,237 @@
+﻿@page "/orders"
+
+@using PetTransport.Domain.Entities
+@using PetTransport.Infrastructure.Data
+@using Microsoft.EntityFrameworkCore
+@using Task = System.Threading.Tasks.Task
+@using System.Linq
+@using PetTransport.Web.Extensions
+@using PetTransport.Web.Models
+@inject LinkGenerator LinkGenerator
+
+@inject ApplicationDbContext dbContext
+
+<style>
+    form .row {
+        margin-bottom: 16px;
+    }
+</style>
+
+<h1>Панель управления заказами</h1>
+
+<RadzenDataGrid @ref="grid" AllowFiltering="true" AllowPaging="true" PageSize="25" AllowSorting="true" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single"
+                Data="@applications" TItem="Application" RowExpand="RowExpand" @bind-Value="SelectedApplications">
+    <Template Context="application">
+        <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@application.OrderItems" TItem="ApplicationItem">
+            <Columns>
+                <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Id" />
+                <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType" Title="Тип животного" />
+                <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalName" Title="Название животного" />
+                <RadzenDataGridColumn TItem="ApplicationItem" Property="ChipNumber" Title="Номер чипа" />
+            </Columns>
+        </RadzenDataGrid>
+    </Template>
+    <Columns>
+        <RadzenDataGridColumn TItem="Application" Property="Id" Title="Id"  />
+        <RadzenDataGridColumn TItem="Application" Property="OrderNumber" Title="Номер заказа" />
+        @* <RadzenDataGridColumn TItem="Application" Property="Employee.LastName" Title="Employee" Width="200px" > *@
+        @*     <Template Context="application"> *@
+        @*         <RadzenImage Path="@application.Employee?.Photo" style="width: 32px; height: 32px; bapplication-radius: 16px; margin-right: 6px;" /> *@
+        @*         @application.Employee?.FirstName @application.Employee?.LastName *@
+        @*     </Template> *@
+        @* </RadzenDataGridColumn> *@
+        <RadzenDataGridColumn TItem="Application" Property="Status" Title="Статус заказа">
+             <Template Context="application">
+                            @application.Status.GetEnumDescription()
+                        </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Application" Property="PickUpDate" Title="Дата отправки" FormatString="{0:d}"  />
+        <RadzenDataGridColumn TItem="Application" Property="DeliveryDate" Title="Дата получения" FormatString="{0:d}"/>
+        <RadzenDataGridColumn TItem="Application" Property="SourcePoint" Title="Место отправления" />
+        <RadzenDataGridColumn TItem="Application" Property="DestinationPoint" Title="Место получения" />
+        <RadzenDataGridColumn TItem="Application" Title="Количество животных">
+            <Template Context="application">
+                @application.OrderItems.Count
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+
+<div class="col-md-12" style="margin-top: 20px;">
+    <RadzenTabs>
+        <Tabs>
+            <RadzenTabsItem Text="Информация о заказе">
+                        
+                <RadzenTemplateForm Data="@SelectedApplications.FirstOrDefault()">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <RadzenFieldset Text="Информация о заказе">
+                                <div class="row">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Номер заказа" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="OrderNumber" @bind-Value="SelectedApplications.FirstOrDefault().OrderNumber" Disabled="true" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Место отправления"/>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="SourcePoint" @bind-Value="SelectedApplications.FirstOrDefault().SourcePoint" Disabled="true" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Место получения"/>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="DestinationPoint" @bind-Value="SelectedApplications.FirstOrDefault().DestinationPoint" Disabled="true" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Дата отправки" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenDatePicker style="width: 100%;" DateFormat="d"  Name="PickUpDate" @bind-Value="SelectedApplications.FirstOrDefault().PickUpDate" Disabled="true"  />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Дата получения"/>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenDatePicker style="width: 100%;" DateFormat="d"  Name="DeliveryDate" @bind-Value="SelectedApplications.FirstOrDefault().DeliveryDate" Disabled="true" />
+                                    </div>
+                                </div>
+                            </RadzenFieldset>
+                        </div>
+                    </div>
+                </RadzenTemplateForm>
+                <RadzenDataGrid @ref="applcationItemsGrid" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@SelectedApplications.FirstOrDefault().OrderItems" TItem="ApplicationItem">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Id"/>
+                        <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType" Title="Тип животного"/>
+                        <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalName" Title="Название животного"/>
+                        <RadzenDataGridColumn TItem="ApplicationItem" Property="ChipNumber" Title="Номер чипа"/>
+                        <RadzenDataGridColumn TItem="ApplicationItem" Property="Price" Title="Стоимость">
+                            <EditTemplate Context="applcationItem">
+                                <RadzenNumeric TValue="decimal" Format="0.0000" @bind-Value=@applcationItem.Price Placeholder="Enter or clear value" Class="mr-1" Name="Price" />
+                                <RadzenRequiredValidator Text="Цена обязательна к заполнению" Component="Price" Popup="true"/>
+                            </EditTemplate>
+                            <FooterTemplate>
+                                Итого: <b>@SelectedApplications.FirstOrDefault().OrderItems.Sum(x => x.Price)</b>
+                            </FooterTemplate>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="ApplicationItem" Context="sampleBlazorModelsSampleApplicationItem" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="200px">
+                            <Template Context="order">
+                                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            </Template>
+                            <EditTemplate Context="order">
+                                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@((args) => SaveRow(order))">
+                                </RadzenButton>
+                                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(order))">
+                                </RadzenButton>
+                            </EditTemplate>
+                            <FooterTemplate>
+                                Всего животных в заказе: <b>@applcationItemsGrid.Count</b>
+                            </FooterTemplate>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+</div>
+<a href="@LinkGenerator.GetPathByAction("SalesInvoice", "Word", new {id = SelectedApplications.FirstOrDefault().Id})">
+<RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Скачать инвойс" href=@{$"/word/SalesInvoice?id={@SelectedApplications.FirstOrDefault().Id}"} />
+</a>
+<RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Ожидает оплаты" Click="@MoveToNotPaid" />
+<RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Оплачен" Click="@MoveToPaid" />
+<RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Завершен" Click="@MoveToCompleted" />
+
+
+@code {
+    IEnumerable<Application> applications;
+    RadzenDataGrid<ApplicationItem> applcationItemsGrid;
+    RadzenDataGrid<Application> grid;
+    IList<Application> SelectedApplications  { get; set; }
+
+    protected override void OnInitialized()
+    {
+        applications = dbContext.Applications.Include(x => x.OrderItems).OrderBy(x=>x.CreatedAt).ToList();
+        SelectedApplications = new List<Application>(){ applications.FirstOrDefault() };
+    }
+
+    void RowRender(RowRenderEventArgs<Application> args)
+    {
+        args.Expandable = true;
+    }
+
+    void RowExpand(Application application)
+    {
+        if (application.OrderItems == null)
+        {
+            // application.OrderItems = dbContext.OrderItems.Include("Product").Where(o => o.ApplicationID == application.ApplicationID).ToList();
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            StateHasChanged();
+        }
+
+        base.OnAfterRender(firstRender);
+    }
+    
+    async Task EditRow(ApplicationItem order)
+    {
+        await applcationItemsGrid.EditRow(order);
+    }
+
+    void OnUpdateRow(ApplicationItem order)
+    {
+    }
+    
+    async Task SaveRow(ApplicationItem order)
+    {
+        await applcationItemsGrid.UpdateRow(order);
+    }
+
+    void CancelEdit(ApplicationItem order)
+    {
+
+        applcationItemsGrid.CancelEditRow(order);
+
+    }
+    
+    async Task MoveToNotPaid()
+    {
+        var application = SelectedApplications.FirstOrDefault();
+        application.Status = ApplicationStatus.NotPaid;
+        dbContext.Update(application);
+        dbContext.SaveChanges();
+    }
+    
+    async Task MoveToPaid()
+    {
+        var application = SelectedApplications.FirstOrDefault();
+        application.Status = ApplicationStatus.Paid;
+        dbContext.Update(application);
+        dbContext.SaveChanges();
+    }
+    
+    async Task MoveToCompleted()
+    {
+        var application = SelectedApplications.FirstOrDefault();
+        application.Status = ApplicationStatus.Completed;
+        dbContext.Update(application);
+        dbContext.SaveChanges();
+    }
+}

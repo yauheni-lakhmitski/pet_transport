@@ -11,13 +11,12 @@ public class ApplicationDbContext : IdentityDbContext
 {
     public DbSet<Trip> Trips { get; set; }
     public DbSet<User> Users { get; set; }
-    public DbSet<InviteCode> InviteCodes { get; set; }
-    public DbSet<Message> Messages { get; set; }
-    public DbSet<TaskList> TaskLists { get; set; }
-    public DbSet<Order> Orders { get; set; }
     public DbSet<Car> Cars { get; set; }
-    public DbSet<Route> Routes { get; set; }
     public DbSet<Transportation> Transportations { get; set; }
+    public DbSet<Application> Customers { get; set; }
+    public DbSet<Application> Applications { get; set; }
+    public DbSet<ApplicationItem> ApplicationItems { get; set; }
+    public DbSet<Ride> Rides { get; set; }
 
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

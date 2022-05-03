@@ -1,0 +1,189 @@
+﻿@page "/rides"
+
+@using Microsoft.EntityFrameworkCore
+@using PetTransport.Domain.Entities
+@using PetTransport.Infrastructure.Data
+@using Microsoft.AspNetCore.Components
+@using Task = System.Threading.Tasks.Task
+
+@inject NavigationManager NavigationManager
+@inject ApplicationDbContext dbContext
+
+<h1>Поездки</h1>
+
+<RadzenButton  Icon="add_circle_outline" style="margin-bottom: 10px; background-color: #34094a;" Text="Создать новую поездку" Click="@CreateNew" />
+<RadzenDataGrid @ref="ridesGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
+                Data="@rides" TItem="Ride" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+    <Columns>
+        <RadzenDataGridColumn TItem="Ride" Property="Id" Title="Id" Width="120px"/>
+        <RadzenDataGridColumn TItem="Ride" Property="User" Title="Водитель">
+            <Template Context="ride">
+                @ride.User.FirstName  @ride.User.LastName
+            </Template>
+            @* <EditTemplate Context="transportation"> *@
+            @*     <RadzenTextBox @bind-Value="transportation.User" Style="width:100%; display: block" Name="Name"/> *@
+            @*     <RadzenRequiredValidator Text="Название обязательно к заполнению" Component="Name" Popup="true"/> *@
+            @* </EditTemplate> *@
+        </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Ride" Property="Car" Title="Автомобиль">
+                    <Template Context="ride">
+                        @ride.Car.Make  @ride.Car.Model @ride.Car.RegistrationNumber
+                    </Template>
+                    @* <EditTemplate Context="transportation"> *@
+                    @*     <RadzenTextBox @bind-Value="transportation.User" Style="width:100%; display: block" Name="Name"/> *@
+                    @*     <RadzenRequiredValidator Text="Название обязательно к заполнению" Component="Name" Popup="true"/> *@
+                    @* </EditTemplate> *@
+                </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Ride" Property="Name" Title="Название поездки">
+            <EditTemplate Context="transportation">
+                <RadzenTextBox @bind-Value="transportation.Name" Style="width:100%; display: block" Name="Name"/>
+                <RadzenRequiredValidator Text="Название обязательно к заполнению" Component="Name" Popup="true"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Ride" Property="From" Title="Место отправления">
+            <EditTemplate Context="transportation">
+                <RadzenTextBox @bind-Value="transportation.From" Style="width:100%; display: block" Name="From"/>
+                <RadzenRequiredValidator Text="Место отправления обязательно к заполнению" Component="From" Popup="true"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="Ride" Property="To" Title="Место отправления">
+                            <EditTemplate Context="transportation">
+                                <RadzenTextBox @bind-Value="transportation.To" Style="width:100%; display: block" Name="To"/>
+                                <RadzenRequiredValidator Text="Место прибытия обязательно к заполнению" Component="To" Popup="true"/>
+                            </EditTemplate>
+                        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Ride" Property="Description" Title="Описание поездки">
+            <EditTemplate Context="transportation">
+                <RadzenTextBox @bind-Value="transportation.Description" Style="width:100%; display: block" Name="Description"/>
+                <RadzenRequiredValidator Text="Описание обязательно к заполнению" Component="Name" Popup="true"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Ride" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+            <Template Context="order">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@((args) => SaveRow(order))">
+                </RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(order))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Ride" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+            <Template Context="order">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    RadzenDataGrid<Ride> ridesGrid;
+    List<Ride> rides;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+    // For demo purposes only
+        rides = dbContext.Rides.Include(x=>x.User).Include(x=>x.Car).ToList();
+    }
+
+    async Task EditRow(Ride transportation)
+    {
+        await ridesGrid.EditRow(transportation);
+    }
+
+    void OnUpdateRow(Ride transportation)
+    {
+        if (transportation == rideToInsert)
+        {
+            rideToInsert = null;
+        }
+
+        dbContext.Update(transportation);
+
+
+        dbContext.SaveChanges();
+    }
+
+    async Task SaveRow(Ride transportation)
+    {
+        if (transportation == rideToInsert)
+        {
+            rideToInsert = null;
+        }
+
+        await ridesGrid.UpdateRow(transportation);
+    }
+
+    void CancelEdit(Ride transportation)
+    {
+        if (transportation == rideToInsert)
+        {
+            rideToInsert = null;
+        }
+
+        ridesGrid.CancelEditRow(transportation);
+
+    // For production
+        var orderEntry = dbContext.Entry(transportation);
+        if (orderEntry.State == EntityState.Modified)
+        {
+            orderEntry.CurrentValues.SetValues(orderEntry.OriginalValues);
+            orderEntry.State = EntityState.Unchanged;
+        }
+    }
+
+    async Task DeleteRow(Ride transportation)
+    {
+        if (transportation == rideToInsert)
+        {
+            rideToInsert = null;
+        }
+
+        if (rides.Contains(transportation))
+        {
+            dbContext.Remove<Ride>(transportation);
+
+    // For demo purposes only
+            rides.Remove(transportation);
+
+    // For production
+    //dbContext.SaveChanges();
+
+            await ridesGrid.Reload();
+        }
+        else
+        {
+            ridesGrid.CancelEditRow(transportation);
+        }
+    }
+
+    Ride rideToInsert;
+
+    async Task InsertRow()
+    {
+        rideToInsert = new Ride();
+        await ridesGrid.InsertRow(rideToInsert);
+    }
+
+    void OnCreateRow(Ride transportation)
+    {
+        dbContext.Add(transportation);
+
+        dbContext.SaveChanges();
+    }
+
+    private void CreateNew()
+    {
+        NavigationManager.NavigateTo("create-ride");
+    }
+
+}

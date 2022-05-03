@@ -11,14 +11,21 @@ using PetTransport.Web;
 using PetTransport.Web.Attributes;
 using PetTransport.Web.Behaviours;
 using PetTransport.Web.Data;
+using PetTransport.Web.Models;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+builder.Services.AddScoped<TokenProvider>();
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<TooltipService>();
+builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CommandHandlingBehavior<,>));
+
 
 
 // Add services to the container.
