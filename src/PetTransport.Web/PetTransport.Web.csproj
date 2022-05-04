@@ -66,6 +66,21 @@
       <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.woff" />
       <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\ICON-LICENSE" />
       <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\README.md" />
+      <_ContentIncludedByDefault Remove="Views\Order\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Order\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Order\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Order\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Order\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Route\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Route\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Route\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Route\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Route\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Transportation\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Transportation\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Transportation\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Transportation\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Transportation\Index.cshtml" />
     </ItemGroup>
 
     <ItemGroup>

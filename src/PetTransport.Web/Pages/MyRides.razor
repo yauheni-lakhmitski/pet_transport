@@ -15,15 +15,10 @@
 
 <h1>Поездки</h1>
 
-<RadzenDataGrid @ref="ridesGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
+<RadzenDataGrid @ref="ridesGrid" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
                 Data="@rides" TItem="Ride" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
     <Columns>
         <RadzenDataGridColumn TItem="Ride" Property="Id" Title="Id" Width="120px"/>
-        <RadzenDataGridColumn TItem="Ride" Property="User" Title="Водитель">
-            <Template Context="ride">
-                @ride.User.FirstName  @ride.User.LastName
-            </Template>
-        </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Ride" Property="Car" Title="Автомобиль">
                     <Template Context="ride">
                         @ride.Car.Make  @ride.Car.Model @ride.Car.RegistrationNumber
@@ -31,9 +26,9 @@
                 </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Ride" Property="Name" Title="Название поездки">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="Ride" Property="From" Title="Место отправления">
+        <RadzenDataGridColumn TItem="Ride" Property="From" Title="Откуда">
         </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="Ride" Property="To" Title="Место отправления">
+                        <RadzenDataGridColumn TItem="Ride" Property="To" Title="Куда">
                         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Ride" Property="Description" Title="Описание поездки">
         </RadzenDataGridColumn>

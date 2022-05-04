@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PetTransport.Infrastructure.Migrations
 {
-    public partial class Init : Migration
+    public partial class RemoveUnusedTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -69,35 +69,21 @@ namespace PetTransport.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transportations",
+                name: "Customers",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    Address = table.Column<string>(type: "TEXT", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: false),
+                    OrganizationNumber = table.Column<string>(type: "TEXT", nullable: true),
+                    ContactPerson = table.Column<string>(type: "TEXT", nullable: false),
+                    Email = table.Column<string>(type: "TEXT", nullable: false),
+                    CustomerType = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transportations", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Trips",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Trips", x => x.Id);
+                    table.PrimaryKey("PK_Customers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -218,7 +204,9 @@ namespace PetTransport.Infrastructure.Migrations
                     CarId = table.Column<Guid>(type: "TEXT", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    DepartureDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ArrivalDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -238,133 +226,6 @@ namespace PetTransport.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Route",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Source = table.Column<string>(type: "TEXT", nullable: false),
-                    Destination = table.Column<string>(type: "TEXT", nullable: false),
-                    CarId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    DriverId = table.Column<string>(type: "TEXT", nullable: false),
-                    TransportationId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Route", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Route_AspNetUsers_DriverId",
-                        column: x => x.DriverId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Route_Cars_CarId",
-                        column: x => x.CarId,
-                        principalTable: "Cars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Route_Transportations_TransportationId",
-                        column: x => x.TransportationId,
-                        principalTable: "Transportations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "InviteCode",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    TripId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Text = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InviteCode", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_InviteCode_Trips_TripId",
-                        column: x => x.TripId,
-                        principalTable: "Trips",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Message",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    TripId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    Text = table.Column<string>(type: "TEXT", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Message", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Message_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Message_Trips_TripId",
-                        column: x => x.TripId,
-                        principalTable: "Trips",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TaskList",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
-                    TripId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TaskList", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TaskList_Trips_TripId",
-                        column: x => x.TripId,
-                        principalTable: "Trips",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserTrip",
-                columns: table => new
-                {
-                    TripId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserTrip", x => new { x.UserId, x.TripId });
-                    table.ForeignKey(
-                        name: "FK_UserTrip_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserTrip_Trips_TripId",
-                        column: x => x.TripId,
-                        principalTable: "Trips",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Applications",
                 columns: table => new
                 {
@@ -376,38 +237,22 @@ namespace PetTransport.Infrastructure.Migrations
                     SourcePoint = table.Column<string>(type: "TEXT", nullable: false),
                     DestinationPoint = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "TEXT", nullable: true),
                     RideId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Applications", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Applications_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Applications_Rides_RideId",
                         column: x => x.RideId,
                         principalTable: "Rides",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Task",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
-                    TaskListId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    IsCompleted = table.Column<bool>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Task", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Task_TaskList_TaskListId",
-                        column: x => x.TaskListId,
-                        principalTable: "TaskList",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -435,6 +280,11 @@ namespace PetTransport.Infrastructure.Migrations
                 name: "IX_ApplicationItems_ApplicationId",
                 table: "ApplicationItems",
                 column: "ApplicationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Applications_CustomerId",
+                table: "Applications",
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Applications_RideId",
@@ -479,21 +329,6 @@ namespace PetTransport.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_InviteCode_TripId",
-                table: "InviteCode",
-                column: "TripId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Message_TripId",
-                table: "Message",
-                column: "TripId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Message_UserId",
-                table: "Message",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Rides_CarId",
                 table: "Rides",
                 column: "CarId");
@@ -502,36 +337,6 @@ namespace PetTransport.Infrastructure.Migrations
                 name: "IX_Rides_UserId",
                 table: "Rides",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Route_CarId",
-                table: "Route",
-                column: "CarId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Route_DriverId",
-                table: "Route",
-                column: "DriverId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Route_TransportationId",
-                table: "Route",
-                column: "TransportationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Task_TaskListId",
-                table: "Task",
-                column: "TaskListId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TaskList_TripId",
-                table: "TaskList",
-                column: "TripId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserTrip_TripId",
-                table: "UserTrip",
-                column: "TripId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -555,37 +360,16 @@ namespace PetTransport.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "InviteCode");
-
-            migrationBuilder.DropTable(
-                name: "Message");
-
-            migrationBuilder.DropTable(
-                name: "Route");
-
-            migrationBuilder.DropTable(
-                name: "Task");
-
-            migrationBuilder.DropTable(
-                name: "UserTrip");
-
-            migrationBuilder.DropTable(
                 name: "Applications");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Transportations");
-
-            migrationBuilder.DropTable(
-                name: "TaskList");
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Rides");
-
-            migrationBuilder.DropTable(
-                name: "Trips");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

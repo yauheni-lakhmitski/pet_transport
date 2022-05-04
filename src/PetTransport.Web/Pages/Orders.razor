@@ -19,6 +19,14 @@
 
 <h1>Панель управления заказами</h1>
 
+@if (!applications.Any())
+{
+    <h1>Таблица заказов пуста</h1>
+}
+else
+{
+    
+
 <div style="margin-bottom: 20px;" class="row col-md-4">
     <div class="col-md-2 align-items-center d-flex">
         <RadzenLabel Text="Статус"/>
@@ -227,7 +235,8 @@
 <RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Ожидает оплаты" Click="@MoveToNotPaid" />
 <RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Оплачен" Click="@MoveToPaid" />
 <RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Завершен" Click="@MoveToCompleted" />
-
+}
+<div></div>
 
 @code {
     List<CommonApplicationStatusViewModel> list;

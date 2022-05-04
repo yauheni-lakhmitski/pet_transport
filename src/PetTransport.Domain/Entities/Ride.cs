@@ -28,7 +28,11 @@ public class Ride
     public DateTime DepartureDate { get; set; }
     public DateTime ArrivalDate { get; set; }
 
+    public RideStatus RideStatus { get; set; } = RideStatus.InProgress;
+
     public List<Application> Applications { get; set; } = new List<Application>();
+
+    public RideDetail? RideDetail { get; set; }
     
     
     public void AddApplications(List<Application> applications)

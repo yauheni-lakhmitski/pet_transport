@@ -36,7 +36,7 @@ public class ContextSeedData
         if (!_context.Roles.Any())
         {
             await roleStore.CreateAsync(new IdentityRole {Name = "Менеджер", NormalizedName = "МЕНЕДЖЕР"});
-            await roleStore.CreateAsync(new IdentityRole {Name = "Водитель", NormalizedName = "Водитель"});
+            await roleStore.CreateAsync(new IdentityRole {Name = "Водитель", NormalizedName = "ВОДИТЕЛЬ"});
         }
 
         if (!_context.Users.Any(u => u.UserName == user.UserName))
