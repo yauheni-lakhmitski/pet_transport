@@ -11,8 +11,8 @@ using PetTransport.Infrastructure.Data;
 namespace PetTransport.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220501101722_AddRide")]
-    partial class AddRide
+    [Migration("20220503102959_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -400,7 +400,7 @@ namespace PetTransport.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Ride");
+                    b.ToTable("Rides", (string)null);
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.Route", b =>

@@ -1,0 +1,81 @@
+﻿@page "/di"
+
+@using PetTransport.Domain.Entities
+@using PetTransport.Infrastructure.Data
+@using Microsoft.EntityFrameworkCore
+@using Task = System.Threading.Tasks.Task
+@using System.Linq
+@using PetTransport.Web.Extensions
+@using PetTransport.Web.Models
+@inject LinkGenerator LinkGenerator
+
+@inject ApplicationDbContext dbContext
+@inject Radzen.DialogService dialogService
+
+
+<style>
+    form .row {
+        margin-bottom: 16px;
+    }
+</style>
+
+<RadzenTemplateForm Data="@_rideDetail" >
+    <div class="row">
+        <div class="col-md-6">
+            <RadzenFieldset Text="Информация о заказе">
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                        <RadzenLabel Text="Пройдено километров" />
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenNumeric style="width: 100%;" Name="Mileage" @bind-Value="_rideDetail.Mileage" Disabled="true" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                        <RadzenLabel Text="Использовано топлива"/>
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenNumeric style="width: 100%;" Name="FuelUsed" @bind-Value="_rideDetail.FuelUsed"/>
+                    </div>
+                </div>
+            </RadzenFieldset>
+        </div>
+    </div>
+</RadzenTemplateForm>
+
+<div class="row">
+    <div class="col-md-12 text-right">
+        <RadzenButton Click="@((args) => dialogService.Close(_rideDetail))" ButtonStyle="ButtonStyle.Secondary" Text="Cancel" Style="width: 120px" Class="mr-1" />
+        <RadzenButton Click="@((args) => dialogService.Close(_rideDetail))" Text="OK" Style="width: 120px" />
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public Ride Ride { get; set; }
+    
+    RideDetail _rideDetail;
+
+
+    protected override void OnInitialized()
+    {
+        _rideDetail = new RideDetail();
+    }
+
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            StateHasChanged();
+        }
+
+        base.OnAfterRender(firstRender);
+    }
+    //
+    // dbContext.Rides.Add(_ride);
+    // await dbContext.SaveChangesAsync();
+}

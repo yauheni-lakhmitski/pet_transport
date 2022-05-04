@@ -12,8 +12,8 @@ public class Application
     public string SourcePoint { get; set; }
     public string DestinationPoint { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public Customer Customer { get; set; }
-    public Guid CustomerId { get; set; }
+    public Customer? Customer { get; set; }
+    public Guid? CustomerId { get; set; }
     public List<ApplicationItem> OrderItems { get; set; } = new List<ApplicationItem>();
 
 

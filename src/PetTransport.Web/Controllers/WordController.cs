@@ -40,7 +40,7 @@ namespace EJ2CoreSampleBrowser.Controllers.Word
             // Create a new document
             WordDocument doc = new WordDocument();
             // Load the template.
-            string dataPathSales = basePath + @"/Word/SalesInvoiceDemo.doc";
+            string dataPathSales = basePath + @"/Word/SalesInvoiceDemo2.doc";
             FileStream fileStream = new FileStream(dataPathSales, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             doc.Open(fileStream, FormatType.Automatic);
             //Create MailMergeDataTable
@@ -90,26 +90,26 @@ namespace EJ2CoreSampleBrowser.Controllers.Word
 
         private MailMergeDataTable GetTestOrder(Guid TestOrderId)
         {
-            var application = _context.Applications.Include(x=>x.OrderItems).FirstOrDefault(x => x.Id == TestOrderId);
+            var application = _context.Applications
+                .Include(x=>x.Customer)
+                .Include(x=>x.OrderItems).FirstOrDefault(x => x.Id == TestOrderId);
             
             
             
             List<TestOrder> orders = new List<TestOrder>();
             
                 TestOrder testOrder = new TestOrder();
-            testOrder.ShipName = "shipName";
-            testOrder.ShipAddress = application.DestinationPoint;
-            testOrder.ShipPostalCode = "shipName";
-            testOrder.ShipCountry = "shipName";
+            testOrder.ShipName = application.Customer.Name;
+            testOrder.ShipAddress = application.Customer.Address;
             testOrder.PostalCode = "shipName";
-            testOrder.CustomerID = "shipName";
-            testOrder.Customers_CompanyName = "shipName";
+            testOrder.CustomerID = application.Customer.Address;
+            testOrder.Customers_CompanyName = application.Customer.Name;
             testOrder.Salesperson = "Manager";
             testOrder.Address = "shipName";
             testOrder.City = application.SourcePoint;
             testOrder.OrderID = application.Id.ToString();
             testOrder.OrderDate = application.CreatedAt.ToString();
-            testOrder.RequiredDate = "shipName";
+            testOrder.RequiredDate = application.DeliveryDate.ToString();
             testOrder.ShippedDate = application.DeliveryDate.ToString();
             testOrder.Shippers_CompanyName = "shipName";
             
@@ -132,9 +132,9 @@ namespace EJ2CoreSampleBrowser.Controllers.Word
                 ProductID = x.Id.ToString(),
                 ProductName = x.AnimalName,
                 UnitPrice = x.Price.ToString(),
-                Quantity = "Quantity",
-                Discount = "Discount",
-                ExtendedPrice = "ExtendedPrice"
+                Quantity = x.AnimalName,
+                Discount = x.ChipNumber,
+                ExtendedPrice = "10"
             }).ToList();
             
           

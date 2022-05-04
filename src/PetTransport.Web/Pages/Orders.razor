@@ -19,10 +19,24 @@
 
 <h1>Панель управления заказами</h1>
 
-<RadzenDataGrid @ref="grid" AllowFiltering="true" AllowPaging="true" PageSize="25" AllowSorting="true" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single"
-                Data="@applications" TItem="Application" RowExpand="RowExpand" @bind-Value="SelectedApplications">
+<div style="margin-bottom: 20px;" class="row col-md-4">
+    <div class="col-md-2 align-items-center d-flex">
+        <RadzenLabel Text="Статус"/>
+    </div>
+    <div class="col-md-6">
+        <RadzenDropDown TValue="ApplicationStatus" Class="w-100" TextProperty="Name" ValueProperty="Id"
+                        Data=list
+                        Change=@(args => OnChange(args, "DropDown")) />
+    </div>
+    <div class="col-md-4">
+        <RadzenButton Click="ResetFilters" Text="Сбросить фильтр"></RadzenButton>
+    </div>
+</div>
+
+<RadzenDataGrid  FilterMode="FilterMode.Advanced"  @ref="grid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single"
+             AllowColumnResize="true"   Data="@applications" TItem="Application" RowExpand="RowExpand" @bind-Value="SelectedApplications">
     <Template Context="application">
-        <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@application.OrderItems" TItem="ApplicationItem">
+        <RadzenDataGrid AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or" AllowPaging="true" AllowSorting="true" Data="@application.OrderItems" TItem="ApplicationItem">
             <Columns>
                 <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Id" />
                 <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType" Title="Тип животного" />
@@ -32,21 +46,20 @@
         </RadzenDataGrid>
     </Template>
     <Columns>
-        <RadzenDataGridColumn TItem="Application" Property="Id" Title="Id"  />
-        <RadzenDataGridColumn TItem="Application" Property="OrderNumber" Title="Номер заказа" />
+        <RadzenDataGridColumn TItem="Application" Property="OrderNumber" Title="Номер заказа" Width="250px"/>
         @* <RadzenDataGridColumn TItem="Application" Property="Employee.LastName" Title="Employee" Width="200px" > *@
         @*     <Template Context="application"> *@
         @*         <RadzenImage Path="@application.Employee?.Photo" style="width: 32px; height: 32px; bapplication-radius: 16px; margin-right: 6px;" /> *@
         @*         @application.Employee?.FirstName @application.Employee?.LastName *@
         @*     </Template> *@
         @* </RadzenDataGridColumn> *@
-        <RadzenDataGridColumn TItem="Application" Property="Status" Title="Статус заказа">
+        <RadzenDataGridColumn TItem="Application" Property="Status" Title="Статус заказа" Filterable="false" Width="150px">
              <Template Context="application">
                             @application.Status.GetEnumDescription()
                         </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="Application" Property="PickUpDate" Title="Дата отправки" FormatString="{0:d}"  />
-        <RadzenDataGridColumn TItem="Application" Property="DeliveryDate" Title="Дата получения" FormatString="{0:d}"/>
+        <RadzenDataGridColumn TItem="Application" Property="PickUpDate" Title="Дата отправки" FormatString="{0:d}" Width="150px" />
+        <RadzenDataGridColumn TItem="Application" Property="DeliveryDate" Title="Дата получения" FormatString="{0:d}" Width="150px"/>
         <RadzenDataGridColumn TItem="Application" Property="SourcePoint" Title="Место отправления" />
         <RadzenDataGridColumn TItem="Application" Property="DestinationPoint" Title="Место получения" />
         <RadzenDataGridColumn TItem="Application" Title="Количество животных">
@@ -58,95 +71,156 @@
 </RadzenDataGrid>
 
 
-<div class="col-md-12" style="margin-top: 20px;">
-    <RadzenTabs>
-        <Tabs>
-            <RadzenTabsItem Text="Информация о заказе">
-                        
-                <RadzenTemplateForm Data="@SelectedApplications.FirstOrDefault()">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <RadzenFieldset Text="Информация о заказе">
+
+ <RadzenPanel AllowCollapse="true" Style="width: 100%; margin: 40px auto;">
+        <HeaderTemplate>
+            <h4 class="m-0 d-flex align-items-center">
+                <RadzenIcon Icon="account_box" Class="mr-1" /><b>Информация о заказе</b>
+            </h4>
+        </HeaderTemplate>
+        <ChildContent>
+             <RadzenTemplateForm Data="@SelectedApplications.FirstOrDefault()">
                                 <div class="row">
-                                    <div class="col-md-4 align-items-center d-flex">
-                                        <RadzenLabel Text="Номер заказа" />
+                                    <div class="col-md-6">
+                                        <RadzenFieldset Text="Информация о заказе">
+                                            <div class="row">
+                                                <div class="col-md-4 align-items-center d-flex">
+                                                    <RadzenLabel Text="Номер заказа" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <RadzenTextBox style="width: 100%;" Name="OrderNumber" @bind-Value="SelectedApplications.FirstOrDefault().OrderNumber" Disabled="true" />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 align-items-center d-flex">
+                                                    <RadzenLabel Text="Место отправления"/>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <RadzenTextBox style="width: 100%;" Name="SourcePoint" @bind-Value="SelectedApplications.FirstOrDefault().SourcePoint" Disabled="true" />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 align-items-center d-flex">
+                                                    <RadzenLabel Text="Место получения"/>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <RadzenTextBox style="width: 100%;" Name="DestinationPoint" @bind-Value="SelectedApplications.FirstOrDefault().DestinationPoint" Disabled="true" />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 align-items-center d-flex">
+                                                    <RadzenLabel Text="Дата отправки" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <RadzenDatePicker style="width: 100%;" DateFormat="d"  Name="PickUpDate" @bind-Value="SelectedApplications.FirstOrDefault().PickUpDate" Disabled="true"  />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 align-items-center d-flex">
+                                                    <RadzenLabel Text="Дата получения"/>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <RadzenDatePicker style="width: 100%;" DateFormat="d"  Name="DeliveryDate" @bind-Value="SelectedApplications.FirstOrDefault().DeliveryDate" Disabled="true" />
+                                                </div>
+                                            </div>
+                                        </RadzenFieldset>
                                     </div>
-                                    <div class="col-md-8">
-                                        <RadzenTextBox style="width: 100%;" Name="OrderNumber" @bind-Value="SelectedApplications.FirstOrDefault().OrderNumber" Disabled="true" />
-                                    </div>
+                                              <div class="col-md-6">
+                                                        <RadzenFieldset Text="Информация о заказчике">
+                                                            <div class="row">
+                                                                <div class="col-md-4 align-items-center d-flex">
+                                                                    <RadzenLabel Text="Название организации" />
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <RadzenTextBox style="width: 100%;" Name="Name" Value="@SelectedApplications.FirstOrDefault().Customer?.Name" Disabled="true" />
+                                                                </div>
+                                                            </div>
+                                                                        <div class="row">
+                                                                                        <div class="col-md-4 align-items-center d-flex">
+                                                                                            <RadzenLabel Text="Тип заказчика" />
+                                                                                        </div>
+                                                                                        <div class="col-md-8">
+                                                                                            <RadzenTextBox style="width: 100%;" Name="Type" Value="@SelectedApplications.FirstOrDefault().Customer?.CustomerType.GetEnumDescription()" Disabled="true" />
+                                                                                        </div>
+                                                                                    </div>
+                                                            <div class="row">
+                                                                <div class="col-md-4 align-items-center d-flex">
+                                                                    <RadzenLabel Text="Адрес"/>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <RadzenTextBox style="width: 100%;" Name="Address" Value="@SelectedApplications.FirstOrDefault().Customer?.Address" Disabled="true"/>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-4 align-items-center d-flex">
+                                                                    <RadzenLabel Text="Email"/>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <RadzenTextBox style="width: 100%;" Name="Email" Value="@SelectedApplications.FirstOrDefault().Customer?.Email" Disabled="true"/>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-4 align-items-center d-flex">
+                                                                    <RadzenLabel Text="Номер телефона"/>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <RadzenTextBox style="width: 100%;" Name="PhoneNumber" Value="@SelectedApplications.FirstOrDefault().Customer?.PhoneNumber" Disabled="true" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-4 align-items-center d-flex">
+                                                                    <RadzenLabel Text="Контактное лицо"/>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <RadzenTextBox style="width: 100%;" Name="ContactPerson" Value="@SelectedApplications.FirstOrDefault().Customer?.ContactPerson" Disabled="true" />
+                                                                </div>
+                                                            </div>
+                                                        </RadzenFieldset>
+                                                    </div>
+
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-4 align-items-center d-flex">
-                                        <RadzenLabel Text="Место отправления"/>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <RadzenTextBox style="width: 100%;" Name="SourcePoint" @bind-Value="SelectedApplications.FirstOrDefault().SourcePoint" Disabled="true" />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4 align-items-center d-flex">
-                                        <RadzenLabel Text="Место получения"/>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <RadzenTextBox style="width: 100%;" Name="DestinationPoint" @bind-Value="SelectedApplications.FirstOrDefault().DestinationPoint" Disabled="true" />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4 align-items-center d-flex">
-                                        <RadzenLabel Text="Дата отправки" />
-                                    </div>
-                                    <div class="col-md-8">
-                                        <RadzenDatePicker style="width: 100%;" DateFormat="d"  Name="PickUpDate" @bind-Value="SelectedApplications.FirstOrDefault().PickUpDate" Disabled="true"  />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4 align-items-center d-flex">
-                                        <RadzenLabel Text="Дата получения"/>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <RadzenDatePicker style="width: 100%;" DateFormat="d"  Name="DeliveryDate" @bind-Value="SelectedApplications.FirstOrDefault().DeliveryDate" Disabled="true" />
-                                    </div>
-                                </div>
-                            </RadzenFieldset>
-                        </div>
-                    </div>
-                </RadzenTemplateForm>
-                <RadzenDataGrid @ref="applcationItemsGrid" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@SelectedApplications.FirstOrDefault().OrderItems" TItem="ApplicationItem">
-                    <Columns>
-                        <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Id"/>
-                        <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType" Title="Тип животного"/>
-                        <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalName" Title="Название животного"/>
-                        <RadzenDataGridColumn TItem="ApplicationItem" Property="ChipNumber" Title="Номер чипа"/>
-                        <RadzenDataGridColumn TItem="ApplicationItem" Property="Price" Title="Стоимость">
-                            <EditTemplate Context="applcationItem">
-                                <RadzenNumeric TValue="decimal" Format="0.0000" @bind-Value=@applcationItem.Price Placeholder="Enter or clear value" Class="mr-1" Name="Price" />
-                                <RadzenRequiredValidator Text="Цена обязательна к заполнению" Component="Price" Popup="true"/>
-                            </EditTemplate>
-                            <FooterTemplate>
-                                Итого: <b>@SelectedApplications.FirstOrDefault().OrderItems.Sum(x => x.Price)</b>
-                            </FooterTemplate>
-                        </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="ApplicationItem" Context="sampleBlazorModelsSampleApplicationItem" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="200px">
-                            <Template Context="order">
-                                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
-                                </RadzenButton>
-                            </Template>
-                            <EditTemplate Context="order">
-                                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@((args) => SaveRow(order))">
-                                </RadzenButton>
-                                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(order))">
-                                </RadzenButton>
-                            </EditTemplate>
-                            <FooterTemplate>
-                                Всего животных в заказе: <b>@applcationItemsGrid.Count</b>
-                            </FooterTemplate>
-                        </RadzenDataGridColumn>
-                    </Columns>
-                </RadzenDataGrid>
-            </RadzenTabsItem>
-        </Tabs>
-    </RadzenTabs>
-</div>
+                            </RadzenTemplateForm>
+                            <RadzenDataGrid @ref="applcationItemsGrid" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@SelectedApplications.FirstOrDefault().OrderItems" TItem="ApplicationItem">
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Id"/>
+                                    <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType" Title="Тип животного"/>
+                                    <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalName" Title="Название животного"/>
+                                    <RadzenDataGridColumn TItem="ApplicationItem" Property="ChipNumber" Title="Номер чипа"/>
+                                    <RadzenDataGridColumn TItem="ApplicationItem" Property="Price" Title="Стоимость">
+                                        <EditTemplate Context="applcationItem">
+                                            <RadzenNumeric TValue="decimal" Format="0.0000" @bind-Value=@applcationItem.Price Placeholder="Enter or clear value" Class="mr-1" Name="Price" />
+                                            <RadzenRequiredValidator Text="Цена обязательна к заполнению" Component="Price" Popup="true"/>
+                                        </EditTemplate>
+                                        <FooterTemplate>
+                                            Итого: <b>@SelectedApplications.FirstOrDefault().OrderItems.Sum(x => x.Price)</b>
+                                        </FooterTemplate>
+                                    </RadzenDataGridColumn>
+                                    <RadzenDataGridColumn TItem="ApplicationItem" Context="sampleBlazorModelsSampleApplicationItem" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="200px">
+                                        <Template Context="order">
+                                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
+                                            </RadzenButton>
+                                        </Template>
+                                        <EditTemplate Context="order">
+                                            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@((args) => SaveRow(order))">
+                                            </RadzenButton>
+                                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(order))">
+                                            </RadzenButton>
+                                        </EditTemplate>
+                                        <FooterTemplate>
+                                            Всего животных в заказе: <b>@applcationItemsGrid.Count</b>
+                                        </FooterTemplate>
+                                    </RadzenDataGridColumn>
+                                </Columns>
+                            </RadzenDataGrid>
+        </ChildContent>
+        @* <SummaryTemplate> *@
+        @*     <RadzenCard class="mt-3"> *@
+        @*         <b>@orders.Count() Orders</b> *@
+        @*     </RadzenCard> *@
+        @* </SummaryTemplate> *@
+    </RadzenPanel>
+
+
 <a href="@LinkGenerator.GetPathByAction("SalesInvoice", "Word", new {id = SelectedApplications.FirstOrDefault().Id})">
 <RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Скачать инвойс" href=@{$"/word/SalesInvoice?id={@SelectedApplications.FirstOrDefault().Id}"} />
 </a>
@@ -156,6 +230,7 @@
 
 
 @code {
+    List<CommonApplicationStatusViewModel> list;
     IEnumerable<Application> applications;
     RadzenDataGrid<ApplicationItem> applcationItemsGrid;
     RadzenDataGrid<Application> grid;
@@ -163,8 +238,9 @@
 
     protected override void OnInitialized()
     {
-        applications = dbContext.Applications.Include(x => x.OrderItems).OrderBy(x=>x.CreatedAt).ToList();
+        applications = dbContext.Applications.Include(x => x.OrderItems).Include(x=>x.Customer).OrderBy(x=>x.CreatedAt).ToList();
         SelectedApplications = new List<Application>(){ applications.FirstOrDefault() };
+        list = ((ApplicationStatus[])Enum.GetValues(typeof(ApplicationStatus))).Select(c => new CommonApplicationStatusViewModel(c, c.GetEnumDescription())).ToList();
     }
 
     void RowRender(RowRenderEventArgs<Application> args)
@@ -234,4 +310,20 @@
         dbContext.Update(application);
         dbContext.SaveChanges();
     }
+
+    private void OnChange(object args, string dropdown)
+    {
+        if(args == null)
+        {
+            applications = dbContext.Applications.ToList();
+        }
+        
+        applications = dbContext.Applications.Include(x => x.OrderItems).Include(x=>x.Customer).Where(x=>x.Status == (ApplicationStatus)args);
+    }
+
+    private void ResetFilters()
+    {
+         applications = dbContext.Applications.Include(x => x.OrderItems).Include(x=>x.Customer).ToList();
+    }
+
 }

@@ -11,8 +11,8 @@ using PetTransport.Infrastructure.Data;
 namespace PetTransport.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220503095603_AddCustomerTable")]
-    partial class AddCustomerTable
+    [Migration("20220503104537_AddCustomer")]
+    partial class AddCustomer
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -226,7 +226,7 @@ namespace PetTransport.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("CustomerId")
+                    b.Property<Guid?>("CustomerId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DeliveryDate")
@@ -259,7 +259,7 @@ namespace PetTransport.Infrastructure.Migrations
 
                     b.HasIndex("RideId");
 
-                    b.ToTable("Application");
+                    b.ToTable("Applications");
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.ApplicationItem", b =>
@@ -349,7 +349,7 @@ namespace PetTransport.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.InviteCode", b =>
@@ -695,10 +695,8 @@ namespace PetTransport.Infrastructure.Migrations
             modelBuilder.Entity("PetTransport.Domain.Entities.Application", b =>
                 {
                     b.HasOne("PetTransport.Domain.Entities.Customer", "Customer")
-                        .WithMany("Applications")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
 
                     b.HasOne("PetTransport.Domain.Entities.Ride", null)
                         .WithMany("Applications")
@@ -839,11 +837,6 @@ namespace PetTransport.Infrastructure.Migrations
             modelBuilder.Entity("PetTransport.Domain.Entities.Car", b =>
                 {
                     b.Navigation("Rides");
-                });
-
-            modelBuilder.Entity("PetTransport.Domain.Entities.Customer", b =>
-                {
-                    b.Navigation("Applications");
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.Ride", b =>

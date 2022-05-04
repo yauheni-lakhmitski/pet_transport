@@ -11,6 +11,7 @@ using PetTransport.Web;
 using PetTransport.Web.Attributes;
 using PetTransport.Web.Behaviours;
 using PetTransport.Web.Data;
+using PetTransport.Web.Extensions;
 using PetTransport.Web.Models;
 using Radzen;
 
@@ -22,6 +23,7 @@ builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
+builder.Services.AddTransient<ContextSeedData>();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CommandHandlingBehavior<,>));
@@ -47,7 +49,7 @@ builder.Services.AddDefaultIdentity<User>(options =>
     options.Password.RequireLowercase = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireDigit = false;
-    options.SignIn.RequireConfirmedAccount = true;
+    options.SignIn.RequireConfirmedAccount = false;
 })
     .AddRoles<IdentityRole>()
     .AddDefaultTokenProviders()
@@ -71,6 +73,15 @@ else
     app.UseHsts();
 }
 
+using (var serviceScope = app.Services.CreateScope())
+{
+    var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+    var service = serviceScope.ServiceProvider.GetService<ContextSeedData>();
+    service.SeedAdminUser();
+  
+
+// Seed the database.
+}
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

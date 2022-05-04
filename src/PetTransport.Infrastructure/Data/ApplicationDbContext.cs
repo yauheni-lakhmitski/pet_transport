@@ -13,7 +13,7 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Car> Cars { get; set; }
     public DbSet<Transportation> Transportations { get; set; }
-    public DbSet<Application> Customers { get; set; }
+    public DbSet<Customer> Customers { get; set; }
     public DbSet<Application> Applications { get; set; }
     public DbSet<ApplicationItem> ApplicationItems { get; set; }
     public DbSet<Ride> Rides { get; set; }
@@ -45,9 +45,7 @@ public class ApplicationDbContext : IdentityDbContext
 
         
         base.OnModelCreating(builder);
-        
 
-        
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

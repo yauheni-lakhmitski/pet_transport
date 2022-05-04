@@ -9,11 +9,9 @@ public class Customer
     public string Address { get; set; }
     public string PhoneNumber { get; set; }
     public string? OrganizationNumber { get; set; }
-    public string ContantPerson { get; set; }
+    public string ContactPerson { get; set; }
     public string Email { get; set; }
     public CustomerType CustomerType { get; set; }
-
-    public List<Application> Applications { get; set; }
 }
 
 public enum CustomerType

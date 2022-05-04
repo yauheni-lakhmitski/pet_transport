@@ -1,97 +1,97 @@
-﻿@* @page "/dialogcard/{OrderID}" *@
-@* *@
-@* @using PetTransport.Domain.Entities *@
-@* @using PetTransport.Infrastructure.Data *@
-@* @using Microsoft.EntityFrameworkCore *@
-@* @using Task = System.Threading.Tasks.Task *@
-@* @using System.Linq *@
-@* @using PetTransport.Web.Extensions *@
-@* @using PetTransport.Web.Models *@
-@* @inject LinkGenerator LinkGenerator *@
-@* *@
-@* @inject ApplicationDbContext dbContext *@
-@* @inject Radzen.DialogService dialogService *@
-@* *@
-@* *@
-@* <style> *@
-@*     form .row { *@
-@*         margin-bottom: 16px; *@
-@*     } *@
-@* </style> *@
-@* *@
-@* <RadzenDataGrid @ref="grid" AllowRowSelectOnRowClick="@allowRowSelectOnRowClick" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="4" *@
-@*                 AllowSorting="true" Data="@customers" TItem="Customer" ColumnWidth="200px" *@
-@*                 SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@SelectedCustomers> *@
-@*     <Columns> *@
-@*          <RadzenDataGridColumn TItem="Customer" Width="40px" Sortable="false" Filterable="false"> *@
-@*                         <HeaderTemplate> *@
-@*                             <RadzenCheckBox TriState="false" TValue="bool" Value="@(customers.Any(i => SelectedCustomers != null && SelectedCustomers.Contains(i)))" *@
-@*                                             Change="@(args => SelectedCustomers = args ? customers.ToList() : null)" /> *@
-@*                         </HeaderTemplate> *@
-@*                         <Template Context="data"> *@
-@*                             <RadzenCheckBox TriState="false" Value="@(SelectedCustomers != null && SelectedCustomers.Contains(data))"  *@
-@*                                 TValue="bool" Change=@(args => { if(!allowRowSelectOnRowClick) { grid.SelectRow(data); }}) /> *@
-@*                         </Template> *@
-@*                     </RadzenDataGridColumn> *@
-@*         <RadzenDataGridColumn TItem="Customer" Property="Id" Title="Id"/> *@
-@*         <RadzenDataGridColumn TItem="Customer" Property="OrderNumber" Title="Номер заказа"/> *@
-@*         $1$ <RadzenDataGridColumn TItem="Customer" Property="Employee.LastName" Title="Employee" Width="200px" > #1# *@
-@*         $1$     <Template Context="customer"> #1# *@
-@*         $1$         <RadzenImage Path="@customer.Employee?.Photo" style="width: 32px; height: 32px; bcustomer-radius: 16px; margin-right: 6px;" /> #1# *@
-@*         $1$         @customer.Employee?.FirstName @customer.Employee?.LastName #1# *@
-@*         $1$     </Template> #1# *@
-@*         $1$ </RadzenDataGridColumn> #1# *@
-@*         <RadzenDataGridColumn TItem="Customer" Property="Status" Title="Статус заказа"> *@
-@*             <Template Context="customer"> *@
-@*                 @customer.Status.GetEnumDescription() *@
-@*             </Template> *@
-@*         </RadzenDataGridColumn> *@
-@*         <RadzenDataGridColumn TItem="Customer" Property="PickUpDate" Title="Дата отправки" FormatString="{0:d}"/> *@
-@*         <RadzenDataGridColumn TItem="Customer" Property="DeliveryDate" Title="Дата получения" FormatString="{0:d}"/> *@
-@*         <RadzenDataGridColumn TItem="Customer" Property="SourcePoint" Title="Место отправления"/> *@
-@*         <RadzenDataGridColumn TItem="Customer" Property="DestinationPoint" Title="Место получения"/> *@
-@*         <RadzenDataGridColumn TItem="Customer" Title="Количество животных"> *@
-@*             <Template Context="customer"> *@
-@*                 @customer.OrderItems.Count *@
-@*             </Template> *@
-@*         </RadzenDataGridColumn> *@
-@*     </Columns> *@
-@* </RadzenDataGrid> *@
-@* *@
-@* <div class="row"> *@
-@*     <div class="col-md-12 text-right"> *@
-@*         <RadzenButton Click="@((args) => dialogService.Close(SelectedCustomers))" ButtonStyle="ButtonStyle.Secondary" Text="Cancel" Style="width: 120px" Class="mr-1" /> *@
-@*         <RadzenButton Click="@((args) => dialogService.Close(SelectedCustomers))" Text="OK" Style="width: 120px" /> *@
-@*     </div> *@
-@* </div> *@
-@* *@
-@* @code { *@
-@*     bool allowRowSelectOnRowClick = false; *@
-@* *@
-@*     [Parameter] *@
-@*     public IList<Customer> SelectedCustomers  { get; set; } *@
-@*      *@
-@*      *@
-@*     IEnumerable<Customer> customers; *@
-@*     RadzenDataGrid<Customer> grid; *@
-@* *@
-@* *@
-@*     protected override void OnInitialized() *@
-@*     { *@
-@*         customers = dbContext.Customers *@
-@*             .Where(x=>x.Status== CustomerStatus.Paid) *@
-@*             .Include(x => x.OrderItems).OrderBy(x=>x.CreatedAt).ToList(); *@
-@*     } *@
-@* *@
-@* *@
-@* *@
-@*     protected override void OnAfterRender(bool firstRender) *@
-@*     { *@
-@*         if (firstRender) *@
-@*         { *@
-@*             StateHasChanged(); *@
-@*         } *@
-@* *@
-@*         base.OnAfterRender(firstRender); *@
-@*     } *@
-@* } *@
+﻿@page "/chhoseCustomer"
+
+@using PetTransport.Domain.Entities
+@using PetTransport.Infrastructure.Data
+@using Microsoft.EntityFrameworkCore
+@using Task = System.Threading.Tasks.Task
+@using System.Linq
+@using PetTransport.Web.Extensions
+@using PetTransport.Web.Models
+@inject LinkGenerator LinkGenerator
+
+@inject ApplicationDbContext dbContext
+@inject Radzen.DialogService dialogService
+
+
+<style>
+    form .row {
+        margin-bottom: 16px;
+    }
+</style>
+
+    <div style="display: flex; align-items: center; margin-bottom: 16px">
+    <RadzenButton Click="@ClearSelection" Text="Clear Selection" />
+    @if (SelectedCustomers?.Any() == true)
+    {
+    <div style="margin-left: 16px">
+        Выбранный заказчик: @SelectedCustomers[0].Name
+    </div>
+    }
+    </div>
+
+<RadzenDataGrid @ref="grid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="10"
+                AllowSorting="true" Data="@applications" TItem="Customer" ColumnWidth="200px"
+                SelectionMode="DataGridSelectionMode.Single" @bind-Value=@SelectedCustomers>
+    <Columns>
+                     <RadzenDataGridColumn TItem="Customer" Property="Id" Title="Id" Width="120px" />
+                     <RadzenDataGridColumn TItem="Customer" Property="Name" Title="Название">
+                     </RadzenDataGridColumn>
+                     <RadzenDataGridColumn TItem="Customer" Property="Address" Title="Адрес">
+                     </RadzenDataGridColumn>
+                     <RadzenDataGridColumn TItem="Customer" Property="Email" Title="Emaail">
+                     </RadzenDataGridColumn>
+                     <RadzenDataGridColumn TItem="Customer" Property="OrganizationNumber" Title="УНП">
+                     </RadzenDataGridColumn>
+                     <RadzenDataGridColumn TItem="Customer" Property="PhoneNumber" Title="Номер телефона">
+                     </RadzenDataGridColumn>
+                     <RadzenDataGridColumn TItem="Customer" Property="ContantPerson" Title="Контактное лицо">
+                     </RadzenDataGridColumn>        
+    <RadzenDataGridColumn TItem="Customer" Property="CustomerType" Title="Тип заказчика">
+        <Template Context="customer">
+            @customer.CustomerType.GetEnumDescription()
+        </Template>
+                           
+    </RadzenDataGridColumn>
+     </Columns>
+    </RadzenDataGrid>
+
+<div class="row">
+    <div class="col-md-12 text-right">
+        <RadzenButton Click="@((args) => dialogService.Close(SelectedCustomers))" ButtonStyle="ButtonStyle.Secondary" Text="Cancel" Style="width: 120px" Class="mr-1" />
+        <RadzenButton Click="@((args) => dialogService.Close(SelectedCustomers))" Text="OK" Style="width: 120px" />
+    </div>
+</div>
+
+@code {
+    bool allowRowSelectOnRowClick = false;
+
+    [Parameter]
+    public IList<Customer> SelectedCustomers  { get; set; }
+    
+    
+    IEnumerable<Customer> applications;
+    RadzenDataGrid<Customer> grid;
+
+
+    protected override void OnInitialized()
+    {
+        applications = dbContext.Customers.ToList();
+    }
+
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            StateHasChanged();
+        }
+
+        base.OnAfterRender(firstRender);
+    }
+    
+    void ClearSelection()
+    {
+        SelectedCustomers = null;
+    }
+}

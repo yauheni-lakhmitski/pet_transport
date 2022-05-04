@@ -24,10 +24,13 @@ public class Ride
     public DateTime CreatedAt { get; set; }
     [DisplayName("Время обновления")]
     public DateTime UpdatedAt { get; set; }
+    
+    public DateTime DepartureDate { get; set; }
+    public DateTime ArrivalDate { get; set; }
 
     public List<Application> Applications { get; set; } = new List<Application>();
-
-
+    
+    
     public void AddApplications(List<Application> applications)
     {
         Applications.AddRange(applications);

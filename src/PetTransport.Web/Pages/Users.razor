@@ -44,10 +44,14 @@
                     <RadzenRequiredValidator Text="Email обязателен к заполнению" Component="Model" Popup="true"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="User" Property="Location" Title="Город">
+            <RadzenDataGridColumn TItem="User" Property="Role" Title="Роль">
+                <Template Context="user">
+                    @_userManager.GetRolesAsync(user).Result.FirstOrDefault()
+                </Template>
                 <EditTemplate Context="user">
-                    <RadzenTextBox @bind-Value="user.Location" Style="width:100%; display: block" Name="Location"/>
-                    <RadzenRequiredValidator Text="Город обязателен к заполнению" Component="Model" Popup="true"/>
+                    <RadzenDropDown AllowClear="true" TValue="string" Class="w-100" TextProperty="Name" ValueProperty="Name"
+                                    Data=_roleManager.Roles.ToList() SelectedItem="@_userManager.GetRolesAsync(user).Result.FirstOrDefault()"
+                                    Change=@(args => OnChange(args, user)) />
                 </EditTemplate>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="User" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
@@ -80,6 +84,8 @@
     IList<User> users;
     IList<IdentityRole> roles;
 
+    string? selectedRole = null;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -94,12 +100,15 @@
         await usersGrid.EditRow(user);
     }
 
-    void OnUpdateRow(User user)
+    async Task OnUpdateRow(User user)
     {
         if (user == userToInsert)
         {
             userToInsert = null;
         }
+        var roles = await _userManager.GetRolesAsync(user);
+        await _userManager.RemoveFromRolesAsync(user, roles);
+        await _userManager.AddToRoleAsync(user, selectedRole);
 
         dbContext.Update(user);
 
@@ -174,4 +183,10 @@
 
         dbContext.SaveChanges();
     }
+
+    private void OnChange(object args, User value)
+    {
+        selectedRole = (string)args;
+    }
+
 }

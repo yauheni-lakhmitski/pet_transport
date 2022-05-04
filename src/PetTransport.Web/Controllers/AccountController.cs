@@ -131,12 +131,12 @@ public class AccountController : Controller
                 var user = await _userManager.FindByNameAsync(model.Email);
                 if (user != null)
                 {
-                    if (!await _userManager.IsEmailConfirmedAsync(user))
-                    {
-                        ModelState.AddModelError(string.Empty,
-                            $"Вы не подтвердили свой email");
-                        return View(model);
-                    }
+                    // if (!await _userManager.IsEmailConfirmedAsync(user))
+                    // {
+                    //     ModelState.AddModelError(string.Empty,
+                    //         $"Вы не подтвердили свой email");
+                    //     return View(model);
+                    // }
 
                     var result =
                         await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);

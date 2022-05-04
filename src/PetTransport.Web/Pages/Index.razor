@@ -1,6 +1,8 @@
 ﻿@page "/"
 @using PetTransport.Infrastructure.Data
 @using PetTransport.Domain.Entities
+@using PetTransport.Web.Extensions
+@using Microsoft.EntityFrameworkCore
 @inject ApplicationDbContext _context
 
 <PageTitle>Index</PageTitle>
@@ -16,17 +18,27 @@
 Завершенные заказы: @completed
 <br>
 
+  <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-lg-6 offset-lg-3 my-5">
+                <RadzenChart>
+                    <RadzenPieSeries Data="@revenue" Title="Заказы по типу клиента" CategoryProperty="Quarter" ValueProperty="Revenue" />
+                </RadzenChart>
+            </div>
+        </div>
+    </div>
+
+
 <SurveyPrompt Title="How is Blazor working for you?" />
 
 
-
 @code{
-
+    
     int pendingOrders = 0;
     int notPaid = 0;
     int inProgress = 0;
     int completed = 0;
-
+    DataItem[] revenue;
     
     protected override void OnInitialized()
     {
@@ -37,8 +49,36 @@
         notPaid = _context.Applications.Count(x => x.Status == ApplicationStatus.NotPaid);
         inProgress =_context.Applications.Count(x => x.Status == ApplicationStatus.InProgress);
         completed =_context.Applications.Count(x => x.Status == ApplicationStatus.Completed);
+        revenue = _context.Customers.GroupBy(x => x.CustomerType).Select(x => new DataItem(x.Key.GetEnumDescription(), x.Count())).ToArray();
     }
     
+    
+    class DataItem
+    {
+        public DataItem(string quarter, double revenue)
+        {
+            Quarter = quarter;
+            Revenue = revenue;
+        }
+        
+        public string Quarter { get; set; }
+        public double Revenue { get; set; }
+    }
 
+
+    void OnSlotRender(SchedulerSlotRenderEventArgs args) 
+    {
+    // Highlight today in month view
+        if (args.View.Text == "Month" && args.Start.Date == DateTime.Today)
+        {
+            args.Attributes["style"] = "background: rgba(255,220,40,.2);";
+        }
+
+    // Highlight working hours (9-18)
+        if ((args.View.Text == "Week" || args.View.Text == "Day") && args.Start.Hour > 8 && args.Start.Hour < 19)
+        {
+            args.Attributes["style"] = "background: rgba(255,220,40,.2);";
+        }
+    }
 }
 

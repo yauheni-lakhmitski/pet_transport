@@ -3,8 +3,10 @@
 @using PetTransport.Domain.Entities
 @using Microsoft.AspNetCore.Components
 @using PetTransport.Infrastructure.Data
+@using PetTransport.Web.Extensions
 @using Task = System.Threading.Tasks.Task
 @inject ApplicationDbContext dbContext
+@inject DialogService DialogService
 
 <style>
     form .row {
@@ -59,8 +61,69 @@
                         <RadzenDatePicker style="width: 100%;" DateFormat="d"  Name="DeliveryDate" @bind-Value="_application.DeliveryDate"/>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                        <RadzenLabel Text="Выбрать заказчика"/>
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenButton Icon="add_circle_outline" ButtonStyle="ButtonStyle.Primary"style="margin-bottom: 10px;background-color: #34094a;" Text="Выбрать заказчика" Click="@ButtonClick" />
+
+                    </div>
+                </div>
             </RadzenFieldset>
         </div>
+          <div class="col-md-6">
+                    <RadzenFieldset Text="Информация о заказчике">
+                        <div class="row">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Название организации" />
+                            </div>
+                            <div class="col-md-8">
+                                <RadzenTextBox style="width: 100%;" Name="Name" Value="@customer?.Name" Disabled="true" />
+                            </div>
+                        </div>
+                                    <div class="row">
+                                                    <div class="col-md-4 align-items-center d-flex">
+                                                        <RadzenLabel Text="Тип заказчика" />
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <RadzenTextBox style="width: 100%;" Name="Type" Value="@customer?.CustomerType.GetEnumDescription()" Disabled="true" />
+                                                    </div>
+                                                </div>
+                        <div class="row">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Адрес"/>
+                            </div>
+                            <div class="col-md-8">
+                                <RadzenTextBox style="width: 100%;" Name="Address" Value="@customer?.Address" Disabled="true"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Email"/>
+                            </div>
+                            <div class="col-md-8">
+                                <RadzenTextBox style="width: 100%;" Name="Email" Value="@customer?.Email" Disabled="true"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Номер телефона"/>
+                            </div>
+                            <div class="col-md-8">
+                                <RadzenTextBox style="width: 100%;" Name="PhoneNumber" Value="@customer?.PhoneNumber" Disabled="true" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Контактное лицо"/>
+                            </div>
+                            <div class="col-md-8">
+                                <RadzenTextBox style="width: 100%;" Name="ContactPerson" Value="@customer?.ContactPerson" Disabled="true" />
+                            </div>
+                        </div>
+                    </RadzenFieldset>
+                </div>
     </div>
 </RadzenTemplateForm>
 <RadzenButton Icon="add_circle_outline" ButtonStyle="ButtonStyle.Primary"style="margin-bottom: 10px;background-color: #34094a;" Text="Добавить животное в заказ" Click="@InsertRow" Disabled=@(applicationToInsert != null) />
@@ -123,6 +186,7 @@
 @code {
     RadzenDataGrid<ApplicationItem> applcationItemsGrid;
     IList<ApplicationItem> applcationItems;
+    Customer customer;
 
     Application _application = new Application()
     {
@@ -213,6 +277,7 @@
     
     async Task SaveOrder()
     {
+        _application.Customer = customer;
         _application.AddItems(applcationItems);
         dbContext.Applications.Add(_application);
         await dbContext.SaveChangesAsync();
@@ -228,5 +293,16 @@
     void Submit(Application arg)
     {
    
+    }
+    
+    async Task ButtonClick()
+    {
+        var res = await DialogService.OpenAsync<ChooseCustomerDialog>($"Добавить заказчика",
+            new Dictionary<string, object>() {  },
+            new DialogOptions() { Width = "700px", Height = "570px", Resizable = true, Draggable = true });
+
+        var casting = res as List<Customer>;
+
+        customer = casting.FirstOrDefault();
     }
 }

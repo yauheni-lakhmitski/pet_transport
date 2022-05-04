@@ -11,8 +11,8 @@ using PetTransport.Infrastructure.Data;
 namespace PetTransport.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220502085039_AddRideTable2")]
-    partial class AddRideTable2
+    [Migration("20220503113634_AddArrivalDate")]
+    partial class AddArrivalDate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -226,6 +226,9 @@ namespace PetTransport.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("TEXT");
 
@@ -251,6 +254,8 @@ namespace PetTransport.Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("RideId");
 
@@ -310,6 +315,43 @@ namespace PetTransport.Infrastructure.Migrations
                     b.ToTable("Cars");
                 });
 
+            modelBuilder.Entity("PetTransport.Domain.Entities.Customer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContantPerson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CustomerType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OrganizationNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customers");
+                });
+
             modelBuilder.Entity("PetTransport.Domain.Entities.InviteCode", b =>
                 {
                     b.Property<Guid>("Id")
@@ -365,10 +407,16 @@ namespace PetTransport.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("ArrivalDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("CarId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DepartureDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
@@ -652,9 +700,15 @@ namespace PetTransport.Infrastructure.Migrations
 
             modelBuilder.Entity("PetTransport.Domain.Entities.Application", b =>
                 {
+                    b.HasOne("PetTransport.Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
                     b.HasOne("PetTransport.Domain.Entities.Ride", null)
                         .WithMany("Applications")
                         .HasForeignKey("RideId");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.ApplicationItem", b =>

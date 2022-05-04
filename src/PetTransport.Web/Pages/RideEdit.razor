@@ -1,7 +1,8 @@
-﻿@page "/create-ride"
+﻿@page "/ride-edit/{RideId}"
 @inject DialogService DialogService
 @using PetTransport.Domain.Entities
 @using Microsoft.AspNetCore.Components
+@using Microsoft.EntityFrameworkCore
 @using PetTransport.Infrastructure.Data
 @using PetTransport.Web.Extensions
 @using PetTransport.Web.Models
@@ -14,7 +15,7 @@
     }
 </style>
 
-<h1>Создание поездки</h1>
+<h1>Информация о поездке</h1>
 <RadzenTemplateForm Data="@_ride" Submit="@((Ride args) => { Submit(args); })">
     <div class="row">
         <div class="col-md-6">
@@ -156,12 +157,16 @@
     
     
     <hr/>
-    <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="save" style="margin-bottom: 10px; width: 100%; background-color: #34094a;" Text="Создать поездку" Click="@SaveRide" />
+    <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="save" style="margin-bottom: 10px; width: 100%; background-color: #34094a;" Text="Завершить поездку" Click="@SaveRide" />
 }
 
 
 
 @code {
+    
+    
+    [Parameter]
+    public string RideId { get; set; }
     
     RadzenDataGrid<Application> applicationsGrid;
     
@@ -194,6 +199,10 @@
 
     users = dbContext.Users.ToList();
         cars = dbContext.Cars.ToList();
+        _ride = dbContext.Rides
+            .Include(x=>x.Applications)
+            .FirstOrDefault(x => x.Id == Guid.Parse(RideId));
+        _applications = _ride.Applications;
     }
     
     void OnChange(object value, string name)
@@ -220,8 +229,11 @@
         }
         
         _ride.AddApplications(_applications);
-        dbContext.Rides.Add(_ride);
-        await dbContext.SaveChangesAsync();
+        
+        await DialogService.OpenAsync<FinishRideDialog>("Завершить текущую поездку",
+            new Dictionary<string, object>() { {"Ride",_ride} },
+            new DialogOptions() { Width = "700px", Height = "570px", Resizable = true, Draggable = true });
+        
 
     // TODO: HANDLE
     }

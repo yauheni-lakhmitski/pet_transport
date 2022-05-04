@@ -11,10 +11,10 @@
 <h1>Редактирование записей об автомобилях</h1>
 
     <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Добавить новую машину" Click="@InsertRow" Disabled=@(carToInsert != null) />
-    <RadzenDataGrid @ref="carsGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
+    <RadzenDataGrid @ref="carsGrid" AllowColumnResize="true" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
                 Data="@cars" TItem="Car" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
         <Columns>
-            <RadzenDataGridColumn TItem="Car" Property="Id" Title="Order ID" Width="120px" />
+            <RadzenDataGridColumn TItem="Car" Property="Id" Title="Id" Width="300px" />
             <RadzenDataGridColumn TItem="Car" Property="Make" Title="Марка">
                 <EditTemplate Context="car">
                     <RadzenTextBox @bind-Value="car.Make" Style="width:100%; display: block" Name="Make" />
