@@ -4,22 +4,22 @@
 
 namespace PetTransport.Infrastructure.Migrations
 {
-    public partial class FixMistake : Migration
+    public partial class AddAnimalType2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "ContantPerson",
-                table: "Customers",
-                newName: "ContactPerson");
+                name: "AnimalTypeName",
+                table: "AnimalTypes",
+                newName: "Name");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "ContactPerson",
-                table: "Customers",
-                newName: "ContantPerson");
+                name: "Name",
+                table: "AnimalTypes",
+                newName: "AnimalTypeName");
         }
     }
 }

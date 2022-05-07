@@ -13,11 +13,11 @@
 
 <h1>Панель управления заказчиками</h1>
 
-    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Добавить нового заказчика" Click="@InsertRow" Disabled=@(customerToInsert != null) />
+    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px;background-color: #34094a;" Text="Добавить нового заказчика" Click="@InsertRow" Disabled=@(customerToInsert != null) />
     <RadzenDataGrid @ref="customersGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
                 Data="@customers" TItem="Customer" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
         <Columns>
-            <RadzenDataGridColumn TItem="Customer" Property="Id" Title="Order ID" Width="120px" />
+            <RadzenDataGridColumn TItem="Customer" Property="Id" Title="Код" Width="120px" />
             <RadzenDataGridColumn TItem="Customer" Property="Name" Title="Название">
                 <EditTemplate Context="customer">
                     <RadzenTextBox @bind-Value="customer.Name" Style="width:100%; display: block" Name="Name" />
@@ -29,7 +29,7 @@
                     <RadzenTextBox @bind-Value="customer.Address" Style="width:100%; display: block" Name="Address"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="Customer" Property="Email" Title="Emaail">
+            <RadzenDataGridColumn TItem="Customer" Property="Email" Title="Email">
                 <EditTemplate Context="customer">
                     <RadzenTextBox @bind-Value="customer.Email" Style="width:100%; display: block" Name="Email"/>
                 </EditTemplate>

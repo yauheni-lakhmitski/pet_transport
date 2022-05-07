@@ -28,7 +28,7 @@
                         <RadzenLabel Text="Пройдено километров" />
                     </div>
                     <div class="col-md-8">
-                        <RadzenNumeric style="width: 100%;" Name="Mileage" @bind-Value="_rideDetail.Mileage" Disabled="true" />
+                        <RadzenNumeric style="width: 100%;" Name="Mileage" @bind-Value="_rideDetail.Mileage" />
                     </div>
                 </div>
                 <div class="row">
@@ -47,7 +47,7 @@
 <div class="row">
     <div class="col-md-12 text-right">
         <RadzenButton Click="@((args) => dialogService.Close(_rideDetail))" ButtonStyle="ButtonStyle.Secondary" Text="Cancel" Style="width: 120px" Class="mr-1" />
-        <RadzenButton Click="@((args) => dialogService.Close(_rideDetail))" Text="OK" Style="width: 120px" />
+        <RadzenButton Click="FinishRide" Text="OK" Style="width: 120px" />
     </div>
 </div>
 
@@ -76,6 +76,14 @@
         base.OnAfterRender(firstRender);
     }
     //
-    // dbContext.Rides.Add(_ride);
-    // await dbContext.SaveChangesAsync();
+    private void FinishRide()
+    {
+        Ride.RideDetail = _rideDetail;
+        Ride.RideStatus = RideStatus.Completed;
+        Ride.Car.Fuel -= _rideDetail.FuelUsed;
+        Ride.Car.Mileage += _rideDetail.Mileage;
+        dbContext.Rides.Update(Ride);
+        dbContext.SaveChanges();
+        dialogService.Close(_rideDetail);
+    }
 }

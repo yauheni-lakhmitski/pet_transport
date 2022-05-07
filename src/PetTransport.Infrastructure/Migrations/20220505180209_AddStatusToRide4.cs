@@ -4,7 +4,7 @@
 
 namespace PetTransport.Infrastructure.Migrations
 {
-    public partial class AddArrivalDate2 : Migration
+    public partial class AddStatusToRide4 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

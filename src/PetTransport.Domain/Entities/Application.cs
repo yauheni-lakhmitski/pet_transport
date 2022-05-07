@@ -15,6 +15,8 @@ public class Application
     public Customer? Customer { get; set; }
     public Guid? CustomerId { get; set; }
     public List<ApplicationItem> OrderItems { get; set; } = new List<ApplicationItem>();
+    public Guid? RideId { get; set; }
+    public Ride? Ride { get; set; }
 
 
 
@@ -42,7 +44,8 @@ public class ApplicationItem
 {
     public Guid Id { get; set; }
     public string ChipNumber { get; set; }
-    public string AnimalType { get; set; }
+    public AnimalType AnimalType { get; set; }
+    public Guid AnimalTypeId { get; set; }
 
     public string AnimalName { get; set; }
 

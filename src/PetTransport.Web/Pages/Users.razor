@@ -14,7 +14,7 @@
 
 <h1>Пользователи</h1>
     <RadzenDataGrid @ref="usersGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
-                Data="@users" TItem="User" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+                Data="@users" TItem="User" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" FilterMode="FilterMode.Simple">
         <Columns>
             <RadzenDataGridColumn TItem="User" Property="Id" Title="ID" Width="120px" />
             <RadzenDataGridColumn TItem="User" Property="Make" Title="Фото" Sortable="false">
@@ -44,7 +44,7 @@
                     <RadzenRequiredValidator Text="Email обязателен к заполнению" Component="Model" Popup="true"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="User" Property="Role" Title="Роль">
+            <RadzenDataGridColumn TItem="User" Property="Role" Title="Роль" Filterable="false" Sortable="false">
                 <Template Context="user">
                     @_userManager.GetRolesAsync(user).Result.FirstOrDefault()
                 </Template>

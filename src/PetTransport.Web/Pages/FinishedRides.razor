@@ -1,4 +1,4 @@
-﻿@page "/my-rides"
+﻿@page "/finished-rides"
 
 @attribute [Authorize(Roles = "Водитель")]
 @using Microsoft.EntityFrameworkCore
@@ -13,7 +13,7 @@
 @inject ApplicationDbContext dbContext
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 
-<h1>Поездки</h1>
+<h1>Активная поездка</h1>
 
 <RadzenDataGrid @ref="ridesGrid" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
                 Data="@rides" TItem="Ride" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
@@ -55,15 +55,10 @@
         rides = dbContext.Rides
             .Include(x=>x.User)
             .Include(x=>x.Car)
-            .Where(x=>x.UserId == userId.Value)
-            .Where(x=>x.RideStatus == RideStatus.Processing)
+            .Where(x=>x.UserId == userId.Value && x.RideStatus == RideStatus.Completed)
             .ToList();
     }
 
-    async Task EditRow(Ride transportation)
-    {
-        await ridesGrid.EditRow(transportation);
-    }
 
     void OnUpdateRow(Ride transportation)
     {
@@ -78,77 +73,19 @@
         dbContext.SaveChanges();
     }
 
-    async Task SaveRow(Ride transportation)
-    {
-        if (transportation == rideToInsert)
-        {
-            rideToInsert = null;
-        }
 
-        await ridesGrid.UpdateRow(transportation);
-    }
 
-    void CancelEdit(Ride transportation)
-    {
-        if (transportation == rideToInsert)
-        {
-            rideToInsert = null;
-        }
-
-        ridesGrid.CancelEditRow(transportation);
-
-    // For production
-        var orderEntry = dbContext.Entry(transportation);
-        if (orderEntry.State == EntityState.Modified)
-        {
-            orderEntry.CurrentValues.SetValues(orderEntry.OriginalValues);
-            orderEntry.State = EntityState.Unchanged;
-        }
-    }
-
-    async Task DeleteRow(Ride transportation)
-    {
-        if (transportation == rideToInsert)
-        {
-            rideToInsert = null;
-        }
-
-        if (rides.Contains(transportation))
-        {
-            dbContext.Remove<Ride>(transportation);
-
-    // For demo purposes only
-            rides.Remove(transportation);
-
-    // For production
-    //dbContext.SaveChanges();
-
-            await ridesGrid.Reload();
-        }
-        else
-        {
-            ridesGrid.CancelEditRow(transportation);
-        }
-    }
+    
 
     Ride rideToInsert;
 
-    async Task InsertRow()
-    {
-        rideToInsert = new Ride();
-        await ridesGrid.InsertRow(rideToInsert);
-    }
+
 
     void OnCreateRow(Ride transportation)
     {
         dbContext.Add(transportation);
 
         dbContext.SaveChanges();
-    }
-
-    private void CreateNew()
-    {
-        NavigationManager.NavigateTo("create-ride");
     }
 
     private void OnButtonClick(Guid orderId)

@@ -201,6 +201,7 @@
         cars = dbContext.Cars.ToList();
         _ride = dbContext.Rides
             .Include(x=>x.Applications)
+            .Include(x=>x.Car)
             .FirstOrDefault(x => x.Id == Guid.Parse(RideId));
         _applications = _ride.Applications;
     }

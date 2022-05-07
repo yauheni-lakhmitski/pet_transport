@@ -10,7 +10,7 @@
 
 <h1>Редактирование записей об автомобилях</h1>
 
-    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Добавить новую машину" Click="@InsertRow" Disabled=@(carToInsert != null) />
+    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px;background-color: #34094a;" Text="Добавить новую машину" Click="@InsertRow" Disabled=@(carToInsert != null) />
     <RadzenDataGrid @ref="carsGrid" AllowColumnResize="true" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
                 Data="@cars" TItem="Car" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
         <Columns>
@@ -33,6 +33,18 @@
                     <RadzenRequiredValidator Text="Регистрационный номер обязателен к заполнению" Component="Model" Popup="true"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Car" Property="Fuel" Title="Уровень топлива">
+                <EditTemplate Context="car">
+                    <RadzenNumeric @bind-Value="car.Fuel" Style="width:100%; display: block" Name="Fuel"/>
+                    <RadzenRequiredValidator Text="Уровень топлива обязателен к заполнению" Component="Fuel" Popup="true"/>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Car" Property="Mileage" Title="Пробег">
+                            <EditTemplate Context="car">
+                                <RadzenNumeric @bind-Value="car.Mileage" Style="width:100%; display: block" Name="Mileage"/>
+                                <RadzenRequiredValidator Text="Пробег обязателен к заполнению" Component="Mileage" Popup="true"/>
+                            </EditTemplate>
+                        </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Car" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
                 <Template Context="order">
                     <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">

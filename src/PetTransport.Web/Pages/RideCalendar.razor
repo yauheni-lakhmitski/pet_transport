@@ -5,9 +5,18 @@
 @using Microsoft.AspNetCore.Components
 
 @inject ApplicationDbContext dbContext
+@inject NavigationManager NavigationManager
 
 <h1>Календарь поездок</h1>
-    <RadzenScheduler @ref=@scheduler SlotRender=@OnSlotRender AppointmentRender="@OnAppointmentRender" style="height: 768px;" TItem="Appointment" Data=@appointments StartProperty="Start" EndProperty="End" 
+<RadzenScheduler @ref=@scheduler
+                 SlotRender=@OnSlotRender
+                 AppointmentRender="@OnAppointmentRender"
+                 style="height: 768px;" 
+                 TItem="Appointment"
+                 Data=@appointments
+                 AppointmentSelect=@(args => OnAppointmentSelect(args))
+                 StartProperty="Start"
+                 EndProperty="End" 
         TextProperty="Text" SelectedIndex="2">
         <RadzenDayView />
         <RadzenWeekView />
@@ -30,7 +39,7 @@
         appointments = dbContext.Rides
             .Include(x=>x.User)
             .Include(x=>x.Car)
-            .Select(x=> new Appointment(x.DepartureDate, x.ArrivalDate, $"Водитель: {x.User.FirstName} {x.User.LastName} ({x.Car.Make} {x.Car.Model} {x.Car.RegistrationNumber})")).ToList();
+            .Select(x=> new Appointment(x.DepartureDate, x.ArrivalDate, $"Водитель: {x.User.FirstName} {x.User.LastName} ({x.Car.Make} {x.Car.Model} {x.Car.RegistrationNumber})", x.Id)).ToList();
     }
     
     
@@ -49,15 +58,17 @@
     public class Appointment
     {
 
-        public Appointment(DateTime start, DateTime end, string text)
+        public Appointment(DateTime start, DateTime end, string text, Guid rideId)
         {
             Start = start;
             End = end;
             Text = text;
+            RideId = rideId;
         }
 
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
+        public Guid RideId { get; set; }
         public string Text { get; set; }
     }
 
@@ -79,6 +90,12 @@
 
     private void OnAppointmentRender(SchedulerAppointmentRenderEventArgs<Appointment> arg)
     {
+    }
+
+
+    private void OnAppointmentSelect(SchedulerAppointmentSelectEventArgs<Appointment> args)
+    {
+        NavigationManager.NavigateTo($"ride-info/{args.Data.RideId}");
     }
 
 }

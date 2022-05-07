@@ -7,6 +7,8 @@
 @using Task = System.Threading.Tasks.Task
 @inject ApplicationDbContext dbContext
 @inject DialogService DialogService
+@inject NotificationService NotificationService
+@inject NavigationManager NavigationManager
 
 <style>
     form .row {
@@ -35,6 +37,7 @@
                     </div>
                     <div class="col-md-8">
                         <RadzenTextBox style="width: 100%;" Name="SourcePoint" @bind-Value="_application.SourcePoint"/>
+                        <RadzenLengthValidator Component="SourcePoint" Min="3"  Max="10" Text="First name should be at most 10 characters" Popup=@true Style="position: absolute" />
                     </div>
                 </div>
                 <div class="row">
@@ -43,6 +46,7 @@
                     </div>
                     <div class="col-md-8">
                         <RadzenTextBox style="width: 100%;" Name="DestinationPoint" @bind-Value="_application.DestinationPoint"/>
+                        <RadzenRequiredValidator Component="DestinationPoint" Text="Место прибытия обязательно для заполнения"/>
                     </div>
                 </div>
                 <div class="row">
@@ -72,72 +76,101 @@
                 </div>
             </RadzenFieldset>
         </div>
-          <div class="col-md-6">
-                    <RadzenFieldset Text="Информация о заказчике">
-                        <div class="row">
-                            <div class="col-md-4 align-items-center d-flex">
-                                <RadzenLabel Text="Название организации" />
-                            </div>
-                            <div class="col-md-8">
-                                <RadzenTextBox style="width: 100%;" Name="Name" Value="@customer?.Name" Disabled="true" />
-                            </div>
-                        </div>
-                                    <div class="row">
-                                                    <div class="col-md-4 align-items-center d-flex">
-                                                        <RadzenLabel Text="Тип заказчика" />
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <RadzenTextBox style="width: 100%;" Name="Type" Value="@customer?.CustomerType.GetEnumDescription()" Disabled="true" />
-                                                    </div>
-                                                </div>
-                        <div class="row">
-                            <div class="col-md-4 align-items-center d-flex">
-                                <RadzenLabel Text="Адрес"/>
-                            </div>
-                            <div class="col-md-8">
-                                <RadzenTextBox style="width: 100%;" Name="Address" Value="@customer?.Address" Disabled="true"/>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4 align-items-center d-flex">
-                                <RadzenLabel Text="Email"/>
-                            </div>
-                            <div class="col-md-8">
-                                <RadzenTextBox style="width: 100%;" Name="Email" Value="@customer?.Email" Disabled="true"/>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4 align-items-center d-flex">
-                                <RadzenLabel Text="Номер телефона"/>
-                            </div>
-                            <div class="col-md-8">
-                                <RadzenTextBox style="width: 100%;" Name="PhoneNumber" Value="@customer?.PhoneNumber" Disabled="true" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4 align-items-center d-flex">
-                                <RadzenLabel Text="Контактное лицо"/>
-                            </div>
-                            <div class="col-md-8">
-                                <RadzenTextBox style="width: 100%;" Name="ContactPerson" Value="@customer?.ContactPerson" Disabled="true" />
-                            </div>
-                        </div>
-                    </RadzenFieldset>
+        @if (customer != null)
+        {
+              <div class="col-md-6">
+                         <RadzenCard class="m-3">
+                                        <h3 class="h5">Информация о заказчике</h3>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div>Название организации</div>
+                                                <b>@customer.Name</b>
+                                                <div class="mt-3">Тип заказчика</div>
+                                                <b>@customer.CustomerType.GetEnumDescription()</b>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div>Адрес</div>
+                                                <b>@customer.Address</b>
+                                                <div class="mt-3">Email</div>
+                                                <b>@customer.Email</b>
+                                            </div>
+                                        </div>
+                                    </RadzenCard>
+                               </div>
+        }
+      
                 </div>
-    </div>
-</RadzenTemplateForm>
-<RadzenButton Icon="add_circle_outline" ButtonStyle="ButtonStyle.Primary"style="margin-bottom: 10px;background-color: #34094a;" Text="Добавить животное в заказ" Click="@InsertRow" Disabled=@(applicationToInsert != null) />
+           <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Icon="save" style="margin-bottom: 10px; width: 100%; background-color: #34094a;" Text="Создать заказ" Click="@SaveOrder" Disabled=@(customer == null || !applcationItems.Any()) />
+          
+          </RadzenTemplateForm>  
+            
+            @* <RadzenFieldset Text="Информация о заказчике"> *@
+            @*     <div class="row"> *@
+            @*         <div class="col-md-4 align-items-center d-flex"> *@
+            @*             <RadzenLabel Text="Название организации"/> *@
+            @*         </div> *@
+            @*         <div class="col-md-8"> *@
+            @*             <RadzenTextBox style="width: 100%;" Name="Name" Value="@customer?.Name" Disabled="true"/> *@
+            @*         </div> *@
+            @*     </div> *@
+            @*     <div class="row"> *@
+            @*         <div class="col-md-4 align-items-center d-flex"> *@
+            @*             <RadzenLabel Text="Тип заказчика"/> *@
+            @*         </div> *@
+            @*         <div class="col-md-8"> *@
+            @*             <RadzenTextBox style="width: 100%;" Name="Type" Value="@customer?.CustomerType.GetEnumDescription()" Disabled="true"/> *@
+            @*         </div> *@
+            @*     </div> *@
+            @*     <div class="row"> *@
+            @*         <div class="col-md-4 align-items-center d-flex"> *@
+            @*             <RadzenLabel Text="Адрес"/> *@
+            @*         </div> *@
+            @*         <div class="col-md-8"> *@
+            @*             <RadzenTextBox style="width: 100%;" Name="Address" Value="@customer?.Address" Disabled="true"/> *@
+            @*         </div> *@
+            @*     </div> *@
+            @*     <div class="row"> *@
+            @*         <div class="col-md-4 align-items-center d-flex"> *@
+            @*             <RadzenLabel Text="Email"/> *@
+            @*         </div> *@
+            @*         <div class="col-md-8"> *@
+            @*             <RadzenTextBox style="width: 100%;" Name="Email" Value="@customer?.Email" Disabled="true"/> *@
+            @*         </div> *@
+            @*     </div> *@
+            @*     <div class="row"> *@
+            @*         <div class="col-md-4 align-items-center d-flex"> *@
+            @*             <RadzenLabel Text="Номер телефона"/> *@
+            @*         </div> *@
+            @*         <div class="col-md-8"> *@
+            @*             <RadzenTextBox style="width: 100%;" Name="PhoneNumber" Value="@customer?.PhoneNumber" Disabled="true"/> *@
+            @*         </div> *@
+            @*     </div> *@
+            @*     <div class="row"> *@
+            @*         <div class="col-md-4 align-items-center d-flex"> *@
+            @*             <RadzenLabel Text="Контактное лицо"/> *@
+            @*         </div> *@
+            @*         <div class="col-md-8"> *@
+            @*             <RadzenTextBox style="width: 100%;" Name="ContactPerson" Value="@customer?.ContactPerson" Disabled="true"/> *@
+            @*         </div> *@
+            @*     </div> *@
+            @* </RadzenFieldset> *@
+ 
+
+<RadzenButton Icon="add_circle_outline" ButtonStyle="ButtonStyle.Primary" style="margin-bottom: 10px;background-color: #34094a;" Text="Добавить животное в заказ" Click="@InsertRow" Disabled=@(applicationToInsert != null) />
 <RadzenDataGrid @ref="applcationItemsGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
                 Data="@applcationItems" TItem="ApplicationItem" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
     <Columns>
         <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="ID" Width="120px" >
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType" Title="Тип животного">
+            <Template Context="applcationItem">
+                @applcationItem.AnimalType?.Name
+            </Template>
             <EditTemplate Context="applcationItem">
-                <RadzenTextBox @bind-Value="applcationItem.AnimalType" Style="width:100%; display: block" Name="AnimalType" />
-                <RadzenRequiredValidator Text="Тип животного обязателен к заполнению" Component="AnimalType" Popup="true" />
+                <RadzenDropDown @bind-Value="applcationItem.AnimalTypeId" AllowVirtualization="true" Class="w-100"
+                                AllowFiltering="true" Data=@_animalTypes TextProperty="Name" ValueProperty="Id" />
             </EditTemplate>
-            
+
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalName" Title="Наименование">
             <EditTemplate Context="applcationItem">
@@ -179,14 +212,14 @@
     </Columns>
 </RadzenDataGrid>
 
+
 <br>
 <hr/>
- <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="save" style="margin-bottom: 10px; width: 100%; background-color: #34094a;" Text="Создать заказ" Click="@SaveOrder" Disabled=@(applicationToInsert != null) />
-
 @code {
     RadzenDataGrid<ApplicationItem> applcationItemsGrid;
     IList<ApplicationItem> applcationItems;
     Customer customer;
+    List<AnimalType> _animalTypes;
 
     Application _application = new Application()
     {
@@ -203,6 +236,7 @@
 
         // For demo purposes only
         applcationItems = new List<ApplicationItem>();
+        _animalTypes = dbContext.AnimalTypes.ToList();
 
     // For production
     //applcationItems = dbContext.ApplicationItems.Include("Customer").Include("Employee");
@@ -210,6 +244,10 @@
 
     async Task EditRow(ApplicationItem order)
     {
+        // var animal = _animalTypes.FirstOrDefault();
+        // order.AnimalTypeId = animal.Id;
+        // order.AnimalType = animal;
+        
         await applcationItemsGrid.EditRow(order);
     }
 
@@ -219,8 +257,6 @@
         {
             applicationToInsert = null;
         }
-
-
     }
 
     async Task SaveRow(ApplicationItem order)
@@ -270,7 +306,7 @@
 
     async Task InsertRow()
     {
-        applicationToInsert = new ApplicationItem(){ Id = Guid.NewGuid()};
+        applicationToInsert = new ApplicationItem(){ Id = Guid.NewGuid(), AnimalType = _animalTypes.FirstOrDefault(), AnimalTypeId = _animalTypes.FirstOrDefault().Id};
         await applcationItemsGrid.InsertRow(applicationToInsert);
     }
     
@@ -281,7 +317,9 @@
         _application.AddItems(applcationItems);
         dbContext.Applications.Add(_application);
         await dbContext.SaveChangesAsync();
-
+        
+        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Успешно", Detail = "Заявка успешно сформирована.", Duration = 4000 });
+        NavigationManager.NavigateTo("orders");
     // TODO: HANDLE
     }
 
@@ -301,8 +339,13 @@
             new Dictionary<string, object>() {  },
             new DialogOptions() { Width = "700px", Height = "570px", Resizable = true, Draggable = true });
 
-        var casting = res as List<Customer>;
-
-        customer = casting.FirstOrDefault();
+        if (res is not null)
+        {
+            var casting = res as List<Customer>;
+                  
+          
+                  customer = casting.FirstOrDefault();  
+        }
+      
     }
 }

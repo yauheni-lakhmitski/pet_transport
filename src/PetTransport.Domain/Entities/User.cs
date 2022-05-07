@@ -7,10 +7,8 @@ public class User : IdentityUser
     public string FirstName { get;  set; }
     public string LastName { get;  set; }
     public string Location { get;  set; }
-    public List<UserTrip> UserTrips { get; set; }
     public string ImageUrl { get;  set; }
     public bool IsDeleted { get;  set; }
-    public List<Route> Routes { get; set; }
    
     public void UpdateProfileInfo(string firstName, string lastName, string location)
     {
