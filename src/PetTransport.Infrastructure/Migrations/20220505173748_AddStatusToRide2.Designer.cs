@@ -11,8 +11,8 @@ using PetTransport.Infrastructure.Data;
 namespace PetTransport.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220504182342_AddStatusToRides")]
-    partial class AddStatusToRides
+    [Migration("20220505173748_AddStatusToRide2")]
+    partial class AddStatusToRide2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -405,6 +405,29 @@ namespace PetTransport.Infrastructure.Migrations
                     b.ToTable("Rides", (string)null);
                 });
 
+            modelBuilder.Entity("PetTransport.Domain.Entities.RideDetail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("FuelUsed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Mileage")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("RideId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RideId")
+                        .IsUnique();
+
+                    b.ToTable("RideDetails");
+                });
+
             modelBuilder.Entity("PetTransport.Domain.Entities.User", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
@@ -521,6 +544,17 @@ namespace PetTransport.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("PetTransport.Domain.Entities.RideDetail", b =>
+                {
+                    b.HasOne("PetTransport.Domain.Entities.Ride", "Ride")
+                        .WithOne("RideDetail")
+                        .HasForeignKey("PetTransport.Domain.Entities.RideDetail", "RideId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ride");
+                });
+
             modelBuilder.Entity("PetTransport.Domain.Entities.Application", b =>
                 {
                     b.Navigation("OrderItems");
@@ -534,6 +568,8 @@ namespace PetTransport.Infrastructure.Migrations
             modelBuilder.Entity("PetTransport.Domain.Entities.Ride", b =>
                 {
                     b.Navigation("Applications");
+
+                    b.Navigation("RideDetail");
                 });
 #pragma warning restore 612, 618
         }

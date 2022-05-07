@@ -76,13 +76,14 @@
         base.OnAfterRender(firstRender);
     }
     //
-    // dbContext.Rides.Add(_ride);
-    // await dbContext.SaveChangesAsync();
     private void FinishRide()
     {
         Ride.RideDetail = _rideDetail;
-
+        Ride.RideStatus = RideStatus.Completed;
+        Ride.Car.Fuel -= _rideDetail.FuelUsed;
+        Ride.Car.Mileage += _rideDetail.Mileage;
         dbContext.Rides.Update(Ride);
+        dbContext.SaveChanges();
         dialogService.Close(_rideDetail);
     }
 }

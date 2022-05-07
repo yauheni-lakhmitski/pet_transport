@@ -3,6 +3,7 @@
 @using PetTransport.Domain.Entities
 @using PetTransport.Web.Extensions
 @using Microsoft.EntityFrameworkCore
+@using System.Globalization
 @inject ApplicationDbContext _context
 
 <PageTitle>Index</PageTitle>
@@ -18,18 +19,54 @@
 Завершенные заказы: @completed
 <br>
 
-  <div class="container">
-            <div class="row">
-                <div class="col-sm-12 col-lg-6 offset-lg-3 my-5">
-                <RadzenChart>
-                    <RadzenPieSeries Data="@revenue" Title="Заказы по типу клиента" CategoryProperty="Quarter" ValueProperty="Revenue" />
+<div class="container">
+        <div class="row">
+            <div class="col-sm-12 my-5">
+ <RadzenChart>
+                <RadzenPieSeries Data="@revenue" Title="Заказы по типу клиента" CategoryProperty="Quarter" ValueProperty="Revenue"/>
+            </RadzenChart>
+            </div>
+        </div>
+    </div>
+
+<div class="container">
+        <div class="row">
+            <div class="col-sm-12 my-5">
+<RadzenChart>
+                    <RadzenColumnSeries Data="@ordersDiagram" CategoryProperty="Month" Title="Количество заказов" LineType="LineType.Dashed" ValueProperty="OrdersCount"/>
+                    @* <RadzenColumnSeries Data="@revenue2019" CategoryProperty="Quarter" Title="2019" ValueProperty="Revenue"/> *@
+                    <RadzenColumnOptions Radius="5"/>
+                    <RadzenValueAxis>
+                        <RadzenGridLines Visible="true"/>
+                        <RadzenAxisTitle Text="Количество заказов"/>
+                    </RadzenValueAxis>
+                </RadzenChart>
+            </div>
+        </div>
+    </div>
+
+<div class="container">
+        <div class="row">
+            <div class="col-sm-12 my-5">
+ <RadzenChart>
+                    <RadzenColumnSeries Data="@ridesDiagram" CategoryProperty="Month" Title="Количество выполненных поездок" LineType="LineType.Dashed" ValueProperty="OrdersCount"/>
+                    <RadzenColumnOptions Radius="5"/>
+                    <RadzenValueAxis>
+                        <RadzenGridLines Visible="true"/>
+                        <RadzenAxisTitle Text="Количество выполненных поездок"/>
+                    </RadzenValueAxis>
                 </RadzenChart>
             </div>
         </div>
     </div>
 
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<h1>Radzen Blazor Chart bar series</h1>
+    <div class="container">
+        <div class="row">
+            
+        </div>
+    </div>
 
 
 @code{
@@ -39,6 +76,8 @@
     int inProgress = 0;
     int completed = 0;
     DataItem[] revenue;
+    OrderDiagram[] ordersDiagram;
+    OrderDiagram[] ridesDiagram;
     
     protected override void OnInitialized()
     {
@@ -49,7 +88,17 @@
         notPaid = _context.Applications.Count(x => x.Status == ApplicationStatus.NotPaid);
         inProgress =_context.Applications.Count(x => x.Status == ApplicationStatus.InProgress);
         completed =_context.Applications.Count(x => x.Status == ApplicationStatus.Completed);
-        revenue = _context.Customers.GroupBy(x => x.CustomerType).Select(x => new DataItem(x.Key.GetEnumDescription(), x.Count())).ToArray();
+        revenue = _context.Customers.GroupBy(x => x.CustomerType)
+            .Select(x => new DataItem(x.Key.GetEnumDescription(), x.Count()))
+            .ToArray();
+
+        ordersDiagram=_context.Applications
+            .Where(x => x.CreatedAt.Year == DateTime.Now.Year)
+            .ToList().GroupBy(x=>x.CreatedAt.Month).Select(x => new OrderDiagram(CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.GetMonthName(x.Key), x.Count())).ToArray();
+        
+        ridesDiagram=_context.Rides
+            .Where(x => x.CreatedAt.Year == DateTime.Now.Year && x.RideStatus == RideStatus.Completed)
+            .ToList().GroupBy(x=>x.CreatedAt.Month).Select(x => new OrderDiagram(CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.GetMonthName(x.Key), x.Count())).ToArray();
     }
     
     
@@ -63,6 +112,18 @@
         
         public string Quarter { get; set; }
         public double Revenue { get; set; }
+    }
+    
+    class OrderDiagram
+    {
+        public OrderDiagram(string month, int ordersCount)
+        {
+            Month = month;
+            OrdersCount = ordersCount;
+        }
+        
+        public string Month { get; set; }
+        public double OrdersCount { get; set; }
     }
 
 

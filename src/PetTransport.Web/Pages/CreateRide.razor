@@ -7,6 +7,8 @@
 @using PetTransport.Web.Models
 @using Task = System.Threading.Tasks.Task
 @inject ApplicationDbContext dbContext
+@inject NotificationService NotificationService
+@inject NavigationManager NavigationManager
 
 <style>
     form .row {
@@ -33,6 +35,7 @@
                     </div>
                     <div class="col-md-8">
                         <RadzenTextBox style="width: 100%;" Name="SourcePoint" @bind-Value="_ride.From"/>
+                        <RadzenRequiredValidator Text="Регистрационный номер обязателен к заполнению" Component="SourcePoint" Popup="true"/>
                     </div>
                 </div>
                 <div class="row">
@@ -41,6 +44,7 @@
                     </div>
                     <div class="col-md-8">
                         <RadzenTextBox style="width: 100%;" Name="DestinationPoint" @bind-Value="_ride.To"/>
+                          <RadzenRequiredValidator Text="Регистрационный номер обязателен к заполнению" Component="DestinationPoint" Popup="true"/>
                     </div>
                 </div>
                 <div class="row">
@@ -153,8 +157,6 @@
         </Columns>
     </RadzenDataGrid>
     
-    
-    
     <hr/>
     <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="save" style="margin-bottom: 10px; width: 100%; background-color: #34094a;" Text="Создать поездку" Click="@SaveRide" />
 }
@@ -192,7 +194,7 @@
         base.OnInitialized();
         _applications = new List<Application>();
 
-    users = dbContext.Users.ToList();
+        users = dbContext.Users.ToList();
         cars = dbContext.Cars.ToList();
     }
     
@@ -222,6 +224,9 @@
         _ride.AddApplications(_applications);
         dbContext.Rides.Add(_ride);
         await dbContext.SaveChangesAsync();
+        
+              NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Успешно", Detail = "Поездка создана.", Duration = 4000 });
+                NavigationManager.NavigateTo("rides");
 
     // TODO: HANDLE
     }

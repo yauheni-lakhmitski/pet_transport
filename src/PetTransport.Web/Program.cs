@@ -31,9 +31,16 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CommandHandli
 
 
 // Add services to the container.
+// var postgresconnectionString = "Server=localhost;Port=5432;Database=petStore;Userid=postgres;password=postgres;";
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
+    options.UseSqlite(connectionString)
+    // options.UseNpgsql(postgresconnectionString)
+    
+    );
+
+
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddRazorPages();
@@ -73,15 +80,14 @@ else
     app.UseHsts();
 }
 
-using (var serviceScope = app.Services.CreateScope())
-{
-    var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-    var service = serviceScope.ServiceProvider.GetService<ContextSeedData>();
-    service.SeedAdminUser();
-  
+var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
+    var service = scope.ServiceProvider.GetService<ContextSeedData>();
+    service.SeedDatabase();
+  
+// AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 // Seed the database.
-}
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

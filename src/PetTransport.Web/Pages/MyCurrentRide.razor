@@ -1,4 +1,4 @@
-﻿@page "/my-rides"
+﻿@page "/my-current-rides"
 
 @attribute [Authorize(Roles = "Водитель")]
 @using Microsoft.EntityFrameworkCore
@@ -13,7 +13,7 @@
 @inject ApplicationDbContext dbContext
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 
-<h1>Поездки</h1>
+<h1>Активная поездка</h1>
 
 <RadzenDataGrid @ref="ridesGrid" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
                 Data="@rides" TItem="Ride" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
@@ -55,8 +55,7 @@
         rides = dbContext.Rides
             .Include(x=>x.User)
             .Include(x=>x.Car)
-            .Where(x=>x.UserId == userId.Value)
-            .Where(x=>x.RideStatus == RideStatus.Processing)
+            .Where(x=>x.UserId == userId.Value && x.RideStatus == RideStatus.InProgress)
             .ToList();
     }
 

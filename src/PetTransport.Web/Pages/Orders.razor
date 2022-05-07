@@ -37,7 +37,7 @@ else
                         Change=@(args => OnChange(args, "DropDown")) />
     </div>
     <div class="col-md-4">
-        <RadzenButton Click="ResetFilters" Text="Сбросить фильтр"></RadzenButton>
+        <RadzenButton Click="ResetFilters" Text="Сбросить" style="margin-bottom: 10px;background-color: #34094a;"></RadzenButton>
     </div>
 </div>
 
@@ -47,30 +47,31 @@ else
         <RadzenDataGrid AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or" AllowPaging="true" AllowSorting="true" Data="@application.OrderItems" TItem="ApplicationItem">
             <Columns>
                 <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Id" />
-                <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType" Title="Тип животного" />
+                <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType.Name" Title="Тип животного">
+                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalName" Title="Название животного" />
                 <RadzenDataGridColumn TItem="ApplicationItem" Property="ChipNumber" Title="Номер чипа" />
             </Columns>
         </RadzenDataGrid>
     </Template>
     <Columns>
-        <RadzenDataGridColumn TItem="Application" Property="OrderNumber" Title="Номер заказа" Width="250px"/>
+        <RadzenDataGridColumn TItem="Application" Property="OrderNumber" Title="Код" Width="250px"/>
         @* <RadzenDataGridColumn TItem="Application" Property="Employee.LastName" Title="Employee" Width="200px" > *@
         @*     <Template Context="application"> *@
         @*         <RadzenImage Path="@application.Employee?.Photo" style="width: 32px; height: 32px; bapplication-radius: 16px; margin-right: 6px;" /> *@
         @*         @application.Employee?.FirstName @application.Employee?.LastName *@
         @*     </Template> *@
         @* </RadzenDataGridColumn> *@
-        <RadzenDataGridColumn TItem="Application" Property="Status" Title="Статус заказа" Filterable="false" Width="150px">
+        <RadzenDataGridColumn TItem="Application" Property="Status" Title="Статус" Filterable="false" Width="150px">
              <Template Context="application">
                             @application.Status.GetEnumDescription()
                         </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Application" Property="PickUpDate" Title="Дата отправки" FormatString="{0:d}" Width="150px" />
         <RadzenDataGridColumn TItem="Application" Property="DeliveryDate" Title="Дата получения" FormatString="{0:d}" Width="150px"/>
-        <RadzenDataGridColumn TItem="Application" Property="SourcePoint" Title="Место отправления" />
-        <RadzenDataGridColumn TItem="Application" Property="DestinationPoint" Title="Место получения" />
-        <RadzenDataGridColumn TItem="Application" Title="Количество животных">
+        <RadzenDataGridColumn TItem="Application" Property="SourcePoint" Title="Откуда" />
+        <RadzenDataGridColumn TItem="Application" Property="DestinationPoint" Title="Куда" />
+        <RadzenDataGridColumn TItem="Application" Title="Количество животных" Width="200px">
             <Template Context="application">
                 @application.OrderItems.Count
             </Template>
@@ -191,7 +192,7 @@ else
                             <RadzenDataGrid @ref="applcationItemsGrid" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@SelectedApplications.FirstOrDefault().OrderItems" TItem="ApplicationItem">
                                 <Columns>
                                     <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Id"/>
-                                    <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType" Title="Тип животного"/>
+                                    <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType.Name" Title="Тип животного"/>
                                     <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalName" Title="Название животного"/>
                                     <RadzenDataGridColumn TItem="ApplicationItem" Property="ChipNumber" Title="Номер чипа"/>
                                     <RadzenDataGridColumn TItem="ApplicationItem" Property="Price" Title="Стоимость">
@@ -228,15 +229,27 @@ else
         @* </SummaryTemplate> *@
     </RadzenPanel>
 
+    <div class="button-demo">
+    <div class="row mb-4">
+        <div class="col">
+            <h4 class="text-thin">Button Styles</h4>
+            <a href="@LinkGenerator.GetPathByAction("SalesInvoice", "Word", new {id = SelectedApplications.FirstOrDefault().Id})">
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Скачать инвойс" href=@{$"/word/SalesInvoice?id={@SelectedApplications.FirstOrDefault().Id}"} />
+            </a>
+            <RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Ожидает оплаты" Click="@MoveToNotPaid" />
+            <RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Оплачен" Click="@MoveToPaid" />
+            <RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Завершен" Click="@MoveToCompleted" />
+        </div>
+    </div>
+    </div>
 
-<a href="@LinkGenerator.GetPathByAction("SalesInvoice", "Word", new {id = SelectedApplications.FirstOrDefault().Id})">
-<RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Скачать инвойс" href=@{$"/word/SalesInvoice?id={@SelectedApplications.FirstOrDefault().Id}"} />
-</a>
-<RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Ожидает оплаты" Click="@MoveToNotPaid" />
-<RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Оплачен" Click="@MoveToPaid" />
-<RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Завершен" Click="@MoveToCompleted" />
 }
 <div></div>
+<style>
+    .button-demo .rz-button {
+        margin: 0 0.5rem 0.5rem 0;
+    }
+</style>
 
 @code {
     List<CommonApplicationStatusViewModel> list;
@@ -247,7 +260,11 @@ else
 
     protected override void OnInitialized()
     {
-        applications = dbContext.Applications.Include(x => x.OrderItems).Include(x=>x.Customer).OrderBy(x=>x.CreatedAt).ToList();
+        applications = dbContext.Applications
+            .Include(x=>x.Customer)
+            .Include(x => x.OrderItems)
+            .ThenInclude(x=>x.AnimalType)
+            .OrderByDescending(x=>x.CreatedAt).ToList();
         SelectedApplications = new List<Application>(){ applications.FirstOrDefault() };
         list = ((ApplicationStatus[])Enum.GetValues(typeof(ApplicationStatus))).Select(c => new CommonApplicationStatusViewModel(c, c.GetEnumDescription())).ToList();
     }
@@ -327,12 +344,19 @@ else
             applications = dbContext.Applications.ToList();
         }
         
-        applications = dbContext.Applications.Include(x => x.OrderItems).Include(x=>x.Customer).Where(x=>x.Status == (ApplicationStatus)args);
+        applications = dbContext.Applications
+            .Include(x => x.OrderItems)
+            .Include(x=>x.Customer)
+            .Where(x=>x.Status == (ApplicationStatus)args)
+            .OrderByDescending(x=>x.CreatedAt);
     }
 
     private void ResetFilters()
     {
-         applications = dbContext.Applications.Include(x => x.OrderItems).Include(x=>x.Customer).ToList();
+         applications = dbContext.Applications
+             .Include(x => x.OrderItems)
+             .Include(x=>x.Customer)
+             .OrderByDescending(x=>x.CreatedAt).ToList();
     }
 
 }

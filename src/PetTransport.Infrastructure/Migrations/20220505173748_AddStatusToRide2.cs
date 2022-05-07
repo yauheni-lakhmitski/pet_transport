@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PetTransport.Infrastructure.Migrations
 {
-    public partial class RemoveUnusedTables : Migration
+    public partial class AddStatusToRide2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -206,7 +206,8 @@ namespace PetTransport.Infrastructure.Migrations
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DepartureDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ArrivalDate = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    ArrivalDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    RideStatus = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -253,6 +254,26 @@ namespace PetTransport.Infrastructure.Migrations
                         column: x => x.RideId,
                         principalTable: "Rides",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RideDetails",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Mileage = table.Column<int>(type: "INTEGER", nullable: false),
+                    FuelUsed = table.Column<int>(type: "INTEGER", nullable: false),
+                    RideId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RideDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RideDetails_Rides_RideId",
+                        column: x => x.RideId,
+                        principalTable: "Rides",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -329,6 +350,12 @@ namespace PetTransport.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_RideDetails_RideId",
+                table: "RideDetails",
+                column: "RideId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Rides_CarId",
                 table: "Rides",
                 column: "CarId");
@@ -358,6 +385,9 @@ namespace PetTransport.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "RideDetails");
 
             migrationBuilder.DropTable(
                 name: "Applications");

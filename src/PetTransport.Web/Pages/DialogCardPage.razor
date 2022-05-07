@@ -19,8 +19,9 @@
     }
 </style>
 
-<RadzenDataGrid @ref="grid" AllowRowSelectOnRowClick="@allowRowSelectOnRowClick" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="4"
-                AllowSorting="true" Data="@applications" TItem="Application" ColumnWidth="200px"
+<RadzenDataGrid @ref="grid" AllowRowSelectOnRowClick="@allowRowSelectOnRowClick" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="4" 
+                 FilterMode="FilterMode.Simple"
+                AllowSorting="true" Data="@applications" TItem="Application"
                 SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@SelectedApplications>
     <Template Context="application">
         <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@application.OrderItems" TItem="ApplicationItem">
@@ -53,7 +54,6 @@
                                 TValue="bool" Change=@(args => { if(!allowRowSelectOnRowClick) { grid.SelectRow(data); }}) />
                         </Template>
                     </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="Application" Property="Id" Title="Id"/>
         <RadzenDataGridColumn TItem="Application" Property="OrderNumber" Title="Номер заказа"/>
         @* <RadzenDataGridColumn TItem="Application" Property="Employee.LastName" Title="Employee" Width="200px" > *@
         @*     <Template Context="application"> *@
@@ -61,11 +61,6 @@
         @*         @application.Employee?.FirstName @application.Employee?.LastName *@
         @*     </Template> *@
         @* </RadzenDataGridColumn> *@
-        <RadzenDataGridColumn TItem="Application" Property="Status" Title="Статус заказа">
-            <Template Context="application">
-                @application.Status.GetEnumDescription()
-            </Template>
-        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Application" Property="PickUpDate" Title="Дата отправки" FormatString="{0:d}"/>
         <RadzenDataGridColumn TItem="Application" Property="DeliveryDate" Title="Дата получения" FormatString="{0:d}"/>
         <RadzenDataGridColumn TItem="Application" Property="SourcePoint" Title="Место отправления"/>
@@ -78,7 +73,7 @@
     </Columns>
 </RadzenDataGrid>
 
-<div class="row">
+<div class="row" style="margin-top:20px;">
     <div class="col-md-12 text-right">
         <RadzenButton Click="@((args) => dialogService.Close(SelectedApplications))" ButtonStyle="ButtonStyle.Secondary" Text="Cancel" Style="width: 120px" Class="mr-1" />
         <RadzenButton Click="@((args) => dialogService.Close(SelectedApplications))" Text="OK" Style="width: 120px" />

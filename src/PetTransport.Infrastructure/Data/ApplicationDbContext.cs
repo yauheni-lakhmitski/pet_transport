@@ -15,6 +15,8 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Application> Applications { get; set; }
     public DbSet<ApplicationItem> ApplicationItems { get; set; }
     public DbSet<Ride> Rides { get; set; }
+    public DbSet<RideDetail> RideDetails { get; set; }
+    public DbSet<AnimalType> AnimalTypes { get; set; }
 
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -27,7 +29,6 @@ public class ApplicationDbContext : IdentityDbContext
     {
         builder.UseEntityTypeConfiguration();
         base.OnModelCreating(builder);
-
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }
