@@ -2,7 +2,6 @@ using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PetTransport.Domain.Entities;
@@ -10,7 +9,6 @@ using PetTransport.Infrastructure.Data;
 using PetTransport.Web;
 using PetTransport.Web.Attributes;
 using PetTransport.Web.Behaviours;
-using PetTransport.Web.Data;
 using PetTransport.Web.Extensions;
 using PetTransport.Web.Models;
 using Radzen;
@@ -45,7 +43,6 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddDefaultIdentity<User>(options =>
 {

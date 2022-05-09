@@ -82,16 +82,17 @@
       <_ContentIncludedByDefault Remove="Views\Transportation\Details.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Transportation\Edit.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Transportation\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Car\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Car\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Car\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Car\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Car\Index.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
       <UpToDateCheckInput Remove="Shared\MainLayout.razor" />
       <UpToDateCheckInput Remove="Shared\NavMenu.razor" />
       <UpToDateCheckInput Remove="Shared\SurveyPrompt.razor" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="FileTemplates" />
     </ItemGroup>
 
 </Project>

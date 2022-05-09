@@ -5,10 +5,12 @@
 @using PetTransport.Infrastructure.Data
 @using PetTransport.Web.Extensions
 @using Task = System.Threading.Tasks.Task
+@using System.Security.Claims
 @inject ApplicationDbContext dbContext
 @inject DialogService DialogService
 @inject NotificationService NotificationService
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
 
 <style>
     form .row {
@@ -37,7 +39,7 @@
                     </div>
                     <div class="col-md-8">
                         <RadzenTextBox style="width: 100%;" Name="SourcePoint" @bind-Value="_application.SourcePoint"/>
-                        <RadzenLengthValidator Component="SourcePoint" Min="3"  Max="10" Text="First name should be at most 10 characters" Popup=@true Style="position: absolute" />
+                        <RadzenLengthValidator Component="SourcePoint" Min="3"  Max="10" Text="First name should be at most 10 characters"  Style="position: absolute" />
                     </div>
                 </div>
                 <div class="row">
@@ -100,9 +102,7 @@
         }
       
                 </div>
-           <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Icon="save" style="margin-bottom: 10px; width: 100%; background-color: #34094a;" Text="Создать заказ" Click="@SaveOrder" Disabled=@(customer == null || !applcationItems.Any()) />
-          
-          </RadzenTemplateForm>  
+</RadzenTemplateForm>  
             
             @* <RadzenFieldset Text="Информация о заказчике"> *@
             @*     <div class="row"> *@
@@ -184,6 +184,12 @@
                 <RadzenRequiredValidator Text="Номер чипа обязателен к заполнению" Component="ChipNumber" Popup="true"/>
             </EditTemplate>
         </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ApplicationItem" Property="Weight" Title="Вес, кг">
+            <EditTemplate Context="applcationItem">
+                <RadzenNumeric @bind-Value="applcationItem.Weight" Style="width:100%; display: block" Name="Weight"/>
+                <RadzenRequiredValidator Text="Вес обязателен к заполнению" Component="Weight" Popup="true"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ApplicationItem" Context="sampleBlazorModelsSampleApplicationItem" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="200px">
             <Template Context="order">
                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
@@ -211,6 +217,8 @@
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
+<br/>
+  <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Icon="save" style="margin-bottom: 10px; width: 100%; background-color: #34094a;" Text="Создать заказ" Click="@SaveOrder" Disabled=@(customer == null || !applcationItems.Any()) />
 
 
 <br>
@@ -220,6 +228,7 @@
     IList<ApplicationItem> applcationItems;
     Customer customer;
     List<AnimalType> _animalTypes;
+    public string UserId { get; set; }
 
     Application _application = new Application()
     {
@@ -229,7 +238,7 @@
     };
     
  
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
         base.OnInitialized();
 
@@ -237,10 +246,14 @@
         // For demo purposes only
         applcationItems = new List<ApplicationItem>();
         _animalTypes = dbContext.AnimalTypes.ToList();
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        UserId = authstate.User.FindFirst(x=>x.Type== ClaimTypes.NameIdentifier).Value;
 
     // For production
     //applcationItems = dbContext.ApplicationItems.Include("Customer").Include("Employee");
     }
+
+   
 
     async Task EditRow(ApplicationItem order)
     {
@@ -265,6 +278,8 @@
           {
             applicationToInsert = null;
         }
+
+        order.AnimalType = _animalTypes.FirstOrDefault(x => x.Id == order.AnimalTypeId);
 
         await applcationItemsGrid.UpdateRow(order);
     }
@@ -313,6 +328,19 @@
     
     async Task SaveOrder()
     {
+        if (string.IsNullOrEmpty(_application.DestinationPoint) || string.IsNullOrEmpty(_application.DestinationPoint))
+        {
+            NotificationService.Notify(new NotificationMessage()
+            {
+                Severity = NotificationSeverity.Error,
+                Duration = 4000,
+                Summary = "Ошибка",
+                Detail = "Заполните место отправления или место получения!"
+            });
+            
+            return;
+        }
+        _application.ManagerId = UserId;
         _application.Customer = customer;
         _application.AddItems(applcationItems);
         dbContext.Applications.Add(_application);

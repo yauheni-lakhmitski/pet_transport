@@ -13,6 +13,7 @@ public class Car:DomainEntity
 
     public long Mileage { get; set; }
     public long Fuel { get; set; }
+    public int LoadCapacity { get; set; }
 
     public List<Ride> Rides { get; set; }
 }

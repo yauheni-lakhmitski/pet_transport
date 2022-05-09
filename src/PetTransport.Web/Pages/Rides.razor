@@ -58,6 +58,12 @@
                 <RadzenRequiredValidator Text="Описание обязательно к заполнению" Component="Name" Popup="true"/>
             </EditTemplate>
         </RadzenDataGridColumn>
+        
+        <RadzenDataGridColumn TItem="Ride" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+                 <Template Context="order">
+                     <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="info" Size="ButtonSize.Small" Class="m-1" Click="@(args => GetInfo(order))" />
+                     </Template>
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Ride" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
             <Template Context="order">
                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
@@ -82,6 +88,7 @@
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
+
 
 @code {
     RadzenDataGrid<Ride> ridesGrid;
@@ -184,6 +191,11 @@
     private void CreateNew()
     {
         NavigationManager.NavigateTo("create-ride");
+    }
+
+    private void GetInfo(Ride value)
+    {
+        NavigationManager.NavigateTo($"/managa-ride-info/{value.Id}");
     }
 
 }

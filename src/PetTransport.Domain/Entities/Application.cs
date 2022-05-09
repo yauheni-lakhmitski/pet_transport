@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using PetTransport.Domain.Entities.Enums;
 
 namespace PetTransport.Domain.Entities;
 
@@ -18,6 +19,9 @@ public class Application
     public Guid? RideId { get; set; }
     public Ride? Ride { get; set; }
 
+    public User Manager { get; set; }
+    public string ManagerId { get; set; }
+
 
 
     public void AddItems(IEnumerable<ApplicationItem> applicationItems)
@@ -26,19 +30,6 @@ public class Application
     }
 }
 
-public enum ApplicationStatus
-{
-    [Description("В обработке")]
-    Pending,
-    [Description("Ожидает оплаты")]
-    NotPaid,
-    [Description("Оплачен")]
-    Paid,
-    [Description("В работе")]
-    InProgress,
-    [Description("Завершен")]
-    Completed
-}
 
 public class ApplicationItem
 {
@@ -48,6 +39,7 @@ public class ApplicationItem
     public Guid AnimalTypeId { get; set; }
 
     public string AnimalName { get; set; }
+    public int Weight { get; set; }
 
     public decimal Price { get; set; }
 

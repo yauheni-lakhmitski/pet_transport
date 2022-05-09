@@ -1,14 +1,20 @@
-﻿@page "/ride-edit/{RideId}"
+﻿@page "/managa-ride-info/{RideId}"
 @inject DialogService DialogService
 @using PetTransport.Domain.Entities
 @using Microsoft.AspNetCore.Components
 @using Microsoft.EntityFrameworkCore
-@using PetTransport.Domain.Entities.Enums
 @using PetTransport.Infrastructure.Data
 @using PetTransport.Web.Extensions
 @using PetTransport.Web.Models
 @using Task = System.Threading.Tasks.Task
+@using System.Security.Claims
+@using System.Linq
+@using System.Linq.Dynamic.Core
+@using PetTransport.Domain.Entities.Enums
 @inject ApplicationDbContext dbContext
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject NotificationService NotificationService
+@inject LinkGenerator LinkGenerator
 
 <style>
     form .row {
@@ -31,7 +37,7 @@
                 @* </div> *@
                 <div class="row">
                     <div class="col-md-4 align-items-center d-flex">
-                        <RadzenLabel Text="Место отправления"/>
+                        <RadzenLabel Text="Место отправки"/>
                     </div>
                     <div class="col-md-8">
                         <RadzenTextBox style="width: 100%;" Name="SourcePoint" @bind-Value="_ride.From"/>
@@ -39,7 +45,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4 align-items-center d-flex">
-                        <RadzenLabel Text="Место получения"/>
+                        <RadzenLabel Text="Место прибытия"/>
                     </div>
                     <div class="col-md-8">
                         <RadzenTextBox style="width: 100%;" Name="DestinationPoint" @bind-Value="_ride.To"/>
@@ -75,12 +81,12 @@
                                         <RadzenLabel Text="Дата прибытия"/>
                                     </div>
                                   <div class="col-md-8">
-                                      <RadzenDatePicker style="width: 100%;" Name="ArrivalDate" @bind-Value="_ride.ArrivalDate" ShowTime="true" ShowSeconds="true" HoursStep="1.5" MinutesStep="5" SecondsStep="10"  DateFormat="MM/dd/yyyy HH:mm" Class="w-100"/>
+                                      <RadzenDatePicker  style="width: 100%;" Name="ArrivalDate" @bind-Value="_ride.ArrivalDate" ShowTime="true" ShowSeconds="true" HoursStep="1.5" MinutesStep="5" SecondsStep="10"  DateFormat="MM/dd/yyyy HH:mm" Class="w-100"/>
                                   </div>
                                 </div>
                 <div class="row">
                     <div class="col-md-4 align-items-center d-flex">
-                        <RadzenLabel Text="Выберите водителя"/>
+                        <RadzenLabel Text="Водитель"/>
                     </div>
                     <div class="col-md-8">
                         <RadzenDropDown @bind-Value="_ride.UserId"  AllowClear="true" TValue="string" AllowVirtualization="true" Class="w-100"
@@ -90,7 +96,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4 align-items-center d-flex">
-                        <RadzenLabel Text="Выберите автомобиль"/>
+                        <RadzenLabel Text="Автомобиль"/>
                     </div>
                     <div class="col-md-8">
                         <RadzenDropDown @bind-Value="_ride.CarId" AllowClear="true" TValue="Guid" AllowVirtualization="true" Class="w-100"
@@ -98,14 +104,6 @@
                                         Change=@(args => OnChange(args, "DropDown with virtualization")) />
                     </div>
                 </div>
-                         <div class="row">
-                                    <div class="col-md-4 align-items-center d-flex">
-                                        <RadzenLabel Text="Выберите заказы"/>
-                                    </div>
-                                    <div class="col-md-8">
-                   <RadzenButton Text=@($"Добавить заказы в поездку") Style="background-color: #34094a;" ButtonStyle="ButtonStyle.Secondary" Click=@OpenOrder />
-                                    </div>
-                                </div>
                             
             </RadzenFieldset>
             
@@ -117,11 +115,21 @@
 @if (_applications.Any())
 {
     
-    <RadzenDataGrid @ref="applicationsGrid" AllowFiltering="true" AllowPaging="true" PageSize="25" AllowSorting="true"  
+    <RadzenDataGrid @ref="applicationsGrid" AllowFiltering="true" AllowPaging="true" PageSize="25" AllowSorting="true"
                     Data="@_applications" TItem="Application">
+        <Template Context="application">
+                <RadzenDataGrid AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or" AllowPaging="true" AllowSorting="true" Data="@application.OrderItems" TItem="ApplicationItem">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Id" />
+                        <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType.Name" Title="Тип животного">
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalName" Title="Название животного" />
+                        <RadzenDataGridColumn TItem="ApplicationItem" Property="ChipNumber" Title="Номер чипа" />
+                    </Columns>
+                </RadzenDataGrid>
+            </Template>
         <Columns>
-            <RadzenDataGridColumn TItem="Application" Property="Id" Title="Id"  />
-            <RadzenDataGridColumn TItem="Application" Property="OrderNumber" Title="Номер заказа" />
+            <RadzenDataGridColumn TItem="Application" Property="OrderNumber" Title="Номер заказа"/>
             @* <RadzenDataGridColumn TItem="Application" Property="Employee.LastName" Title="Employee" Width="200px" > *@
             @*     <Template Context="application"> *@
             @*         <RadzenImage Path="@application.Employee?.Photo" style="width: 32px; height: 32px; bapplication-radius: 16px; margin-right: 6px;" /> *@
@@ -133,32 +141,46 @@
                     @application.Status.GetEnumDescription()
                 </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="Application" Property="PickUpDate" Title="Дата отправки" FormatString="{0:d}"  />
+            <RadzenDataGridColumn TItem="Application" Property="PickUpDate" Title="Дата отправки" FormatString="{0:d}"/>
             <RadzenDataGridColumn TItem="Application" Property="DeliveryDate" Title="Дата получения" FormatString="{0:d}"/>
-            <RadzenDataGridColumn TItem="Application" Property="SourcePoint" Title="Место отправления" />
-            <RadzenDataGridColumn TItem="Application" Property="DestinationPoint" Title="Место получения" />
+            <RadzenDataGridColumn TItem="Application" Property="SourcePoint" Title="Место отправления"/>
+            <RadzenDataGridColumn TItem="Application" Property="DestinationPoint" Title="Место получения"/>
             <RadzenDataGridColumn TItem="Application" Title="Количество животных">
                 <Template Context="application">
                     @application.OrderItems.Count
                 </Template>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Application" Context="application" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
-                            <Template Context="application">
-                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(application))"  @onclick:stopPropagation="true">
-                                </RadzenButton>
-                            </Template>
-                            <EditTemplate Context="application">
-                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(application))">
-                                </RadzenButton>
-                            </EditTemplate>
-                        </RadzenDataGridColumn>
+                <Template Context="application">
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="done" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(application))" @onclick:stopPropagation="true" Disabled="_ride.RideStatus == RideStatus.Completed">
+                    </RadzenButton>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Application" Context="application" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+                                        <Template Context="application">
+                                                  <a href="@LinkGenerator.GetPathByAction("GetTtn", "Word", new {id = application.Id})">
+                                                            <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="assignment_returned" href=@{$"/word/getttn?id={@application.Id}"} />
+                                                        </a>
+                                        </Template>
+                                    </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
-    
-    
-    
-    <hr/>
-    <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="save" style="margin-bottom: 10px; width: 100%; background-color: #34094a;" Text="Завершить поездку" Click="@SaveRide" />
+    @* *@
+    @* *@
+    @* *@
+    @* <hr/> *@
+    @* @if (_ride.RideStatus != RideStatus.Completed) *@
+    @* { *@
+    @*     @if (!dbContext.Rides.Any(x => x.UserId == UserId && x.RideStatus == RideStatus.InProgress)) *@
+    @*     { *@
+    @*         <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="save" style="margin-bottom: 10px; width: 100%; background-color: #34094a;" Text="Взять в работу" Click="@OnClickTakeInProgress"/> *@
+    @*     } *@
+    @* *@
+    @*     @if (dbContext.Rides.Any(x => x.UserId == UserId && x.Id == _ride.Id && x.RideStatus == RideStatus.InProgress)) *@
+    @*     { *@
+    @*         <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="save" style="margin-bottom: 10px; width: 100%; background-color: #34094a;" Text="Завершить поездку" Click="@SaveRide"/> *@
+    @*     } *@
+    @* } *@
 }
 
 
@@ -186,25 +208,30 @@
     List<Application> _applications;
     List<User> users;
     List<Car> cars;
+    public string UserId { get; set; }
 
     void Submit(Ride arg)
     {
    
     }
     
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
         
-        base.OnInitialized();
+        await base.OnInitializedAsync();
         _applications = new List<Application>();
 
     users = dbContext.Users.ToList();
         cars = dbContext.Cars.ToList();
-        _ride = dbContext.Rides
+        _ride = await dbContext.Rides
             .Include(x=>x.Applications)
-            .Include(x=>x.Car)
-            .FirstOrDefault(x => x.Id == Guid.Parse(RideId));
+            .ThenInclude(x=>x.OrderItems)
+            .ThenInclude(x=>x.AnimalType)
+            .FirstOrDefaultAsync(x => x.Id == Guid.Parse(RideId));
         _applications = _ride.Applications;
+        
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        UserId = authstate.User.FindFirst(x=>x.Type== ClaimTypes.NameIdentifier).Value;
     }
     
     void OnChange(object value, string name)
@@ -227,37 +254,51 @@
     {
         foreach (var application in _applications)
         {
-            application.Status = ApplicationStatus.InProgress;
+            application.Status = ApplicationStatus.Completed;
         }
         
         _ride.AddApplications(_applications);
         
         await DialogService.OpenAsync<FinishRideDialog>("Завершить текущую поездку",
-            new Dictionary<string, object>() { {"Ride",_ride} },
+            new Dictionary<string, object>() { {"Ride", _ride} },
             new DialogOptions() { Width = "700px", Height = "570px", Resizable = true, Draggable = true });
         
 
     // TODO: HANDLE
+    }    
+    
+    async Task OnClickTakeInProgress()
+    {
+        if (dbContext.Rides.Any(x=>x.RideStatus == RideStatus.InProgress && x.UserId == UserId))
+        {
+            ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Ошибка", Detail = "У вас есть активные поездки", Duration = 4000 });
+        }
+        
+        
+        _ride.RideStatus = RideStatus.InProgress;
+
+        foreach (var application in _ride.Applications)
+        {
+            application.Status = ApplicationStatus.InProgress;
+        }
+        
+        dbContext.Update(_ride);
+        await dbContext.SaveChangesAsync();
     }
     
     async Task DeleteRow(Application application)
     {
-       
-        if (_applications.Contains(application))
-        {
-            dbContext.Remove<Application>(application);
+        application.Status = ApplicationStatus.Completed;
 
-    // For demo purposes only
-            _applications.Remove(application);
-
-    // For production
-    //dbContext.SaveChanges();
+        dbContext.Update(application);
+        await dbContext.SaveChangesAsync();
 
             await applicationsGrid.Reload();
-        }
-        else
-        {
-            applicationsGrid.CancelEditRow(application);
-        }
+        
+    }
+    
+    void ShowNotification(NotificationMessage message)
+    {
+        NotificationService.Notify(message);
     }
 }

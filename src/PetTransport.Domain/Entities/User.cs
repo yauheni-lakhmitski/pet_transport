@@ -9,6 +9,8 @@ public class User : IdentityUser
     public string Location { get;  set; }
     public string ImageUrl { get;  set; }
     public bool IsDeleted { get;  set; }
+
+    public List<Application> Applications { get; set; }
    
     public void UpdateProfileInfo(string firstName, string lastName, string location)
     {

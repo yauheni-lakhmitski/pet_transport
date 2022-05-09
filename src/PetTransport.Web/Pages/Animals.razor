@@ -1,0 +1,153 @@
+﻿@page "/animalTypes"
+
+@using Microsoft.EntityFrameworkCore
+@using PetTransport.Domain.Entities
+@using PetTransport.Infrastructure.Data
+@using Microsoft.AspNetCore.Components
+@using PetTransport.Web.Extensions
+@using PetTransport.Web.Models
+@using Syncfusion.Licensing
+@using Task = System.Threading.Tasks.Task
+
+@inject ApplicationDbContext dbContext
+
+<h1>Панель управления типами живонтых</h1>
+
+    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px;background-color: #34094a;" Text="Добавить новый тип живонтых" Click="@InsertRow" Disabled=@(animalTypeToInsert != null) />
+    <RadzenDataGrid @ref="animalTypesGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
+                Data="@animalTypes" TItem="AnimalType" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+        <Columns>
+            <RadzenDataGridColumn TItem="AnimalType" Property="Id" Title="Код" Width="120px" />
+            <RadzenDataGridColumn TItem="AnimalType" Property="Name" Title="Название">
+                <EditTemplate Context="animalType">
+                    <RadzenTextBox @bind-Value="animalType.Name" Style="width:100%; display: block" Name="Name" />
+                    <RadzenRequiredValidator Text="Название обязательно к заполнению" Component="Name" Popup="true" />
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="AnimalType" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+                <Template Context="order">
+                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
+                    </RadzenButton>
+                </Template>
+                <EditTemplate Context="order">
+                    <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@((args) => SaveRow(order))">
+                    </RadzenButton>
+                    <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(order))">
+                    </RadzenButton>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="AnimalType" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+                <Template Context="order">
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))"  @onclick:stopPropagation="true">
+                    </RadzenButton>
+                </Template>
+                <EditTemplate Context="order">
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))">
+                    </RadzenButton>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+
+@code {
+    RadzenDataGrid<AnimalType> animalTypesGrid;
+    IList<AnimalType> animalTypes;
+
+    
+
+    
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        // For demo purposes only
+        animalTypes = dbContext.AnimalTypes.ToList();
+    }
+
+    async Task EditRow(AnimalType animalType)
+    {
+        await animalTypesGrid.EditRow(animalType);
+    }
+
+    void OnUpdateRow(AnimalType animalType)
+    {
+        if (animalType == animalTypeToInsert)
+        {
+            animalTypeToInsert = null;
+        }
+
+        dbContext.Update(animalType);
+
+
+        dbContext.SaveChanges();
+    }
+
+    async Task SaveRow(AnimalType animalType)
+    {
+        if (animalType == animalTypeToInsert)
+        {
+            animalTypeToInsert = null;
+        }
+
+        await animalTypesGrid.UpdateRow(animalType);
+    }
+
+    void CancelEdit(AnimalType animalType)
+    {
+        if (animalType == animalTypeToInsert)
+        {
+            animalTypeToInsert = null;
+        }
+
+        animalTypesGrid.CancelEditRow(animalType);
+
+        // For production
+        var orderEntry = dbContext.Entry(animalType);
+        if (orderEntry.State == EntityState.Modified)
+        {
+            orderEntry.CurrentValues.SetValues(orderEntry.OriginalValues);
+            orderEntry.State = EntityState.Unchanged;
+        }
+    }
+
+    async Task DeleteRow(AnimalType animalType)
+    {
+        if (animalType == animalTypeToInsert)
+        {
+            animalTypeToInsert = null;
+        }
+
+        if (animalTypes.Contains(animalType))
+        {
+            dbContext.Remove<AnimalType>(animalType);
+
+            // For demo purposes only
+            animalTypes.Remove(animalType);
+
+            // For production
+            //dbContext.SaveChanges();
+
+            await animalTypesGrid.Reload();
+        }
+        else
+        {
+            animalTypesGrid.CancelEditRow(animalType);
+        }
+    }
+
+    AnimalType animalTypeToInsert;
+
+    async Task InsertRow()
+    {
+        animalTypeToInsert = new AnimalType() { Id = Guid.NewGuid(), Name = string.Empty};
+        await animalTypesGrid.InsertRow(animalTypeToInsert);
+    }
+
+    void OnCreateRow(AnimalType animalType)
+    {
+        dbContext.Add(animalType);
+
+        dbContext.SaveChanges();
+    }
+}

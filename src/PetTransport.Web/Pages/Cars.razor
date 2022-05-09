@@ -40,11 +40,17 @@
                 </EditTemplate>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Car" Property="Mileage" Title="Пробег">
-                            <EditTemplate Context="car">
-                                <RadzenNumeric @bind-Value="car.Mileage" Style="width:100%; display: block" Name="Mileage"/>
-                                <RadzenRequiredValidator Text="Пробег обязателен к заполнению" Component="Mileage" Popup="true"/>
-                            </EditTemplate>
-                        </RadzenDataGridColumn>
+                <EditTemplate Context="car">
+                    <RadzenNumeric @bind-Value="car.Mileage" Style="width:100%; display: block" Name="Mileage"/>
+                    <RadzenRequiredValidator Text="Пробег обязателен к заполнению" Component="Mileage" Popup="true"/>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Car" Property="LoadCapacity" Title="Грузоподьемность, кг">
+                <EditTemplate Context="car">
+                    <RadzenNumeric @bind-Value="car.LoadCapacity" Style="width:100%; display: block" Name="LoadCapacity"  TValue="int" />
+                    <RadzenRequiredValidator Text="Грузоподьемность - обязательно поле" Component="LoadCapacity" Popup="true"/>
+                </EditTemplate>
+            </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Car" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
                 <Template Context="order">
                     <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">

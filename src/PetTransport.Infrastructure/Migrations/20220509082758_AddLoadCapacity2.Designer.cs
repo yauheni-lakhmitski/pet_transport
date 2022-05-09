@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetTransport.Infrastructure.Data;
 
@@ -10,9 +11,10 @@ using PetTransport.Infrastructure.Data;
 namespace PetTransport.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220509082758_AddLoadCapacity2")]
+    partial class AddLoadCapacity2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
@@ -249,10 +251,6 @@ namespace PetTransport.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ManagerId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("OrderNumber")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -273,8 +271,6 @@ namespace PetTransport.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
-
-                    b.HasIndex("ManagerId");
 
                     b.HasIndex("RideId");
 
@@ -303,9 +299,6 @@ namespace PetTransport.Infrastructure.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Weight")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -543,20 +536,12 @@ namespace PetTransport.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("CustomerId");
 
-                    b.HasOne("PetTransport.Domain.Entities.User", "Manager")
-                        .WithMany("Applications")
-                        .HasForeignKey("ManagerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PetTransport.Domain.Entities.Ride", "Ride")
                         .WithMany("Applications")
                         .HasForeignKey("RideId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Customer");
-
-                    b.Navigation("Manager");
 
                     b.Navigation("Ride");
                 });
@@ -626,11 +611,6 @@ namespace PetTransport.Infrastructure.Migrations
                     b.Navigation("Applications");
 
                     b.Navigation("RideDetail");
-                });
-
-            modelBuilder.Entity("PetTransport.Domain.Entities.User", b =>
-                {
-                    b.Navigation("Applications");
                 });
 #pragma warning restore 612, 618
         }

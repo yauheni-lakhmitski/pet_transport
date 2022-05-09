@@ -10,9 +10,11 @@
 @using System.Security.Claims
 @using System.Linq
 @using System.Linq.Dynamic.Core
+@using PetTransport.Domain.Entities.Enums
 @inject ApplicationDbContext dbContext
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 @inject NotificationService NotificationService
+@inject LinkGenerator LinkGenerator
 
 <style>
     form .row {
@@ -154,6 +156,13 @@
                     </RadzenButton>
                 </Template>
             </RadzenDataGridColumn>
+                   <RadzenDataGridColumn TItem="Application" Context="application" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+                            <Template Context="application">
+                                      <a href="@LinkGenerator.GetPathByAction("GetTtn", "Word", new {id = application.Id})">
+                                                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="assignment_returned" href=@{$"/word/getttn?id={@application.Id}"} />
+                                            </a>
+                            </Template>
+                        </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
     
@@ -292,4 +301,5 @@
     {
         NotificationService.Notify(message);
     }
+
 }

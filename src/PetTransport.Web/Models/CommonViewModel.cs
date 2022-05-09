@@ -1,4 +1,5 @@
 ﻿using PetTransport.Domain.Entities;
+using PetTransport.Domain.Entities.Enums;
 
 namespace PetTransport.Web.Models;
 

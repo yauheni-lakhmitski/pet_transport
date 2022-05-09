@@ -19,17 +19,17 @@
                 Data="@rides" TItem="Ride" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
     <Columns>
         <RadzenDataGridColumn TItem="Ride" Property="Id" Title="Id" Width="120px"/>
-                <RadzenDataGridColumn TItem="Ride" Property="Car" Title="Автомобиль">
-                    <Template Context="ride">
-                        @ride.Car.Make  @ride.Car.Model @ride.Car.RegistrationNumber
-                    </Template>
-                </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Ride" Property="Car" Title="Автомобиль">
+            <Template Context="ride">
+                @ride.Car.Make  @ride.Car.Model @ride.Car.RegistrationNumber
+            </Template>
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Ride" Property="Name" Title="Название поездки">
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Ride" Property="From" Title="Откуда">
         </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="Ride" Property="To" Title="Куда">
-                        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Ride" Property="To" Title="Куда">
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Ride" Property="Description" Title="Описание поездки">
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Ride" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px" Title="Детали">
@@ -40,6 +40,7 @@
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
+
 
 @code {
     RadzenDataGrid<Ride> ridesGrid;
