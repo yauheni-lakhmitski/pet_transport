@@ -10,8 +10,11 @@ public enum ApplicationStatus
     NotPaid,
     [Description("Оплачен")]
     Paid,
+    [Description("Готов к перевозке")]
+    ReadyToTransfer,
     [Description("В работе")]
     InProgress,
     [Description("Завершен")]
-    Completed
+    Completed,
+
 }

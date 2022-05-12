@@ -120,8 +120,8 @@
         <Template Context="application">
                 <RadzenDataGrid AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or" AllowPaging="true" AllowSorting="true" Data="@application.OrderItems" TItem="ApplicationItem">
                     <Columns>
-                        <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Id" />
-                        <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType.Name" Title="Тип животного">
+                        <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Код" />
+                        <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType.Name" Title="Вид животного">
                         </RadzenDataGridColumn>
                         <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalName" Title="Название животного" />
                         <RadzenDataGridColumn TItem="ApplicationItem" Property="ChipNumber" Title="Номер чипа" />

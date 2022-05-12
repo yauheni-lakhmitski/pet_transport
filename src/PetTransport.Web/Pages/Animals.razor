@@ -11,11 +11,11 @@
 
 @inject ApplicationDbContext dbContext
 
-<h1>Панель управления типами живонтых</h1>
+<h1>Панель управления видами животных</h1>
 
-    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px;background-color: #34094a;" Text="Добавить новый тип живонтых" Click="@InsertRow" Disabled=@(animalTypeToInsert != null) />
-    <RadzenDataGrid @ref="animalTypesGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
-                Data="@animalTypes" TItem="AnimalType" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+    <RadzenButton Icon="add_circle_outline"  style="margin-bottom: 10px;background-color: #34094a;" Text="Добавить новый вид животных" Click="@InsertRow" Disabled=@(animalTypeToInsert != null) />
+    <RadzenDataGrid @ref="animalTypesGrid" AllowColumnResize="true" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
+                Data="@animalTypes" TItem="AnimalType" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Responsive="true" FilterMode="FilterMode.Simple" >
         <Columns>
             <RadzenDataGridColumn TItem="AnimalType" Property="Id" Title="Код" Width="120px" />
             <RadzenDataGridColumn TItem="AnimalType" Property="Name" Title="Название">

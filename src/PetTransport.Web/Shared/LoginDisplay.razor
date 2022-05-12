@@ -4,17 +4,18 @@
 
 <AuthorizeView>
     <Authorized>
-        <a href="Account/Manage/Index">
-            Hello, @context.User.Identity.Name!
+        <a href="profile">
+            @context.User.Identity.Name
         </a>
+    <img style="margin-left: 5px" height="30px" width="30px" class="user__img" src="/img/@context.User?.Claims?.FirstOrDefault(s=>s.Type=="ImageUrl")?.Value" alt="">
         <form action="Account/Logout?returnUrl=%2F" method="post">
-            <button class="nav-link btn btn-link" type="submit">Logout</button>
+            <button class="nav-link btn btn-link" type="submit">Выход</button>
             <input name="__RequestVerificationToken" type="hidden"
                    value="@TokenProvider.XsrfToken">
         </form>
     </Authorized>
     <NotAuthorized>
-        <a href="Account/Register">Register</a>
-        <a href="Account/Login">Login</a>
+        <a href="Account/Register">Регистрация</a>
+        <a href="Account/Login">Вход</a>
     </NotAuthorized>
 </AuthorizeView>

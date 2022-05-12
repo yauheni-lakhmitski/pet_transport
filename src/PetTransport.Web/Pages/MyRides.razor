@@ -13,12 +13,15 @@
 @inject ApplicationDbContext dbContext
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 
-<h1>Поездки</h1>
+<h1>Запланированные поездки</h1>
 
-<RadzenDataGrid @ref="ridesGrid" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
+@if (rides.Any())
+{
+    
+<RadzenDataGrid @ref="ridesGrid" AllowColumnResize="true" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
                 Data="@rides" TItem="Ride" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
     <Columns>
-        <RadzenDataGridColumn TItem="Ride" Property="Id" Title="Id" Width="120px"/>
+        <RadzenDataGridColumn TItem="Ride" Property="Id" Title="Код" Width="120px"/>
                 <RadzenDataGridColumn TItem="Ride" Property="Car" Title="Автомобиль">
                     <Template Context="ride">
                         @ride.Car.Make  @ride.Car.Model @ride.Car.RegistrationNumber
@@ -34,13 +37,16 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Ride" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px" Title="Детали">
             <Template Context="order">
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="announcement" Size="ButtonSize.Small" Class="m-1" Click="() => OnButtonClick(order.Id)" @onclick:stopPropagation="true">
-                </RadzenButton>
+                <span style="cursor:pointer" @onclick="() => OnButtonClick(order.Id)" class="oi oi-info"></span>
             </Template>
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
-
+}
+else
+{
+    <h3>В системе нет поездок закрепленных за вами!</h3>
+}
 @code {
     RadzenDataGrid<Ride> ridesGrid;
     List<Ride> rides;

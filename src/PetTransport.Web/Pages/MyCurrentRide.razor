@@ -18,7 +18,7 @@
 <RadzenDataGrid @ref="ridesGrid" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
                 Data="@rides" TItem="Ride" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
     <Columns>
-        <RadzenDataGridColumn TItem="Ride" Property="Id" Title="Id" Width="120px"/>
+        <RadzenDataGridColumn TItem="Ride" Property="Id" Title="Код" Width="120px"/>
         <RadzenDataGridColumn TItem="Ride" Property="Car" Title="Автомобиль">
             <Template Context="ride">
                 @ride.Car.Make  @ride.Car.Model @ride.Car.RegistrationNumber

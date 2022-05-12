@@ -39,7 +39,7 @@
                     </div>
                     <div class="col-md-8">
                         <RadzenTextBox style="width: 100%;" Name="SourcePoint" @bind-Value="_application.SourcePoint"/>
-                        <RadzenLengthValidator Component="SourcePoint" Min="3"  Max="10" Text="First name should be at most 10 characters"  Style="position: absolute" />
+                        <RadzenLengthValidator  Popup="true" Component="SourcePoint" Min="3"  Max="250" Text="First name should be at most 10 characters"  Style="position: absolute" />
                     </div>
                 </div>
                 <div class="row">
@@ -49,22 +49,6 @@
                     <div class="col-md-8">
                         <RadzenTextBox style="width: 100%;" Name="DestinationPoint" @bind-Value="_application.DestinationPoint"/>
                         <RadzenRequiredValidator Component="DestinationPoint" Text="Место прибытия обязательно для заполнения"/>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4 align-items-center d-flex">
-                        <RadzenLabel Text="Дата отправки" />
-                    </div>
-                    <div class="col-md-8">
-                        <RadzenDatePicker style="width: 100%;" DateFormat="d"  Name="PickUpDate" @bind-Value="_application.PickUpDate" />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4 align-items-center d-flex">
-                        <RadzenLabel Text="Дата получения"/>
-                    </div>
-                    <div class="col-md-8">
-                        <RadzenDatePicker style="width: 100%;" DateFormat="d"  Name="DeliveryDate" @bind-Value="_application.DeliveryDate"/>
                     </div>
                 </div>
                 <div class="row">
@@ -156,13 +140,13 @@
             @* </RadzenFieldset> *@
  
 
-<RadzenButton Icon="add_circle_outline" ButtonStyle="ButtonStyle.Primary" style="margin-bottom: 10px;background-color: #34094a;" Text="Добавить животное в заказ" Click="@InsertRow" Disabled=@(applicationToInsert != null) />
-<RadzenDataGrid @ref="applcationItemsGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
+<RadzenButton Icon="add_circle_outline"  ButtonStyle="ButtonStyle.Primary" style="margin-bottom: 10px;background-color: #34094a;" Text="Добавить животное в заказ" Click="@InsertRow" Disabled=@(applicationToInsert != null) />
+<RadzenDataGrid @ref="applcationItemsGrid" AllowColumnResize="true" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
                 Data="@applcationItems" TItem="ApplicationItem" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
     <Columns>
-        <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="ID" Width="120px" >
+        <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Код" Width="120px" >
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType" Title="Тип животного">
+        <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType" Title="Вид животного">
             <Template Context="applcationItem">
                 @applcationItem.AnimalType?.Name
             </Template>
@@ -232,9 +216,7 @@
 
     Application _application = new Application()
     {
-        OrderNumber = Guid.NewGuid().ToString("N"),
-        PickUpDate = DateTime.Now,
-        DeliveryDate = DateTime.Now
+        OrderNumber = Guid.NewGuid().ToString("N")
     };
     
  

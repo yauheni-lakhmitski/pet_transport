@@ -3,6 +3,7 @@
 @using Microsoft.EntityFrameworkCore
 @using PetTransport.Infrastructure.Data
 @using Microsoft.AspNetCore.Components
+@using System.Globalization
 
 @inject ApplicationDbContext dbContext
 @inject NavigationManager NavigationManager
@@ -17,7 +18,8 @@
                  AppointmentSelect=@(args => OnAppointmentSelect(args))
                  StartProperty="Start"
                  EndProperty="End" 
-        TextProperty="Text" SelectedIndex="2">
+                 Culture="@CultureInfo.GetCultureInfo("ru-RU")"
+                 TextProperty="Text" SelectedIndex="2">
         <RadzenDayView />
         <RadzenWeekView />
         <RadzenMonthView />
@@ -90,6 +92,7 @@
 
     private void OnAppointmentRender(SchedulerAppointmentRenderEventArgs<Appointment> arg)
     {
+        arg.Attributes["style"] = "height:200%;";
     }
 
 

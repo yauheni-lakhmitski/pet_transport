@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetTransport.Infrastructure.Data;
 
@@ -10,9 +11,10 @@ using PetTransport.Infrastructure.Data;
 namespace PetTransport.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220509133022_AddPatronymic2")]
+    partial class AddPatronymic2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
@@ -242,11 +244,11 @@ namespace PetTransport.Infrastructure.Migrations
                     b.Property<Guid?>("CustomerId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("DestinationPoint")
-                        .IsRequired()
+                    b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("FinishedAt")
+                    b.Property<string>("DestinationPoint")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ManagerId")
@@ -255,6 +257,9 @@ namespace PetTransport.Infrastructure.Migrations
 
                     b.Property<string>("OrderNumber")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("PickUpDate")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("RideId")
@@ -473,7 +478,7 @@ namespace PetTransport.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsBlocked")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("LastName")

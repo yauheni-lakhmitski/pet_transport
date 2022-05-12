@@ -15,14 +15,16 @@ public class AccountController : Controller
         private readonly SignInManager<User> _signInManager;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -75,10 +77,12 @@ public class AccountController : Controller
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, ImageUrl = "medium_male_default.png"};
+                var user = new User { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, PatronymicName = model.PatronymicName, ImageUrl = "medium_male_default.png"};
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "Водитель");
+                    
                     string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                      var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                      
@@ -87,9 +91,8 @@ public class AccountController : Controller
                          $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
                 }
 
-                return Content(
-                    "Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
-                
+                return RedirectToAction("Login");
+
             }
 
             // If we got this far, something failed, redisplay form
@@ -127,7 +130,8 @@ public class AccountController : Controller
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            model.ReturnUrl = "/Home/Index";
+            if (ModelState.IsValid)
+            {
                 var user = await _userManager.FindByNameAsync(model.Email);
                 if (user != null)
                 {
@@ -140,6 +144,11 @@ public class AccountController : Controller
 
                     var result =
                         await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                    if (!result.Succeeded)
+                    {
+                        ModelState.AddModelError("", "Неправильный логин и (или) пароль");
+                        return View(model);
+                    }
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -148,8 +157,9 @@ public class AccountController : Controller
                     ModelState.AddModelError("", "Неправильный логин и (или) пароль");
                     return View(model);
                 }
+            }
 
-                return View(model);
+            return View(model);
         }
 
         [HttpGet]
@@ -184,7 +194,6 @@ public class AccountController : Controller
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            // удаляем аутентификационные куки
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
@@ -247,7 +256,7 @@ public class AccountController : Controller
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user) || user.IsDeleted))
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user) || user.IsBlocked))
                 {
                     // пользователь с данным email может отсутствовать в бд
                     // тем не менее мы выводим стандартное сообщение, чтобы скрыть 
@@ -391,7 +400,7 @@ public class AccountController : Controller
         {
             ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity;
             var user = await _userManager.FindByEmailAsync(identity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email).Value);
-            user.DeleteUser();
+            // user.DeleteUser();
 
             await _userManager.SetEmailAsync(user, $"{Guid.NewGuid().ToString()}@email.co");
             await _userManager.SetUserNameAsync(user, $"{Guid.NewGuid().ToString()}@email.co");

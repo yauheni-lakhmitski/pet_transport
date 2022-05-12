@@ -7,12 +7,11 @@ public class Application
 {
     public Guid Id { get; set; }
     public string OrderNumber { get; set; }
-    public DateTime PickUpDate { get; set; }
-    public DateTime DeliveryDate { get; set; }
     public ApplicationStatus Status { get; set; } = ApplicationStatus.Pending;
     public string SourcePoint { get; set; }
     public string DestinationPoint { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime? FinishedAt { get; set; }
     public Customer? Customer { get; set; }
     public Guid? CustomerId { get; set; }
     public List<ApplicationItem> OrderItems { get; set; } = new List<ApplicationItem>();

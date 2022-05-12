@@ -120,10 +120,10 @@
 @if (_applications.Any())
 {
     
-    <RadzenDataGrid @ref="applicationsGrid" AllowFiltering="true" AllowPaging="true" PageSize="25" AllowSorting="true"  
+    <RadzenDataGrid @ref="applicationsGrid" AllowFiltering="true" AllowPaging="true" AllowColumnResize="true" PageSize="25" AllowSorting="true"  
                     Data="@_applications" TItem="Application">
         <Columns>
-            <RadzenDataGridColumn TItem="Application" Property="Id" Title="Id"  />
+            <RadzenDataGridColumn TItem="Application" Property="Id" Title="Код"  />
             <RadzenDataGridColumn TItem="Application" Property="OrderNumber" Title="Номер заказа" />
             @* <RadzenDataGridColumn TItem="Application" Property="Employee.LastName" Title="Employee" Width="200px" > *@
             @*     <Template Context="application"> *@
@@ -136,8 +136,7 @@
                     @application.Status.GetEnumDescription()
                 </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="Application" Property="PickUpDate" Title="Дата отправки" FormatString="{0:d}"  />
-            <RadzenDataGridColumn TItem="Application" Property="DeliveryDate" Title="Дата получения" FormatString="{0:d}"/>
+            <RadzenDataGridColumn TItem="Application" Property="CreatedAt" Title="Дата создания" FormatString="{0:d}"  />
             <RadzenDataGridColumn TItem="Application" Property="SourcePoint" Title="Место отправления" />
             <RadzenDataGridColumn TItem="Application" Property="DestinationPoint" Title="Место получения" />
             <RadzenDataGridColumn TItem="Application" Title="Количество животных">
@@ -217,6 +216,18 @@
     
     async Task SaveRide()
     {
+
+        if (string.IsNullOrWhiteSpace(_ride.From) ||
+            string.IsNullOrWhiteSpace(_ride.To) ||
+            string.IsNullOrWhiteSpace(_ride.Name) ||
+            string.IsNullOrWhiteSpace(_ride.Description) ||
+            string.IsNullOrWhiteSpace(_ride.UserId) || 
+            _ride.CarId == null
+            )
+        {
+            NotificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Ошибка", Detail = "Заполните все поля.", Duration = 4000});
+            return;
+        }
         foreach (var application in _applications)
         {
             application.Status = ApplicationStatus.InProgress;

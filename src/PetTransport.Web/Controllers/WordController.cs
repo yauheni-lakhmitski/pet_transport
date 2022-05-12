@@ -162,8 +162,8 @@ namespace EJ2CoreSampleBrowser.Controllers.Word
             testOrder.City = application.SourcePoint;
             testOrder.OrderID = application.Id.ToString();
             testOrder.OrderDate = application.CreatedAt.ToString();
-            testOrder.RequiredDate = application.DeliveryDate.ToString();
-            testOrder.ShippedDate = application.DeliveryDate.ToString();
+            // testOrder.RequiredDate = application.DeliveryDate.ToString();
+            // testOrder.ShippedDate = application.DeliveryDate.ToString();
             testOrder.Shippers_CompanyName = "shipName";
             
             orders.Add(testOrder);
@@ -214,9 +214,6 @@ namespace EJ2CoreSampleBrowser.Controllers.Word
 
             return dataTable;
         }
-    
-        
-        
         
 
         private MailMergeDataTable GetTestOrder(Guid TestOrderId)
@@ -238,7 +235,7 @@ namespace EJ2CoreSampleBrowser.Controllers.Word
             testOrder.SourcePoint = ride.SourcePoint;
             testOrder.DestinationPoint = ride.DestinationPoint;
             testOrder.CustomerName = ride.Customer.Name;
-            testOrder.ShippedDate = ride.DeliveryDate.ToString();
+            testOrder.ShippedDate = ride.CreatedAt.ToString();
             orders.Add(testOrder);
 
             MailMergeDataTable dataTable = new MailMergeDataTable("Orders", orders);

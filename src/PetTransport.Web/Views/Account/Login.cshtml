@@ -27,22 +27,11 @@
                         <input asp-for="RememberMe" type="checkbox" class="form-check-input" id="exampleCheck1">
                         <label asp-for="RememberMe" class="form-check-label" for="exampleCheck1">Запомнить меня</label>
                     </div>
+                     <input asp-for="ReturnUrl" hidden="hidden" type="checkbox" value="returnUrl" class="form-check-input" id="exampleCheck1">
                     <button type="submit" class="btn btn-primary">Войти</button>
                     @Html.ActionLink("Зарегистрироваться", "Register", "Account", null, new {@class="btn btn-light"})
                     @Html.ActionLink("Забыли пароль?", "ForgotPassword", "Account", null, new {@class="btn btn-light"})
-
-                    @*<h6 class="btn-lonig__title">Войдите с помощью учетной записи в других сервисах</h6>
-                    <ul class="btn-lonig list-reset">
-                        <li class="btn-lonig__item">
-                            <a class="btn-lonig__link btn-lonig__link--google" href="#"><i class="fab fa-google"></i></a>
-                        </li>
-                        <li class="btn-lonig__item">
-                            <a class="btn-lonig__link btn-lonig__link--twitter" href="#"><i class="fab fa-twitter"></i></a>
-                        </li>
-                        <li class="btn-lonig__item">
-                            <a class="btn-lonig__link btn-lonig__link--facebook" href="#"><i class="fab fa-facebook-f"></i></a>
-                        </li>
-                    </ul>*@
+                    
                 </form>
             </div>
         </div>

@@ -1,0 +1,151 @@
+﻿@page "/profile"
+
+@using Microsoft.EntityFrameworkCore
+@using PetTransport.Domain.Entities
+@using PetTransport.Infrastructure.Data
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Identity
+@using Task = System.Threading.Tasks.Task
+
+@inject ApplicationDbContext dbContext
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject UserManager<User> UserManager
+@inject NotificationService NotificationService
+@inject LinkGenerator LinkGenerator
+
+<style>
+    form .row {
+        margin-bottom: 16px;
+    }
+</style>
+
+<h1>Редактирование профиля</h1>
+
+   
+<RadzenTemplateForm Data="@CurrentUser" Submit="@((User args) => { Submit(args); })">
+    <div class="row">
+        <div class="col-md-8">
+            <RadzenFieldset Text="Профиль пользователя">
+                @* <div class="row"> *@
+                @*     <div class="col-md-4 align-items-center d-flex"> *@
+                @*         <RadzenLabel Text="Номер поездки" /> *@
+                @*     </div> *@
+                @*     <div class="col-md-8"> *@
+                @*         <RadzenTextBox style="width: 100%;" Name="RideId" @bind-Value="_ride.Id" Disabled="true" /> *@
+                @*     </div> *@
+                @* </div> *@
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                        <RadzenLabel Text="Имя"/>
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenTextBox style="width: 100%;" Name="FirstName" @bind-Value="CurrentUser.FirstName"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                        <RadzenLabel Text=Отчество />
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenTextBox style="width: 100%;" Name="PatronymicName" TValue="string?"  @bind-Value="CurrentUser.PatronymicName"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                        <RadzenLabel Text="Фамилия" />
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenTextBox style="width: 100%;" DateFormat="d"  Name="LastName" TValue="string?"  @bind-Value="CurrentUser.LastName" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                        <RadzenLabel Text="Email"/>
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenTextBox style="width: 100%;" DateFormat="d" Name="Email" TValue="string?" @bind-Value="CurrentUser.Email"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                        <RadzenLabel Text="Водительское удостоверение"/>
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenTextBox style="width: 100%;" DateFormat="d" Name="DriverLicence" TValue="string?" @bind-Value="CurrentUser.DriverLicence"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 align-items-center d-flex">
+                    </div>
+                    <div class="col-md-8">
+                        <RadzenButton Text=@($"Сохранить") Style="background-color: #34094a;" TValue="string?"  ButtonStyle="ButtonStyle.Success" ButtonType="ButtonType.Submit" />
+                    </div>
+                </div>
+                              
+            </RadzenFieldset>
+              
+        </div>
+    </div>
+</RadzenTemplateForm>
+
+<RadzenTemplateForm Data="@CurrentUser">
+      <div class="row">
+          <div class="col-md-8">
+              <RadzenFieldset Text="Смена пароля">
+                  @* <div class="row"> *@
+                  @*     <div class="col-md-4 align-items-center d-flex"> *@
+                  @*         <RadzenLabel Text="Номер поездки" /> *@
+                  @*     </div> *@
+                  @*     <div class="col-md-8"> *@
+                  @*         <RadzenTextBox style="width: 100%;" Name="RideId" @bind-Value="_ride.Id" Disabled="true" /> *@
+                  @*     </div> *@
+                  @* </div> *@
+                  <div class="row">
+                      <div class="col-md-4 align-items-center d-flex">
+                          <RadzenLabel Text="Смена пароля"/>
+                      </div>
+                      <div class="col-md-8">
+                          <a href="@LinkGenerator.GetPathByAction("ChangePassword", "Account", new {id = CurrentUser.Id})">
+                                                                            <RadzenButton Style="background-color: #34094a;" Text="Сменить пароль" ButtonStyle="ButtonStyle.Primary" href=@{$"/Account/ChangePassword?id={@CurrentUser.Id}"} />
+                                                                        </a>
+                      </div>
+                  </div>
+                  
+              </RadzenFieldset>
+              
+          </div>
+  
+          
+      </div>
+  </RadzenTemplateForm>
+
+@code {
+    protected override async void OnInitialized()
+    {
+        base.OnInitialized();
+        
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        CurrentUser = await dbContext.Users.FirstOrDefaultAsync(x => x.Email== authstate.User.Identity.Name);
+
+    }
+
+    public User CurrentUser { get; set; }
+
+    private void Submit(User user)
+    {
+        try
+        {
+            UserManager.UpdateAsync(user);
+            dbContext.SaveChanges();
+            NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Успешно", Detail = "Профиль успешно обновлен.", Duration = 4000 });
+        }
+        catch (Exception e)
+        {
+            NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Ошибка", Detail = "Произошла ошибка, свяжитесь с системным администратором", Duration = 4000 });
+        }
+      
+        
+    }
+
+}

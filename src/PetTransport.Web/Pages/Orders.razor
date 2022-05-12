@@ -45,18 +45,19 @@ else
 <RadzenDataGrid  FilterMode="FilterMode.Advanced"  @ref="grid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single"
              AllowColumnResize="true"   Data="@applications" TItem="Application" RowExpand="RowExpand" @bind-Value="SelectedApplications">
     <Template Context="application">
-        <RadzenDataGrid AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or" AllowPaging="true" AllowSorting="true" Data="@application.OrderItems" TItem="ApplicationItem">
+        <RadzenDataGrid AllowColumnResize="true" AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or" AllowPaging="true" AllowSorting="true" Data="@application.OrderItems" TItem="ApplicationItem">
             <Columns>
-                <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Id" />
-                <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType.Name" Title="Тип животного">
+                <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Код" />
+                <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType.Name" Title="Вид животного">
                 </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="ApplicationItem" Property="Weight" Title="Вес, кг" />
                 <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalName" Title="Название животного" />
                 <RadzenDataGridColumn TItem="ApplicationItem" Property="ChipNumber" Title="Номер чипа" />
             </Columns>
         </RadzenDataGrid>
     </Template>
     <Columns>
-        <RadzenDataGridColumn TItem="Application" Property="OrderNumber" Title="Код" Width="250px"/>
+        <RadzenDataGridColumn  TItem="Application" Property="OrderNumber" Title="Код" Width="250px"/>
         @* <RadzenDataGridColumn TItem="Application" Property="Employee.LastName" Title="Employee" Width="200px" > *@
         @*     <Template Context="application"> *@
         @*         <RadzenImage Path="@application.Employee?.Photo" style="width: 32px; height: 32px; bapplication-radius: 16px; margin-right: 6px;" /> *@
@@ -68,8 +69,7 @@ else
                             @application.Status.GetEnumDescription()
                         </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="Application" Property="PickUpDate" Title="Дата отправки" FormatString="{0:d}" Width="150px" />
-        <RadzenDataGridColumn TItem="Application" Property="DeliveryDate" Title="Дата получения" FormatString="{0:d}" Width="150px"/>
+        <RadzenDataGridColumn TItem="Application" Property="CreatedAt" Title="Дата создания" FormatString="{0:d}" Width="150px" />
         <RadzenDataGridColumn TItem="Application" Property="SourcePoint" Title="Откуда" />
         <RadzenDataGridColumn TItem="Application" Property="DestinationPoint" Title="Куда" />
         <RadzenDataGridColumn TItem="Application" Title="Количество животных" Width="200px">
@@ -119,18 +119,10 @@ else
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4 align-items-center d-flex">
-                                                    <RadzenLabel Text="Дата отправки" />
+                                                    <RadzenLabel Text="Дата создания" />
                                                 </div>
                                                 <div class="col-md-8">
-                                                    <RadzenDatePicker style="width: 100%;" DateFormat="d"  Name="PickUpDate" @bind-Value="SelectedApplications.FirstOrDefault().PickUpDate" Disabled="true"  />
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4 align-items-center d-flex">
-                                                    <RadzenLabel Text="Дата получения"/>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <RadzenDatePicker style="width: 100%;" DateFormat="d"  Name="DeliveryDate" @bind-Value="SelectedApplications.FirstOrDefault().DeliveryDate" Disabled="true" />
+                                                    <RadzenDatePicker style="width: 100%;" DateFormat="d"  Name="PickUpDate" @bind-Value="SelectedApplications.FirstOrDefault().CreatedAt" Disabled="true"  />
                                                 </div>
                                             </div>
                                         </RadzenFieldset>
@@ -190,10 +182,20 @@ else
 
                                 </div>
                             </RadzenTemplateForm>
-                            <RadzenDataGrid @ref="applcationItemsGrid" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@SelectedApplications.FirstOrDefault().OrderItems" TItem="ApplicationItem">
+        </ChildContent>
+    </RadzenPanel>
+    
+    <RadzenPanel AllowCollapse="true" Style="width: 100%; margin: 40px auto;">
+        <HeaderTemplate>
+            <h4 class="m-0 d-flex align-items-center">
+                <RadzenIcon Icon="account_box" Class="mr-1" /><b>Формирование стоимости</b>
+            </h4>
+        </HeaderTemplate>
+        <ChildContent>
+            <RadzenDataGrid @ref="applcationItemsGrid" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@SelectedApplications.FirstOrDefault().OrderItems" TItem="ApplicationItem">
                                 <Columns>
-                                    <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Id"/>
-                                    <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType.Name" Title="Тип животного"/>
+                                    <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Код"/>
+                                    <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType.Name" Title="Вид животного"/>
                                     <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalName" Title="Название животного"/>
                                     <RadzenDataGridColumn TItem="ApplicationItem" Property="ChipNumber" Title="Номер чипа"/>
                                     <RadzenDataGridColumn TItem="ApplicationItem" Property="Price" Title="Стоимость">

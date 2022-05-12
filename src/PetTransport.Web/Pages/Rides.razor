@@ -8,14 +8,15 @@
 
 @inject NavigationManager NavigationManager
 @inject ApplicationDbContext dbContext
+@inject NotificationService NotificationService
 
 <h1>Поездки</h1>
 
 <RadzenButton  Icon="add_circle_outline" style="margin-bottom: 10px; background-color: #34094a;" Text="Создать новую поездку" Click="@CreateNew" />
-<RadzenDataGrid @ref="ridesGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
+<RadzenDataGrid @ref="ridesGrid" AllowColumnResize="true" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
                 Data="@rides" TItem="Ride" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
     <Columns>
-        <RadzenDataGridColumn TItem="Ride" Property="Id" Title="Id" Width="120px"/>
+        <RadzenDataGridColumn TItem="Ride" Property="Id" Title="Код" Width="120px"/>
         <RadzenDataGridColumn TItem="Ride" Property="User" Title="Водитель">
             <Template Context="ride">
                 @ride.User.FirstName  @ride.User.LastName
@@ -99,11 +100,14 @@
         base.OnInitialized();
 
     // For demo purposes only
-        rides = dbContext.Rides.Include(x=>x.User).Include(x=>x.Car).ToList();
+        rides = dbContext.Rides.Include(x=>x.User)
+            .Include(x=>x.Car).ToList();
     }
 
     async Task EditRow(Ride transportation)
     {
+        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Успешно", Detail = "Поездка создана.", Duration = 4000 });
+
         await ridesGrid.EditRow(transportation);
     }
 

@@ -13,11 +13,11 @@
 @inject ApplicationDbContext dbContext
 
 <h1>Пользователи</h1>
-    <RadzenDataGrid @ref="usersGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
+    <RadzenDataGrid @ref="usersGrid" AllowFiltering="true" AllowPaging="true" AllowColumnResize="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
                 Data="@users" TItem="User" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" FilterMode="FilterMode.Simple">
         <Columns>
-            <RadzenDataGridColumn TItem="User" Property="Id" Title="ID" Width="120px" />
-            <RadzenDataGridColumn TItem="User" Property="Make" Title="Фото" Sortable="false">
+            <RadzenDataGridColumn TItem="User" Property="Id" Title="Код" Width="120px" />
+            <RadzenDataGridColumn TItem="User" Property="Make" Title="Фото" Sortable="false" Filterable="false">
                 <Template Context="user">
                     @{
                         var userImage = $"/img/{user.ImageUrl}";
@@ -32,6 +32,12 @@
                     <RadzenRequiredValidator Text="Имя обязательно к заполнению" Component="Name" Popup="true" />
                 </EditTemplate>
             </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="User" Property="PatronymicName" Title="Отчество">
+                            <EditTemplate Context="user">
+                                <RadzenTextBox @bind-Value="user.PatronymicName" Style="width:100%; display: block" Name="PatronymicName" />
+                                <RadzenRequiredValidator Text="Отчество обязательно к заполнению" Component="PatronymicName" Popup="true" />
+                            </EditTemplate>
+                        </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="User" Property="LastName" Title="Фамилия">
                 <EditTemplate Context="user">
                     <RadzenTextBox @bind-Value="user.LastName" Style="width:100%; display: block" Name="Model"/>
@@ -44,17 +50,22 @@
                     <RadzenRequiredValidator Text="Email обязателен к заполнению" Component="Model" Popup="true"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="User" Property="DriverLicence" Title="Вод. удостоверение">
+                            <EditTemplate Context="user">
+                                <RadzenTextBox @bind-Value="user.DriverLicence" Style="width:100%; display: block" Name="DriverLicence"/>
+                            </EditTemplate>
+                        </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="User" Property="Role" Title="Роль" Filterable="false" Sortable="false">
                 <Template Context="user">
                     @_userManager.GetRolesAsync(user).Result.FirstOrDefault()
                 </Template>
                 <EditTemplate Context="user">
-                    <RadzenDropDown AllowClear="true" TValue="string" Class="w-100" TextProperty="Name" ValueProperty="Name"
+                    <RadzenDropDown AllowClear="false" TValue="string" Class="w-100" TextProperty="Name" ValueProperty="Name" @bind-Value="selectedRole"
                                     Data=_roleManager.Roles.ToList() SelectedItem="@_userManager.GetRolesAsync(user).Result.FirstOrDefault()"
                                     Change=@(args => OnChange(args, user)) />
                 </EditTemplate>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="User" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+            <RadzenDataGridColumn TItem="User" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" >
                 <Template Context="user">
                     <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(user))" @onclick:stopPropagation="true">
                     </RadzenButton>
@@ -66,15 +77,19 @@
                     </RadzenButton>
                 </EditTemplate>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="User" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+            <RadzenDataGridColumn TItem="User" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
                 <Template Context="user">
-                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(user))"  @onclick:stopPropagation="true">
-                    </RadzenButton>
+                    @if (user.IsBlocked == false)
+                    {
+                        <span style="color:green; cursor: pointer;" @onclick="()=>Block(user)" class="oi oi-check" aria-hidden="true"></span>
+                    }
+                    else
+                    {
+                        <span style="color: red; cursor: pointer;" @onclick="()=>Unblock(user)" class="oi oi oi-circle-x" aria-hidden="true"></span>
+                    }
+                    
                 </Template>
-                <EditTemplate Context="user">
-                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(user))">
-                    </RadzenButton>
-                </EditTemplate>
+
             </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
@@ -93,10 +108,12 @@
     // For demo purposes only
         roles = _roleManager.Roles.ToList();
         users = dbContext.Users.ToList();
+        selectedRole = roles.FirstOrDefault().Name;
     }
 
     async Task EditRow(User user)
     {
+        selectedRole = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
         await usersGrid.EditRow(user);
     }
 
@@ -144,29 +161,21 @@
         }
     }
 
-    async Task DeleteRow(User user)
+    async Task Unblock(User user)
     {
-        if (user == userToInsert)
-        {
-            userToInsert = null;
-        }
-
-        if (users.Contains(user))
-        {
-            dbContext.Remove<User>(user);
-
-            // For demo purposes only
-            users.Remove(user);
-
-            // For production
-            //dbContext.SaveChanges();
-
-            await usersGrid.Reload();
-        }
-        else
-        {
-            usersGrid.CancelEditRow(user);
-        }
+        
+        user.IsBlocked = false;
+        dbContext.Update(user);
+        await dbContext.SaveChangesAsync();
+        await usersGrid.UpdateRow(user);
+    }
+    
+    async Task Block(User user)
+    {
+        user.IsBlocked = true;
+        dbContext.Update(user);
+        await dbContext.SaveChangesAsync();
+        await usersGrid.UpdateRow(user);
     }
 
     User userToInsert;

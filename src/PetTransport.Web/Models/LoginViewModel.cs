@@ -4,11 +4,10 @@ namespace PetTransport.Web.Models;
 
 public class LoginViewModel
 {
-    [Required] [Display(Name = "Email")] public string Email { get; set; }
+    [Required(ErrorMessage = "Введите Email")] [Display(Name = "Email")] public string Email { get; set; }
 
-    [Required]
     [DataType(DataType.Password)]
-    [Display(Name = "Пароль")]
+    [Required(ErrorMessage = "Введите пароль")]
     public string Password { get; set; }
 
     [Display(Name = "Запомнить?")] public bool RememberMe { get; set; }

@@ -120,11 +120,12 @@
         <Template Context="application">
                 <RadzenDataGrid AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or" AllowPaging="true" AllowSorting="true" Data="@application.OrderItems" TItem="ApplicationItem">
                     <Columns>
-                        <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Id" />
-                        <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType.Name" Title="Тип животного">
+                        <RadzenDataGridColumn TItem="ApplicationItem" Property="Id" Title="Код" />
+                        <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalType.Name" Title="Вид животного">
                         </RadzenDataGridColumn>
                         <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalName" Title="Название животного" />
                         <RadzenDataGridColumn TItem="ApplicationItem" Property="ChipNumber" Title="Номер чипа" />
+                           <RadzenDataGridColumn TItem="ApplicationItem" Property="Weight" Title="Вес, кг" />
                     </Columns>
                 </RadzenDataGrid>
             </Template>
@@ -141,8 +142,6 @@
                     @application.Status.GetEnumDescription()
                 </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="Application" Property="PickUpDate" Title="Дата отправки" FormatString="{0:d}"/>
-            <RadzenDataGridColumn TItem="Application" Property="DeliveryDate" Title="Дата получения" FormatString="{0:d}"/>
             <RadzenDataGridColumn TItem="Application" Property="SourcePoint" Title="Место отправления"/>
             <RadzenDataGridColumn TItem="Application" Property="DestinationPoint" Title="Место получения"/>
             <RadzenDataGridColumn TItem="Application" Title="Количество животных">
@@ -150,12 +149,22 @@
                     @application.OrderItems.Count
                 </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="Application" Context="application" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+            <RadzenDataGridColumn TItem="Application" Title="Вес, кг">
                 <Template Context="application">
-                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="done" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(application))" @onclick:stopPropagation="true" Disabled="_ride.RideStatus == RideStatus.Completed">
-                    </RadzenButton>
+                    @application.OrderItems.Sum(x=>x.Weight)
                 </Template>
             </RadzenDataGridColumn>
+            @if (_ride.RideStatus == RideStatus.InProgress)
+            {
+                <RadzenDataGridColumn TItem="Application" Context="application" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+                    <Template Context="application">
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="done" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(application))" @onclick:stopPropagation="true" Disabled="_ride.RideStatus == RideStatus.Completed">
+                        </RadzenButton>
+
+                    </Template>
+                </RadzenDataGridColumn>
+            }
+                              
                    <RadzenDataGridColumn TItem="Application" Context="application" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
                             <Template Context="application">
                                       <a href="@LinkGenerator.GetPathByAction("GetTtn", "Word", new {id = application.Id})">

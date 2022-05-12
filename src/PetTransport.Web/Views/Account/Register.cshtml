@@ -16,10 +16,16 @@
                         <span asp-validation-for="FirstName"></span>
                     </div>
                     <div class="mb-3">
+                        <label asp-for="PatronymicName" class="form-label">Отчество</label>
+                        <input asp-for="PatronymicName" type="text" class="form-control" id="exampleInputName1" aria-describedby="nameHelp">
+                        <span asp-validation-for="PatronymicName"></span>
+                    </div>
+                    <div class="mb-3">
                         <label asp-for="LastName" class="form-label">Фамилия</label>
                         <input asp-for="LastName" type="text" class="form-control" id="exampleInputName1" aria-describedby="nameHelp">
-                                 <span asp-validation-for="LastName"></span>
+                        <span asp-validation-for="LastName"></span>
                     </div>
+ 
                     <div class="mb-3">
                         <label asp-for="Email" class="form-label">Email адрес</label>
                         <input asp-for="Email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">

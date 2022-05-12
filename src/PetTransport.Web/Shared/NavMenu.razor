@@ -1,6 +1,20 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using PetTransport.Infrastructure.Data
+@using System.Security.Claims
+@using PetTransport.Domain.Entities
+@inject ApplicationDbContext _dbContext;
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">PetTransport.Web</a>
+        @if (UserRole == "Водитель")
+        {
+            <a class="navbar-brand" href="">Панель водителя</a>
+        }
+        else
+        {
+            <a class="navbar-brand" href="">Панель управления</a>
+        }
+        
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -16,7 +30,7 @@
             </div>
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="/ride-calendar" Match="NavLinkMatch.All">
-                    <span class="oi oi-home" aria-hidden="true"></span> Календарь поездок
+                    <span class="oi oi-calendar " aria-hidden="true"></span> Календарь поездок
                 </NavLink>
             </div>
             <div class="nav-item px-3">
@@ -26,22 +40,22 @@
             </div>
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="create-order">
-                    <span class="oi oi-plus" aria-hidden="true"></span> Создать заявку
+                    <span class="oi oi-plus" aria-hidden="true"></span> Создать заказ
                 </NavLink>
             </div>
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="users">
-                    <span class="oi oi-list-rich" aria-hidden="true"></span> Пользователи
+                    <span class="oi oi-people" aria-hidden="true"></span> Пользователи
                 </NavLink>
             </div>
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="rides">
-                    <span class="oi oi-list-rich" aria-hidden="true"></span> Поездки
+                    <span class="oi oi-transfer" aria-hidden="true"></span> Поездки
                 </NavLink>
             </div>
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="orders">
-                    <span class="oi oi-plus" aria-hidden="true"></span> Заявки
+                    <span class="oi oi-browser" aria-hidden="true"></span> Заказы
                 </NavLink>
             </div>
             <div class="nav-item px-3">
@@ -51,12 +65,12 @@
             </div>
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="customers">
-                    <span class="oi oi-list-rich" aria-hidden="true"></span> Заказчики
+                    <span class="oi oi-person" aria-hidden="true"></span> Заказчики
                 </NavLink>
             </div>
                         <div class="nav-item px-3">
                             <NavLink class="nav-link" href="animalTypes">
-                                <span class="oi oi-plus" aria-hidden="true"></span> Типы животных
+                                <span class="oi oi-spreadsheet" aria-hidden="true"></span> Виды животных
                             </NavLink>
                         </div>
         </nav>
@@ -73,18 +87,18 @@
         </div>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="my-rides">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Поездки
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Запланированные(@_dbContext.Rides.Count(x=>x.UserId == UserId && x.RideStatus == RideStatus.Processing))
                     </NavLink>
                 </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="my-current-rides">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Активная поездка
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Активная(@_dbContext.Rides.Count(x=>x.UserId == UserId && x.RideStatus == RideStatus.InProgress))
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="finished-rides">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Завершенные поездки
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Завершенные(@_dbContext.Rides.Count(x=>x.UserId == UserId && x.RideStatus == RideStatus.Completed))
             </NavLink>
         </div>
     </nav>
@@ -95,6 +109,38 @@
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    
+    protected override async void OnInitialized()
+    {
+        base.OnInitialized();
+
+
+    // For demo purposes only
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        if (authstate.User != null && authstate.User.Identity is {IsAuthenticated: true })
+        {
+            UserId = authstate.User.FindFirst(x=>x.Type== ClaimTypes.NameIdentifier).Value;
+            if (authstate.User.IsInRole("Водитель"))
+            {
+                UserRole = "Водитель";
+            }else if(authstate.User.IsInRole("Менеджер"))
+            {
+                UserRole = "Менжжер";
+            }
+            else
+            {
+                UserRole = null;
+            }
+      
+        }
+        
+
+    // For production
+    //applcationItems = dbContext.ApplicationItems.Include("Customer").Include("Employee");
+    }
+
+    public string UserRole { get; set; }
+    public string UserId { get; set; }
 
     private void ToggleNavMenu()
     {

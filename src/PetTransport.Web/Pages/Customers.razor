@@ -15,7 +15,7 @@
 
     <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px;background-color: #34094a;" Text="Добавить нового заказчика" Click="@InsertRow" Disabled=@(customerToInsert != null) />
     <RadzenDataGrid @ref="customersGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
-                Data="@customers" TItem="Customer" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+           AllowColumnResize="true"    Responsive="true" Data="@customers" TItem="Customer" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
         <Columns>
             <RadzenDataGridColumn TItem="Customer" Property="Id" Title="Код" Width="120px" />
             <RadzenDataGridColumn TItem="Customer" Property="Name" Title="Название">
