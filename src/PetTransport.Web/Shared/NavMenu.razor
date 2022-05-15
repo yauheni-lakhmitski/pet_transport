@@ -1,5 +1,6 @@
 ﻿@using PetTransport.Infrastructure.Data
 @using System.Security.Claims
+@using Microsoft.EntityFrameworkCore
 @using PetTransport.Domain.Entities
 @inject ApplicationDbContext _dbContext;
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
@@ -87,18 +88,18 @@
         </div>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="my-rides">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Запланированные(@_dbContext.Rides.Count(x=>x.UserId == UserId && x.RideStatus == RideStatus.Processing))
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Запланированные(@Rides?.Count(x=>x.UserId == UserId && x.RideStatus == RideStatus.Processing))
                     </NavLink>
                 </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="my-current-rides">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Активная(@_dbContext.Rides.Count(x=>x.UserId == UserId && x.RideStatus == RideStatus.InProgress))
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Активная(@Rides?.Count(x=>x.UserId == UserId && x.RideStatus == RideStatus.InProgress))
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="finished-rides">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Завершенные(@_dbContext.Rides.Count(x=>x.UserId == UserId && x.RideStatus == RideStatus.Completed))
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Завершенные(@Rides?.Count(x=>x.UserId == UserId && x.RideStatus == RideStatus.Completed))
             </NavLink>
         </div>
     </nav>
@@ -109,11 +110,13 @@
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    public List<Ride> Rides { get; set; }
     
     protected override async void OnInitialized()
     {
-        base.OnInitialized();
+        
 
+        Rides = await _dbContext.Rides.ToListAsync();
 
     // For demo purposes only
         var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
@@ -133,7 +136,7 @@
             }
       
         }
-        
+        base.OnInitialized();
 
     // For production
     //applcationItems = dbContext.ApplicationItems.Include("Customer").Include("Employee");

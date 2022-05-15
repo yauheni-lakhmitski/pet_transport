@@ -4,20 +4,22 @@
 @using PetTransport.Web.Extensions
 @using Microsoft.EntityFrameworkCore
 @using System.Globalization
+@using System.Security.Claims
 @using PetTransport.Domain.Entities.Enums
 @inject ApplicationDbContext _context
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
 
 <PageTitle>Index</PageTitle>
-
+@if(GetAuthenticationStateAsync.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated){
 <h1>Сводка по заказам</h1>
 
-Заказы ожидающие обработки: @pendingOrders
+<div>Заказы ожидающие обработки: @pendingOrders</div>
 <br>
-Заказы ожидающий оплаты: @notPaid
+<div>Заказы ожидающий оплаты: @notPaid</div>
 <br>
-Заказы в работе: @inProgress
+<div>Заказы в работе: @inProgress</div>
 <br>
-Завершенные заказы: @completed
+<div>Завершенные заказы: @completed</div>
 <br>
 
 <div class="container">
@@ -68,6 +70,9 @@
             
         </div>
     </div>
+}else{
+    <h1>Для доступа к автоматизированной системе воспользуйтесь страницей входа в приложение:</h1> 
+}
 
 
 @code{
@@ -79,16 +84,17 @@
     DataItem[] revenue;
     OrderDiagram[] ordersDiagram;
     OrderDiagram[] ridesDiagram;
-    
-    protected override void OnInitialized()
+
+    protected async override void OnInitialized()
     {
         base.OnInitialized();
+        var orders = await _context.Applications.ToListAsync();
 
     // For demo purposes only
-        pendingOrders = _context.Applications.Count(x => x.Status == ApplicationStatus.Pending);
-        notPaid = _context.Applications.Count(x => x.Status == ApplicationStatus.NotPaid);
-        inProgress =_context.Applications.Count(x => x.Status == ApplicationStatus.InProgress);
-        completed =_context.Applications.Count(x => x.Status == ApplicationStatus.Completed);
+        pendingOrders = orders.Count(x => x.Status == ApplicationStatus.Pending);
+        notPaid = orders.Count(x => x.Status == ApplicationStatus.NotPaid);
+        inProgress =orders.Count(x => x.Status == ApplicationStatus.InProgress);
+        completed =orders.Count(x => x.Status == ApplicationStatus.Completed);
         revenue = _context.Customers.GroupBy(x => x.CustomerType)
             .Select(x => new DataItem(x.Key.GetEnumDescription(), x.Count()))
             .ToArray();

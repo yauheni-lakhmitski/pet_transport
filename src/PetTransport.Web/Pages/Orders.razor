@@ -232,18 +232,12 @@ else
         @* </SummaryTemplate> *@
     </RadzenPanel>
 
-    <div class="button-demo">
-    <div class="row mb-4">
-        <div class="col">
-            <h4 class="text-thin">Button Styles</h4>
-            <a href="@LinkGenerator.GetPathByAction("SalesInvoice", "Word", new {id = SelectedApplications.FirstOrDefault().Id})">
-                <RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Скачать инвойс" href=@{$"/word/SalesInvoice?id={@SelectedApplications.FirstOrDefault().Id}"} />
-            </a>
-            <RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Ожидает оплаты" Click="@MoveToNotPaid" />
-            <RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Оплачен" Click="@MoveToPaid" />
-            <RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Завершен" Click="@MoveToCompleted" />
-        </div>
-    </div>
+
+    <div class="container" style="display: flex">
+        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Скачать инвойс" href=@{$"/word/SalesInvoice?id={@SelectedApplications.FirstOrDefault().Id}"} />
+        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Ожидает оплаты" Click="@MoveToNotPaid" />
+        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Оплачен" Click="@MoveToPaid" />
+        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Завершен" Click="@MoveToCompleted" />
     </div>
 
 }

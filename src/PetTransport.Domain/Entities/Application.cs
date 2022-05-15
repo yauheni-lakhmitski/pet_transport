@@ -16,7 +16,7 @@ public class Application
     public Guid? CustomerId { get; set; }
     public List<ApplicationItem> OrderItems { get; set; } = new List<ApplicationItem>();
     public Guid? RideId { get; set; }
-    public Ride? Ride { get; set; }
+    public Ride Ride { get; set; }
 
     public User Manager { get; set; }
     public string ManagerId { get; set; }

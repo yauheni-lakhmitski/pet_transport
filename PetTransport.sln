@@ -8,8 +8,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetTransport.Domain", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetTransport.Infrastructure", "src\PetTransport.Infrastructure\PetTransport.Infrastructure.csproj", "{70F4CC7B-3AE0-46BA-99F4-6B1E314499FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetTransport.Application", "src\PetTransport.Application\PetTransport.Application.csproj", "{4C09E553-99FF-4644-8856-DE43B4343854}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,15 +26,10 @@ Global
 		{70F4CC7B-3AE0-46BA-99F4-6B1E314499FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70F4CC7B-3AE0-46BA-99F4-6B1E314499FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70F4CC7B-3AE0-46BA-99F4-6B1E314499FA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C09E553-99FF-4644-8856-DE43B4343854}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C09E553-99FF-4644-8856-DE43B4343854}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C09E553-99FF-4644-8856-DE43B4343854}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C09E553-99FF-4644-8856-DE43B4343854}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{519C65AF-8388-4588-8C30-E657DA1CF466} = {A858196A-3346-47B6-89F9-CEE4B3117FC4}
 		{B5C5BB28-222B-4320-9445-4AA35B2F28E0} = {A858196A-3346-47B6-89F9-CEE4B3117FC4}
 		{70F4CC7B-3AE0-46BA-99F4-6B1E314499FA} = {A858196A-3346-47B6-89F9-CEE4B3117FC4}
-		{4C09E553-99FF-4644-8856-DE43B4343854} = {A858196A-3346-47B6-89F9-CEE4B3117FC4}
 	EndGlobalSection
 EndGlobal

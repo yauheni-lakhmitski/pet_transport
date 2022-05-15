@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Security;
 using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -9,6 +11,7 @@ using PetTransport.Infrastructure.Data;
 using PetTransport.Web;
 using PetTransport.Web.Attributes;
 using PetTransport.Web.Behaviours;
+using PetTransport.Web.Chat;
 using PetTransport.Web.Extensions;
 using PetTransport.Web.Models;
 using Radzen;
@@ -29,8 +32,8 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CommandHandli
 
 
 // Add services to the container.
-// var postgresconnectionString = "Server=localhost;Port=5432;Database=petStore;Userid=postgres;password=postgres;";
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// var sqlServer = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("SqlLiteDefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString)
     // options.UseNpgsql(postgresconnectionString)
@@ -83,15 +86,23 @@ var scope = app.Services.CreateScope();
     var service = scope.ServiceProvider.GetService<ContextSeedData>();
     service.SeedDatabase();
   
+
+ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) =>
+{
+    // local dev, just approve all certs
+    return true;
+   
+};
 // AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-// Seed the database.
-app.UseHttpsRedirection();
+// // Seed the database.
+// app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+app.MapHub<BlazorChatSampleHub>(BlazorChatSampleHub.HubUrl);
 
 app.UseAuthentication();
 app.UseAuthorization();

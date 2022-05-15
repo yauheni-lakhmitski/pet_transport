@@ -11,13 +11,13 @@ using PetTransport.Infrastructure.Data;
 namespace PetTransport.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220509085427_AddManagerToApplication2")]
-    partial class AddManagerToApplication2
+    [Migration("20220514162746_Init5")]
+    partial class Init5
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.5");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -244,11 +244,11 @@ namespace PetTransport.Infrastructure.Migrations
                     b.Property<Guid?>("CustomerId")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DeliveryDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("DestinationPoint")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("FinishedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ManagerId")
@@ -257,9 +257,6 @@ namespace PetTransport.Infrastructure.Migrations
 
                     b.Property<string>("OrderNumber")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("PickUpDate")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("RideId")
@@ -386,6 +383,35 @@ namespace PetTransport.Infrastructure.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("PetTransport.Domain.Entities.Message", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RideId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RideId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Message");
+                });
+
             modelBuilder.Entity("PetTransport.Domain.Entities.Ride", b =>
                 {
                     b.Property<Guid>("Id")
@@ -436,7 +462,7 @@ namespace PetTransport.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Rides", (string)null);
+                    b.ToTable("Rides");
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.RideDetail", b =>
@@ -466,6 +492,10 @@ namespace PetTransport.Infrastructure.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
+                    b.Property<string>("DriverLicence")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -474,7 +504,7 @@ namespace PetTransport.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool>("IsBlocked")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("LastName")
@@ -482,6 +512,10 @@ namespace PetTransport.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PatronymicName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -553,8 +587,7 @@ namespace PetTransport.Infrastructure.Migrations
 
                     b.HasOne("PetTransport.Domain.Entities.Ride", "Ride")
                         .WithMany("Applications")
-                        .HasForeignKey("RideId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("RideId");
 
                     b.Navigation("Customer");
 
@@ -576,6 +609,25 @@ namespace PetTransport.Infrastructure.Migrations
                         .HasForeignKey("ApplicationId");
 
                     b.Navigation("AnimalType");
+                });
+
+            modelBuilder.Entity("PetTransport.Domain.Entities.Message", b =>
+                {
+                    b.HasOne("PetTransport.Domain.Entities.Ride", "Ride")
+                        .WithMany("Messages")
+                        .HasForeignKey("RideId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PetTransport.Domain.Entities.User", "User")
+                        .WithMany("Messages")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ride");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.Ride", b =>
@@ -627,12 +679,16 @@ namespace PetTransport.Infrastructure.Migrations
                 {
                     b.Navigation("Applications");
 
+                    b.Navigation("Messages");
+
                     b.Navigation("RideDetail");
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.User", b =>
                 {
                     b.Navigation("Applications");
+
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

@@ -15,7 +15,7 @@ namespace PetTransport.Infrastructure.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.5");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -381,6 +381,35 @@ namespace PetTransport.Infrastructure.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("PetTransport.Domain.Entities.Message", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RideId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RideId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Message");
+                });
+
             modelBuilder.Entity("PetTransport.Domain.Entities.Ride", b =>
                 {
                     b.Property<Guid>("Id")
@@ -431,7 +460,7 @@ namespace PetTransport.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Rides", (string)null);
+                    b.ToTable("Rides");
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.RideDetail", b =>
@@ -556,8 +585,7 @@ namespace PetTransport.Infrastructure.Migrations
 
                     b.HasOne("PetTransport.Domain.Entities.Ride", "Ride")
                         .WithMany("Applications")
-                        .HasForeignKey("RideId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("RideId");
 
                     b.Navigation("Customer");
 
@@ -579,6 +607,25 @@ namespace PetTransport.Infrastructure.Migrations
                         .HasForeignKey("ApplicationId");
 
                     b.Navigation("AnimalType");
+                });
+
+            modelBuilder.Entity("PetTransport.Domain.Entities.Message", b =>
+                {
+                    b.HasOne("PetTransport.Domain.Entities.Ride", "Ride")
+                        .WithMany("Messages")
+                        .HasForeignKey("RideId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PetTransport.Domain.Entities.User", "User")
+                        .WithMany("Messages")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ride");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.Ride", b =>
@@ -630,12 +677,16 @@ namespace PetTransport.Infrastructure.Migrations
                 {
                     b.Navigation("Applications");
 
+                    b.Navigation("Messages");
+
                     b.Navigation("RideDetail");
                 });
 
             modelBuilder.Entity("PetTransport.Domain.Entities.User", b =>
                 {
                     b.Navigation("Applications");
+
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

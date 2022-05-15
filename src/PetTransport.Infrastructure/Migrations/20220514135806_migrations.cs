@@ -5,10 +5,22 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PetTransport.Infrastructure.Migrations
 {
-    public partial class AddStatusToRide2 : Migration
+    public partial class migrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AnimalTypes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnimalTypes", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -31,9 +43,11 @@ namespace PetTransport.Infrastructure.Migrations
                     Discriminator = table.Column<string>(type: "TEXT", nullable: false),
                     FirstName = table.Column<string>(type: "TEXT", nullable: true),
                     LastName = table.Column<string>(type: "TEXT", nullable: true),
+                    PatronymicName = table.Column<string>(type: "TEXT", nullable: true),
+                    DriverLicence = table.Column<string>(type: "TEXT", nullable: true),
                     Location = table.Column<string>(type: "TEXT", nullable: true),
                     ImageUrl = table.Column<string>(type: "TEXT", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "INTEGER", nullable: true),
+                    IsBlocked = table.Column<bool>(type: "INTEGER", nullable: true),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -61,7 +75,10 @@ namespace PetTransport.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Make = table.Column<string>(type: "TEXT", nullable: false),
                     Model = table.Column<string>(type: "TEXT", nullable: false),
-                    RegistrationNumber = table.Column<string>(type: "TEXT", nullable: false)
+                    RegistrationNumber = table.Column<string>(type: "TEXT", nullable: false),
+                    Mileage = table.Column<long>(type: "INTEGER", nullable: false),
+                    Fuel = table.Column<long>(type: "INTEGER", nullable: false),
+                    LoadCapacity = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -232,18 +249,24 @@ namespace PetTransport.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     OrderNumber = table.Column<string>(type: "TEXT", nullable: false),
-                    PickUpDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    DeliveryDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
                     SourcePoint = table.Column<string>(type: "TEXT", nullable: false),
                     DestinationPoint = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    FinishedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
                     CustomerId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    RideId = table.Column<Guid>(type: "TEXT", nullable: true)
+                    RideId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    ManagerId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Applications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Applications_AspNetUsers_ManagerId",
+                        column: x => x.ManagerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Applications_Customers_CustomerId",
                         column: x => x.CustomerId,
@@ -282,8 +305,9 @@ namespace PetTransport.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     ChipNumber = table.Column<string>(type: "TEXT", nullable: false),
-                    AnimalType = table.Column<string>(type: "TEXT", nullable: false),
+                    AnimalTypeId = table.Column<Guid>(type: "TEXT", nullable: false),
                     AnimalName = table.Column<string>(type: "TEXT", nullable: false),
+                    Weight = table.Column<int>(type: "INTEGER", nullable: false),
                     Price = table.Column<decimal>(type: "TEXT", nullable: false),
                     ApplicationId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
@@ -291,11 +315,22 @@ namespace PetTransport.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_ApplicationItems", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_ApplicationItems_AnimalTypes_AnimalTypeId",
+                        column: x => x.AnimalTypeId,
+                        principalTable: "AnimalTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_ApplicationItems_Applications_ApplicationId",
                         column: x => x.ApplicationId,
                         principalTable: "Applications",
                         principalColumn: "Id");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationItems_AnimalTypeId",
+                table: "ApplicationItems",
+                column: "AnimalTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ApplicationItems_ApplicationId",
@@ -306,6 +341,11 @@ namespace PetTransport.Infrastructure.Migrations
                 name: "IX_Applications_CustomerId",
                 table: "Applications",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Applications_ManagerId",
+                table: "Applications",
+                column: "ManagerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Applications_RideId",
@@ -388,6 +428,9 @@ namespace PetTransport.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "RideDetails");
+
+            migrationBuilder.DropTable(
+                name: "AnimalTypes");
 
             migrationBuilder.DropTable(
                 name: "Applications");

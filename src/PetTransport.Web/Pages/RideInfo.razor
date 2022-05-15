@@ -15,6 +15,9 @@
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 @inject NotificationService NotificationService
 @inject LinkGenerator LinkGenerator
+@using Microsoft.AspNetCore.SignalR.Client;
+@using PetTransport.Web.Chat
+@inject NavigationManager navigationManager
 
 <style>
     form .row {
@@ -193,12 +196,52 @@
 }
 
 
+<div id="scrollbox">
+    @foreach (var item in _messages)
+    {
+        @if (item.IsNotice)
+        {
+            <div class="alert alert-info">@item.Body</div>
+        }
+        else
+        {
+            <div class="@item.CSS">
+                <div class="user">@item.Username</div>
+                <div class="msg">@item.Body</div>
+            </div>
+        }
+    }
+    <hr />
+    <textarea class="input-lg" placeholder="enter your comment" @bind="@_newMessage"></textarea>
+    <button class="btn btn-default" @onclick="@(() => SendAsync(_newMessage))">Send</button>
+</div>
+
+
+
 
 @code {
     
     
     [Parameter]
     public string RideId { get; set; }
+    private List<Message> _messages = new List<Message>();
+    // flag to indicate chat status
+    private bool _isChatting = false;
+
+    // name of the user who will be chatting
+    private string _username;
+
+    // on-screen message
+    private string _message;
+
+    // new message input
+    private string _newMessage;
+
+    // list of messages in chat
+
+    private string _hubUrl;
+    private HubConnection _hubConnection;
+    
     
     RadzenDataGrid<Application> applicationsGrid;
     
@@ -229,18 +272,63 @@
         
         await base.OnInitializedAsync();
         _applications = new List<Application>();
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        UserId = authstate.User.FindFirst(x=>x.Type== ClaimTypes.NameIdentifier).Value;
+        _username = authstate.User.FindFirst(x=>x.Type== ClaimTypes.Name).Value;
 
     users = dbContext.Users.ToList();
         cars = dbContext.Cars.ToList();
         _ride = await dbContext.Rides
+            .Include(x=>x.Messages)
+            .ThenInclude(x=>x.User)
             .Include(x=>x.Applications)
             .ThenInclude(x=>x.OrderItems)
             .ThenInclude(x=>x.AnimalType)
             .FirstOrDefaultAsync(x => x.Id == Guid.Parse(RideId));
         _applications = _ride.Applications;
+
+        _messages = _ride.
+            Messages.OrderBy(x=>x.CreatedAt)
+            .Select(x => new Message($"{x.User.FirstName} {x.User.LastName}", x.Text, x.User.Id == UserId)).ToList();
         
-        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        UserId = authstate.User.FindFirst(x=>x.Type== ClaimTypes.NameIdentifier).Value;
+        try
+        {
+    // Start chatting and force refresh UI.
+            _isChatting = true;
+            await Task.Delay(1);
+        
+    // remove old messages if any
+        
+    // Create the chat client
+            string baseUrl = navigationManager.BaseUri;
+        
+            _hubUrl = baseUrl.TrimEnd('/') + BlazorChatSampleHub.HubUrl;
+        
+            _hubConnection = new HubConnectionBuilder()
+                .WithUrl(_hubUrl, options =>
+        
+                {
+                            
+                    options.WebSocketConfiguration = conf =>
+                    {
+                        conf.RemoteCertificateValidationCallback = (message, cert, chain, errors) => { return true; };
+                    };
+                    options.HttpMessageHandlerFactory = factory => new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
+                    };
+                })
+                .Build();
+        
+            _hubConnection.On<string, string, string>("Broadcast", BroadcastMessage);
+        
+            await _hubConnection.StartAsync();
+        }
+        catch (Exception e)
+        {
+            _message = $"ERROR: Failed to start chat client: {e.Message}";
+            _isChatting = false;
+        }
     }
     
     void OnChange(object value, string name)
@@ -310,5 +398,57 @@
     {
         NotificationService.Notify(message);
     }
+    
+    private void BroadcastMessage(string username, string name, string message)
+    {
+        bool isMine = username.Equals(_username);
+
+        _messages.Add(new Message(name, message, isMine));
+
+    // Inform blazor the UI needs updating
+        StateHasChanged();
+    }
+
+    private async Task DisconnectAsync()
+    {
+        // if (_isChatting)
+        // {
+        //     await SendAsync($"[Notice] {_username} left chat room.");
+        //
+        //     await _hubConnection.StopAsync();
+        //     await _hubConnection.DisposeAsync();
+        //
+        //     _hubConnection = null;
+        //     _isChatting = false;
+        // }
+    }
+
+    private async Task SendAsync(string message)
+    {
+        if (!string.IsNullOrWhiteSpace(message))
+        {
+            await _hubConnection.SendAsync("Send", _username, _ride.Id, message);
+
+            _newMessage = string.Empty;
+        }
+    }
+    
+    private class Message
+        {
+            public Message(string username, string body, bool mine)
+            {
+                Username = username;
+                Body = body;
+                Mine = mine;
+            }
+    
+            public string Username { get; set; }
+            public string Body { get; set; }
+            public bool Mine { get; set; }
+    
+            public bool IsNotice => Body.StartsWith("[Notice]");
+    
+            public string CSS => Mine ? "sent" : "received";
+        }
 
 }

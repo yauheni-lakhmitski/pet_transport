@@ -33,6 +33,7 @@ public class Ride
     public List<Application> Applications { get; set; } = new List<Application>();
 
     public RideDetail? RideDetail { get; set; }
+    public List<Message> Messages { get; set; }
     
     
     public void AddApplications(List<Application> applications)

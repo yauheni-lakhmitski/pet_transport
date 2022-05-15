@@ -47,12 +47,14 @@
                 <RadzenRequiredValidator Text="Место отправления обязательно к заполнению" Component="From" Popup="true"/>
             </EditTemplate>
         </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="Ride" Property="To" Title="Место отправления">
-                            <EditTemplate Context="transportation">
-                                <RadzenTextBox @bind-Value="transportation.To" Style="width:100%; display: block" Name="To"/>
-                                <RadzenRequiredValidator Text="Место прибытия обязательно к заполнению" Component="To" Popup="true"/>
-                            </EditTemplate>
-                        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Ride" Property="To" Title="Место отправления">
+            <EditTemplate Context="transportation">
+                <RadzenTextBox @bind-Value="transportation.To" Style="width:100%; display: block" Name="To"/>
+                <RadzenRequiredValidator Text="Место прибытия обязательно к заполнению" Component="To" Popup="true"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Ride" Property="DepartureDate" Title="Дата отправления" FormatString="{0:d}"/>
+               <RadzenDataGridColumn TItem="Ride" Property="ArrivalDate" Title="Дата прибытия" FormatString="{0:d}"/>
         <RadzenDataGridColumn TItem="Ride" Property="Description" Title="Описание поездки">
             <EditTemplate Context="transportation">
                 <RadzenTextBox @bind-Value="transportation.Description" Style="width:100%; display: block" Name="Description"/>

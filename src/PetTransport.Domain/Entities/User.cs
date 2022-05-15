@@ -13,6 +13,7 @@ public class User : IdentityUser
     public bool IsBlocked { get;  set; }
 
     public List<Application> Applications { get; set; }
+    public List<Message> Messages { get; set; }
    
     public void UpdateProfileInfo(string firstName, string lastName, string location)
     {
