@@ -188,7 +188,7 @@ namespace EJ2CoreSampleBrowser.Controllers.Word
                 UnitPrice = x.Weight.ToString(),
                 Quantity = x.AnimalName,
                 Discount = x.ChipNumber,
-                ExtendedPrice = "10"
+                ExtendedPrice = x.Price.ToString()
             }).ToList();
 
 

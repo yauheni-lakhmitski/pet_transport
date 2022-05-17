@@ -241,7 +241,7 @@
     
     public async Task OpenOrder()
     {
-        var res = await DialogService.OpenAsync<DialogCardPage>($"Добавить заказ в поездку",
+        var res = await DialogService.OpenAsync<ChooseAppplicationDialog>($"Добавить заказ в поездку",
             new Dictionary<string, object>() { {"SelectedApplications",_applications} },
             new DialogOptions() { Width = "700px", Height = "570px", Resizable = true, Draggable = true });
 

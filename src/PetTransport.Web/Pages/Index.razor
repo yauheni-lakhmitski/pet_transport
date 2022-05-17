@@ -62,16 +62,8 @@
             </div>
         </div>
     </div>
-
-
-<h1>Radzen Blazor Chart bar series</h1>
-    <div class="container">
-        <div class="row">
-            
-        </div>
-    </div>
 }else{
-    <h1>Для доступа к автоматизированной системе воспользуйтесь страницей входа в приложение:</h1> 
+    <h1>Для доступа к автоматизированной системе воспользуйтесь страницей входа в приложение</h1> 
 }
 
 
@@ -131,22 +123,6 @@
         
         public string Month { get; set; }
         public double OrdersCount { get; set; }
-    }
-
-
-    void OnSlotRender(SchedulerSlotRenderEventArgs args) 
-    {
-    // Highlight today in month view
-        if (args.View.Text == "Month" && args.Start.Date == DateTime.Today)
-        {
-            args.Attributes["style"] = "background: rgba(255,220,40,.2);";
-        }
-
-    // Highlight working hours (9-18)
-        if ((args.View.Text == "Week" || args.View.Text == "Day") && args.Start.Hour > 8 && args.Start.Hour < 19)
-        {
-            args.Attributes["style"] = "background: rgba(255,220,40,.2);";
-        }
     }
 }
 
