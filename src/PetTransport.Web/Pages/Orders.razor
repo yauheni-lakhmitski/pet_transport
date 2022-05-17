@@ -234,10 +234,12 @@ else
 
 
     <div class="container" style="display: flex">
+         <a href="@LinkGenerator.GetPathByAction("SalesInvoice", "Word", new {id = SelectedApplications.FirstOrDefault().Id})">
         <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Скачать инвойс" href=@{$"/word/SalesInvoice?id={@SelectedApplications.FirstOrDefault().Id}"} />
-        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Ожидает оплаты" Click="@MoveToNotPaid" />
-        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Оплачен" Click="@MoveToPaid" />
-        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Завершен" Click="@MoveToCompleted" />
+        </a>
+        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Ожидает оплаты" Click="@MoveToNotPaid"/>
+        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Оплачен" Click="@MoveToPaid"/>
+        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Завершен" Click="@MoveToCompleted"/>
     </div>
 
 }
