@@ -63,7 +63,7 @@ public class BlazorChatSampleHub : Hub
            
         await _context.SaveChangesAsync();
 
-        await Clients.All.SendAsync("Broadcast", $"{newMessage.User.UserName}",$"{user.FirstName} {user.LastName}", message);
+        await Clients.All.SendAsync("Broadcast", $"{newMessage.User.UserName}",$"{user.FirstName} {user.LastName}", message, trip.Id.ToString());
     }
         
 

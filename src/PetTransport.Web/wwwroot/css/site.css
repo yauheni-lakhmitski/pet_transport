@@ -126,3 +126,95 @@ textarea {
 .msg {
     /*display: inline;*/
 }
+/* начало чата */
+.chat {
+    max-width: 600px;
+}
+
+.chat__title {
+    text-align: center;
+    font-size: 24px;
+    background-color: #fff;
+    padding: 20px 0 15px;
+    box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
+}
+
+.chat__messages {
+    overflow-y: scroll;
+    min-height: 360px;
+    max-height: 360px;
+}
+
+.messages {
+    display: flex;
+    align-items: center;
+    padding: 4px 0;
+    margin-bottom: 4px;
+    background-color: #f8f8f8;
+}
+
+.message-people {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0 0 12px;
+}
+
+.message-name {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.message-avatar img {
+    width: 46px;
+    height: 46px;
+    background-color: white;
+    border-radius: 50%;
+    border: 2px solid white;
+    object-fit: cover;
+}
+
+.chat__info {
+    width: 100%;
+    background-color: white;
+    padding: 12px;
+    margin: 0 12px;
+    border-radius: 3px;
+}
+
+.text__message {
+    font-size: 16px;
+}
+
+.text-time {
+    font-size: 10px;
+    font-weight: 300;
+    text-align: right;
+}
+
+.bottom_wrapper {
+    background-color: #eaeaea;;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.message-input {
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #bcbdc0;
+    width: 100%;
+    padding: 6px;
+    margin-right: 10px;
+}
+
+body:not(.rz-default-scrollbars) ::-webkit-scrollbar-thumb{
+!important;    background: #34094a;  
+}
+
+
+body:not(.rz-default-scrollbars) ::-webkit-scrollbar-thumb{
+!important; background: #34094a; 
+}
+/* конец чата */

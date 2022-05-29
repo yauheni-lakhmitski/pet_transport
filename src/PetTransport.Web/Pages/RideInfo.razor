@@ -111,14 +111,46 @@
             </RadzenFieldset>
             
         </div>
-        <div class="col-md-6"></div>
+        <div class="col-md-6">
+        <div class="chat">
+                <div class="chat__window">
+                    <div class="chat__title">Чат</div>
+                    <ul class="chat__messages list-reset" id="chatmessa2">
+                        @foreach (var item in _messages)
+                        {
+                        <li class="messages messages-old">
+                            <div class="message-people">
+                                <div class="message-avatar">
+                                    <img src="/img/medium_male_default.png" alt="">
+                                </div>
+                            </div>
+                            <div class="chat__info">
+                                <div class="message-name">@item.Username</div>
+                                <div class="text__message">@item.Body</div>
+                                <div class="text-time"> @DateTime.Now</div>
+                            </div>
+                        </li>
+                        }
+                        <!-- } -->
+                        <li class="messages" id="discussion">
+        
+                        </li>
+                    </ul>
+                    <div class="bottom_wrapper">
+                        <input class="message-input" type="text" id="message" placeholder="Введите соощение..." @bind="@_newMessage" />
+                        <input  style="background-color: #34094a;" class="btn btn-primary" type="button" id="sendmessage" @onclick="@(() => SendAsync(_newMessage))" value="Отправить" />
+                    </div>
+                </div>
+        
+            </div>
+</div>
     </div>
 </RadzenTemplateForm>
 
 @if (_applications.Any())
 {
     
-    <RadzenDataGrid @ref="applicationsGrid" AllowFiltering="true" AllowPaging="true" PageSize="25" AllowSorting="true"
+    <RadzenDataGrid @ref="applicationsGrid" AllowFiltering="true" AllowPaging="true" PageSize="25" AllowSorting="true" Responsive="true"
                     Data="@_applications" TItem="Application">
         <Template Context="application">
                 <RadzenDataGrid AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or" AllowPaging="true" AllowSorting="true" Data="@application.OrderItems" TItem="ApplicationItem">
@@ -157,6 +189,12 @@
                     @application.OrderItems.Sum(x=>x.Weight)
                 </Template>
             </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Application" Property="Customer.Name" Title="Заказчик">
+         
+            </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Application" Property="Customer.PhoneNumber" Title="Номер телефона">
+                     
+                                    </RadzenDataGridColumn>
             @if (_ride.RideStatus == RideStatus.InProgress)
             {
                 <RadzenDataGridColumn TItem="Application" Context="application" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
@@ -194,27 +232,6 @@
         }
     }
 }
-
-
-<div id="scrollbox">
-    @foreach (var item in _messages)
-    {
-        @if (item.IsNotice)
-        {
-            <div class="alert alert-info">@item.Body</div>
-        }
-        else
-        {
-            <div class="@item.CSS">
-                <div class="user">@item.Username</div>
-                <div class="msg">@item.Body</div>
-            </div>
-        }
-    }
-    <hr />
-    <textarea class="input-lg" placeholder="enter your comment" @bind="@_newMessage"></textarea>
-    <button class="btn btn-default" @onclick="@(() => SendAsync(_newMessage))">Send</button>
-</div>
 
 
 
@@ -285,7 +302,20 @@
             .ThenInclude(x=>x.OrderItems)
             .ThenInclude(x=>x.AnimalType)
             .FirstOrDefaultAsync(x => x.Id == Guid.Parse(RideId));
+        // NEW
+         var customers = await dbContext.Customers.ToListAsync();
+               foreach (var application in _ride.Applications)
+                {
+                    application.Customer = customers.FirstOrDefault(x => x.Id == application.CustomerId);
+                }
+        
         _applications = _ride.Applications;
+
+
+       
+
+
+ 
 
         _messages = _ride.
             Messages.OrderBy(x=>x.CreatedAt)
@@ -320,7 +350,7 @@
                 })
                 .Build();
         
-            _hubConnection.On<string, string, string>("Broadcast", BroadcastMessage);
+            _hubConnection.On<string, string, string, string>("Broadcast", BroadcastMessage);
         
             await _hubConnection.StartAsync();
         }
@@ -335,16 +365,6 @@
     {
         var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
 
-    }
-    
-    public async Task OpenOrder()
-    {
-        var res = await DialogService.OpenAsync<ChooseAppplicationDialog>($"Добавить заказ в поездку",
-            new Dictionary<string, object>() { {"SelectedApplications",_applications} },
-            new DialogOptions() { Width = "700px", Height = "570px", Resizable = true, Draggable = true });
-
-        var result = res as List<Application>;
-        _applications = res ?? new List<Application>();
     }
     
     async Task SaveRide()
@@ -399,8 +419,14 @@
         NotificationService.Notify(message);
     }
     
-    private void BroadcastMessage(string username, string name, string message)
+    private void BroadcastMessage(string username, string name, string message, string rideId)
     {
+        if (Guid.Parse(rideId) != _ride.Id)
+        {
+            return;
+        }
+        
+        
         bool isMine = username.Equals(_username);
 
         _messages.Add(new Message(name, message, isMine));
@@ -433,7 +459,7 @@
         }
     }
     
-    private class Message
+    public class Message
         {
             public Message(string username, string body, bool mine)
             {

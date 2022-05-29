@@ -15,6 +15,9 @@
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 @inject NotificationService NotificationService
 @inject LinkGenerator LinkGenerator
+@inject NavigationManager navigationManager
+@using Microsoft.AspNetCore.SignalR.Client;
+@using PetTransport.Web.Chat
 
 <style>
     form .row {
@@ -108,14 +111,45 @@
             </RadzenFieldset>
             
         </div>
-        <div class="col-md-6"></div>
+        <div class="col-md-6">
+             <div class="chat">
+                 <div class="chat__window">
+                     <div class="chat__title">Чат</div>
+                     <ul class="chat__messages list-reset" id="chatmessa2">
+                         @foreach (var item in _messages)
+                         {
+                             <li class="messages messages-old">
+                                 <div class="message-people">
+                                     <div class="message-avatar">
+                                         <img src="/img/medium_male_default.png" alt="">
+                                     </div>
+                                 </div>
+                                 <div class="chat__info">
+                                     <div class="message-name">@item.Username</div>
+                                     <div class="text__message">@item.Body</div>
+                                     <div class="text-time"> @DateTime.Now</div>
+                                 </div>
+                             </li>
+                         }
+                         <!-- } -->
+                         <li class="messages" id="discussion">
+                    
+                         </li>
+                     </ul>
+                     <div class="bottom_wrapper">
+                         <input class="message-input" type="text" id="message" placeholder="Введите соощение..." @bind="@_newMessage" />
+                         <input style="background-color: #34094a;" class="btn btn-primary" type="button" id="sendmessage" @onclick="@(() => SendAsync(_newMessage))" value="Отправить" />
+                     </div>
+                 </div>
+                 </div>
+        </div>
     </div>
 </RadzenTemplateForm>
 
 @if (_applications.Any())
 {
     
-    <RadzenDataGrid @ref="applicationsGrid" AllowFiltering="true" AllowPaging="true" PageSize="25" AllowSorting="true"
+    <RadzenDataGrid @ref="applicationsGrid" AllowFiltering="true" AllowPaging="true" PageSize="25" AllowSorting="true" Responsive="true"
                     Data="@_applications" TItem="Application">
         <Template Context="application">
                 <RadzenDataGrid AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or" AllowPaging="true" AllowSorting="true" Data="@application.OrderItems" TItem="ApplicationItem">
@@ -207,82 +241,101 @@
     List<Application> _applications;
     List<User> users;
     List<Car> cars;
+    
+       private List<Message> _messages = new List<Message>();
+        // flag to indicate chat status
+        private bool _isChatting = false;
+    
+        // name of the user who will be chatting
+        private string _username;
+    
+        // on-screen message
+        private string _message;
+    
+        // new message input
+        private string _newMessage;
+    
+        // list of messages in chat
+    
+        private string _hubUrl;
+        private HubConnection _hubConnection;
+    
     public string UserId { get; set; }
 
     void Submit(Ride arg)
     {
    
     }
-    
+
     protected override async void OnInitialized()
     {
-        
         await base.OnInitializedAsync();
         _applications = new List<Application>();
 
-    users = dbContext.Users.ToList();
+        users = dbContext.Users.ToList();
         cars = dbContext.Cars.ToList();
         _ride = await dbContext.Rides
-            .Include(x=>x.Applications)
-            .ThenInclude(x=>x.OrderItems)
-            .ThenInclude(x=>x.AnimalType)
+            .Include(x => x.Messages)
+            .ThenInclude(x => x.User)
+            .Include(x => x.Applications)
+            .ThenInclude(x => x.OrderItems)
+            .ThenInclude(x => x.AnimalType)
             .FirstOrDefaultAsync(x => x.Id == Guid.Parse(RideId));
         _applications = _ride.Applications;
-        
+
         var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        UserId = authstate.User.FindFirst(x=>x.Type== ClaimTypes.NameIdentifier).Value;
+        UserId = authstate.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value;
+        _username = authstate.User.FindFirst(x=>x.Type== ClaimTypes.Name).Value;
+
+        _messages = _ride.
+            Messages
+            .OrderBy(x=>x.CreatedAt)
+            .Select(x => new Message($"{x.User.FirstName} {x.User.LastName}", x.Text, x.User.Id == UserId)).ToList();
+                
+                try
+                {
+            // Start chatting and force refresh UI.
+                    _isChatting = true;
+                    await Task.Delay(1);
+                
+            // remove old messages if any
+                
+            // Create the chat client
+                    string baseUrl = navigationManager.BaseUri;
+                
+                    _hubUrl = baseUrl.TrimEnd('/') + BlazorChatSampleHub.HubUrl;
+                
+                    _hubConnection = new HubConnectionBuilder()
+                        .WithUrl(_hubUrl, options =>
+                
+                        {
+                                    
+                            options.WebSocketConfiguration = conf =>
+                            {
+                                conf.RemoteCertificateValidationCallback = (message, cert, chain, errors) => { return true; };
+                            };
+                            options.HttpMessageHandlerFactory = factory => new HttpClientHandler
+                            {
+                                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
+                            };
+                        })
+                        .Build();
+                
+                    _hubConnection.On<string, string, string, string>("Broadcast", BroadcastMessage);
+                
+                    await _hubConnection.StartAsync();
+                }
+                catch (Exception e)
+                {
+                    _message = $"ERROR: Failed to start chat client: {e.Message}";
+                    _isChatting = false;
+                }
     }
     
     void OnChange(object value, string name)
     {
         var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
 
-    }
-    
-    public async Task OpenOrder()
-    {
-        var res = await DialogService.OpenAsync<ChooseAppplicationDialog>($"Добавить заказ в поездку",
-            new Dictionary<string, object>() { {"SelectedApplications",_applications} },
-            new DialogOptions() { Width = "700px", Height = "570px", Resizable = true, Draggable = true });
-
-        var result = res as List<Application>;
-        _applications = res ?? new List<Application>();
-    }
-    
-    async Task SaveRide()
-    {
-        foreach (var application in _applications)
-        {
-            application.Status = ApplicationStatus.Completed;
-        }
-        
-        _ride.AddApplications(_applications);
-        
-        await DialogService.OpenAsync<FinishRideDialog>("Завершить текущую поездку",
-            new Dictionary<string, object>() { {"Ride", _ride} },
-            new DialogOptions() { Width = "700px", Height = "570px", Resizable = true, Draggable = true });
-        
-
-    // TODO: HANDLE
-    }    
-    
-    async Task OnClickTakeInProgress()
-    {
-        if (dbContext.Rides.Any(x=>x.RideStatus == RideStatus.InProgress && x.UserId == UserId))
-        {
-            ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Ошибка", Detail = "У вас есть активные поездки", Duration = 4000 });
-        }
-        
-        
-        _ride.RideStatus = RideStatus.InProgress;
-
-        foreach (var application in _ride.Applications)
-        {
-            application.Status = ApplicationStatus.InProgress;
-        }
-        
-        dbContext.Update(_ride);
-        await dbContext.SaveChangesAsync();
     }
     
     async Task DeleteRow(Application application)
@@ -300,4 +353,46 @@
     {
         NotificationService.Notify(message);
     }
+    
+        private void BroadcastMessage(string username, string name, string message, string rideId)
+        {
+            if (Guid.Parse(rideId) != _ride.Id)
+            {
+                return;
+            }
+            bool isMine = username.Equals(_username);
+    
+            _messages.Add(new Message(name, message, isMine));
+    
+        // Inform blazor the UI needs updating
+            StateHasChanged();
+        }
+    
+        private async Task SendAsync(string message)
+        {
+            if (!string.IsNullOrWhiteSpace(message))
+            {
+                await _hubConnection.SendAsync("Send", _username, _ride.Id, message);
+    
+                _newMessage = string.Empty;
+            }
+        }
+    
+    public class Message
+            {
+                public Message(string username, string body, bool mine)
+                {
+                    Username = username;
+                    Body = body;
+                    Mine = mine;
+                }
+        
+                public string Username { get; set; }
+                public string Body { get; set; }
+                public bool Mine { get; set; }
+        
+                public bool IsNotice => Body.StartsWith("[Notice]");
+        
+                public string CSS => Mine ? "sent" : "received";
+            }
 }
