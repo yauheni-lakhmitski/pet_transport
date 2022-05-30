@@ -18,37 +18,37 @@
             <RadzenDataGridColumn TItem="Car" Property="Make" Title="Марка">
                 <EditTemplate Context="car">
                     <RadzenTextBox @bind-Value="car.Make" Style="width:100%; display: block" Name="Make" />
-                    <RadzenRequiredValidator Text="Марка обязательна к заполнению" Component="Make" Popup="true" />
+                    <RadzenRequiredValidator Text="Марка обязательна к заполнению" Component="Make" Popup="false" />
                 </EditTemplate>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Car" Property="Model" Title="Модель">
                 <EditTemplate Context="car">
                     <RadzenTextBox @bind-Value="car.Model" Style="width:100%; display: block" Name="Model"/>
-                    <RadzenRequiredValidator Text="Модель обязательна к заполнению" Component="Model" Popup="true"/>
+                    <RadzenRequiredValidator Text="Модель обязательна к заполнению" Component="Model" Popup="false"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Car" Property="RegistrationNumber" Title="Регистрационный номер">
                 <EditTemplate Context="car">
                     <RadzenTextBox @bind-Value="car.RegistrationNumber" Style="width:100%; display: block" Name="RegistrationNumber"/>
-                    <RadzenRequiredValidator Text="Регистрационный номер обязателен к заполнению" Component="Model" Popup="true"/>
+                    <RadzenRequiredValidator Text="Регистрационный номер обязателен к заполнению" Component="Model" Popup="false"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Car" Property="Fuel" Title="Уровень топлива">
                 <EditTemplate Context="car">
                     <RadzenNumeric @bind-Value="car.Fuel" Style="width:100%; display: block" Name="Fuel"/>
-                    <RadzenRequiredValidator Text="Уровень топлива обязателен к заполнению" Component="Fuel" Popup="true"/>
+                    <RadzenRequiredValidator Text="Уровень топлива обязателен к заполнению" Component="Fuel" Popup="false"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Car" Property="Mileage" Title="Пробег">
                 <EditTemplate Context="car">
                     <RadzenNumeric @bind-Value="car.Mileage" Style="width:100%; display: block" Name="Mileage"/>
-                    <RadzenRequiredValidator Text="Пробег обязателен к заполнению" Component="Mileage" Popup="true"/>
+                    <RadzenRequiredValidator Text="Пробег обязателен к заполнению" Component="Mileage" Popup="false"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Car" Property="LoadCapacity" Title="Грузоподьемность, кг">
                 <EditTemplate Context="car">
                     <RadzenNumeric @bind-Value="car.LoadCapacity" Style="width:100%; display: block" Name="LoadCapacity"  TValue="int" />
-                    <RadzenRequiredValidator Text="Грузоподьемность - обязательно поле" Component="LoadCapacity" Popup="true"/>
+                    <RadzenRequiredValidator Text="Грузоподьемность - обязательно поле" Component="LoadCapacity" Popup="false"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Car" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">

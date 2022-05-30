@@ -9,6 +9,7 @@
 @using PetTransport.Web.Extensions
 @using PetTransport.Web.Models
 @inject LinkGenerator LinkGenerator
+@inject NavigationManager NavigationManager
 
 @inject ApplicationDbContext dbContext
 
@@ -234,10 +235,12 @@ else
 
 
     <div class="container" style="display: flex">
-        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Скачать инвойс" href=@{$"/word/SalesInvoice?id={@SelectedApplications.FirstOrDefault().Id}"} />
-        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Ожидает оплаты" Click="@MoveToNotPaid" />
-        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Оплачен" Click="@MoveToPaid" />
-        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Завершен" Click="@MoveToCompleted" />
+              <a href="@LinkGenerator.GetPathByAction("SalesInvoice", "Word", new {id = SelectedApplications.FirstOrDefault().Id})">
+                  <RadzenButton ButtonStyle="ButtonStyle.Primary" style="margin-top: 20px; width: 100%; background-color: #34094a;" Text="Инвойс" href=@{$"/word/SalesInvoice?id={@SelectedApplications.FirstOrDefault().Id}"} />
+              </a>
+        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Ожидает оплаты" Click="@MoveToNotPaid"/>
+        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Оплачен" Click="@MoveToPaid"/>
+        <RadzenButton ButtonStyle="ButtonStyle.Primary" style="width: 100%; margin: 20px; background-color: #34094a;" Text="Завершен" Click="@MoveToCompleted"/>
     </div>
 
 }
@@ -356,6 +359,11 @@ else
              .Include(x => x.OrderItems)
              .Include(x=>x.Customer)
              .OrderByDescending(x=>x.CreatedAt).ToList();
+    }
+
+    private void Download()
+    {
+     
     }
 
 }

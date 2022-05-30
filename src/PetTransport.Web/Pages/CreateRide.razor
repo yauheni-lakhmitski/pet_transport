@@ -36,7 +36,7 @@
                     </div>
                     <div class="col-md-8">
                         <RadzenTextBox style="width: 100%;" Name="SourcePoint" @bind-Value="_ride.From"/>
-                        <RadzenRequiredValidator Text="Регистрационный номер обязателен к заполнению" Component="SourcePoint" Popup="true"/>
+                        <RadzenRequiredValidator Text="Место отправления обязателено к заполнению" Component="SourcePoint" Popup="false"/>
                     </div>
                 </div>
                 <div class="row">
@@ -45,7 +45,7 @@
                     </div>
                     <div class="col-md-8">
                         <RadzenTextBox style="width: 100%;" Name="DestinationPoint" @bind-Value="_ride.To"/>
-                          <RadzenRequiredValidator Text="Регистрационный номер обязателен к заполнению" Component="DestinationPoint" Popup="true"/>
+                          <RadzenRequiredValidator Text="Место получения обязателено к заполнению" Component="DestinationPoint" Popup="false"/>
                     </div>
                 </div>
                 <div class="row">
@@ -225,9 +225,10 @@
             _ride.CarId == null
             )
         {
-            NotificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Ошибка", Detail = "Заполните все поля.", Duration = 4000});
+            NotificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Ошибка", Detail = "Заполните все поля.", Duration = 4000});
             return;
         }
+        
         foreach (var application in _applications)
         {
             application.Status = ApplicationStatus.InProgress;

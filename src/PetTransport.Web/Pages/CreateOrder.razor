@@ -159,19 +159,19 @@
         <RadzenDataGridColumn TItem="ApplicationItem" Property="AnimalName" Title="Наименование">
             <EditTemplate Context="applcationItem">
                 <RadzenTextBox @bind-Value="applcationItem.AnimalName" Style="width:100%; display: block" Name="AnimalName"/>
-                <RadzenRequiredValidator Text="Наименование животного обязательно к заполнению" Component="AnimalName" Popup="true"/>
+                <RadzenRequiredValidator Text="Наименование животного обязательно к заполнению" Component="AnimalName" Popup="false"/>
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ApplicationItem" Property="ChipNumber" Title="Номер чипа">
             <EditTemplate Context="applcationItem">
                 <RadzenTextBox @bind-Value="applcationItem.ChipNumber" Style="width:100%; display: block" Name="ChipNumber"/>
-                <RadzenRequiredValidator Text="Номер чипа обязателен к заполнению" Component="ChipNumber" Popup="true"/>
+                <RadzenRequiredValidator Text="Номер чипа обязателен к заполнению" Component="ChipNumber" Popup="false"/>
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ApplicationItem" Property="Weight" Title="Вес, кг">
             <EditTemplate Context="applcationItem">
                 <RadzenNumeric @bind-Value="applcationItem.Weight" Style="width:100%; display: block" Name="Weight"/>
-                <RadzenRequiredValidator Text="Вес обязателен к заполнению" Component="Weight" Popup="true"/>
+                <RadzenRequiredValidator Text="Вес обязателен к заполнению" Component="Weight" Popup="false"/>
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ApplicationItem" Context="sampleBlazorModelsSampleApplicationItem" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="200px">

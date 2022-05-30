@@ -23,7 +23,7 @@
             </Template>
             @* <EditTemplate Context="transportation"> *@
             @*     <RadzenTextBox @bind-Value="transportation.User" Style="width:100%; display: block" Name="Name"/> *@
-            @*     <RadzenRequiredValidator Text="Название обязательно к заполнению" Component="Name" Popup="true"/> *@
+            @*     <RadzenRequiredValidator Text="Название обязательно к заполнению" Component="Name" Popup="false"/> *@
             @* </EditTemplate> *@
         </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Ride" Property="Car" Title="Автомобиль">
@@ -32,25 +32,25 @@
                     </Template>
                     @* <EditTemplate Context="transportation"> *@
                     @*     <RadzenTextBox @bind-Value="transportation.User" Style="width:100%; display: block" Name="Name"/> *@
-                    @*     <RadzenRequiredValidator Text="Название обязательно к заполнению" Component="Name" Popup="true"/> *@
+                    @*     <RadzenRequiredValidator Text="Название обязательно к заполнению" Component="Name" Popup="false"/> *@
                     @* </EditTemplate> *@
                 </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Ride" Property="Name" Title="Название поездки">
             <EditTemplate Context="transportation">
                 <RadzenTextBox @bind-Value="transportation.Name" Style="width:100%; display: block" Name="Name"/>
-                <RadzenRequiredValidator Text="Название обязательно к заполнению" Component="Name" Popup="true"/>
+                <RadzenRequiredValidator Text="Название обязательно к заполнению" Component="Name" Popup="false"/>
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Ride" Property="From" Title="Место отправления">
             <EditTemplate Context="transportation">
                 <RadzenTextBox @bind-Value="transportation.From" Style="width:100%; display: block" Name="From"/>
-                <RadzenRequiredValidator Text="Место отправления обязательно к заполнению" Component="From" Popup="true"/>
+                <RadzenRequiredValidator Text="Место отправления обязательно к заполнению" Component="From" Popup="false"/>
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Ride" Property="To" Title="Место отправления">
             <EditTemplate Context="transportation">
                 <RadzenTextBox @bind-Value="transportation.To" Style="width:100%; display: block" Name="To"/>
-                <RadzenRequiredValidator Text="Место прибытия обязательно к заполнению" Component="To" Popup="true"/>
+                <RadzenRequiredValidator Text="Место прибытия обязательно к заполнению" Component="To" Popup="false"/>
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Ride" Property="DepartureDate" Title="Дата отправления" FormatString="{0:d}"/>
@@ -58,7 +58,7 @@
         <RadzenDataGridColumn TItem="Ride" Property="Description" Title="Описание поездки">
             <EditTemplate Context="transportation">
                 <RadzenTextBox @bind-Value="transportation.Description" Style="width:100%; display: block" Name="Description"/>
-                <RadzenRequiredValidator Text="Описание обязательно к заполнению" Component="Name" Popup="true"/>
+                <RadzenRequiredValidator Text="Описание обязательно к заполнению" Component="Name" Popup="false"/>
             </EditTemplate>
         </RadzenDataGridColumn>
         

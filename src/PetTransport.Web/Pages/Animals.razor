@@ -15,13 +15,13 @@
 
     <RadzenButton Icon="add_circle_outline"  style="margin-bottom: 10px;background-color: #34094a;" Text="Добавить новый вид животных" Click="@InsertRow" Disabled=@(animalTypeToInsert != null) />
     <RadzenDataGrid @ref="animalTypesGrid" AllowColumnResize="true" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
-                Data="@animalTypes" TItem="AnimalType" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Responsive="true" FilterMode="FilterMode.Simple" >
+                Data="@animalTypes" TItem="AnimalType" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Responsive="true" FilterMode="FilterMode.Simple">
         <Columns>
             <RadzenDataGridColumn TItem="AnimalType" Property="Id" Title="Код" Width="120px" />
             <RadzenDataGridColumn TItem="AnimalType" Property="Name" Title="Название">
                 <EditTemplate Context="animalType">
                     <RadzenTextBox @bind-Value="animalType.Name" Style="width:100%; display: block" Name="Name" />
-                    <RadzenRequiredValidator Text="Название обязательно к заполнению" Component="Name" Popup="true" />
+                    <RadzenRequiredValidator Text="Название обязательно к заполнению" Component="Name" Popup="false" />
                 </EditTemplate>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="AnimalType" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">

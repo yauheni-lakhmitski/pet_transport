@@ -29,25 +29,25 @@
             <RadzenDataGridColumn TItem="User" Property="FirstName" Title="Имя">
                 <EditTemplate Context="user">
                     <RadzenTextBox @bind-Value="user.FirstName" Style="width:100%; display: block" Name="Name" />
-                    <RadzenRequiredValidator Text="Имя обязательно к заполнению" Component="Name" Popup="true" />
+                    <RadzenRequiredValidator Text="Имя обязательно к заполнению" Component="Name" Popup="false" />
                 </EditTemplate>
             </RadzenDataGridColumn>
                         <RadzenDataGridColumn TItem="User" Property="PatronymicName" Title="Отчество">
                             <EditTemplate Context="user">
                                 <RadzenTextBox @bind-Value="user.PatronymicName" Style="width:100%; display: block" Name="PatronymicName" />
-                                <RadzenRequiredValidator Text="Отчество обязательно к заполнению" Component="PatronymicName" Popup="true" />
+                                <RadzenRequiredValidator Text="Отчество обязательно к заполнению" Component="PatronymicName" Popup="false" />
                             </EditTemplate>
                         </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="User" Property="LastName" Title="Фамилия">
                 <EditTemplate Context="user">
                     <RadzenTextBox @bind-Value="user.LastName" Style="width:100%; display: block" Name="Model"/>
-                    <RadzenRequiredValidator Text="Фамилия обязательна к заполнению" Component="Model" Popup="true"/>
+                    <RadzenRequiredValidator Text="Фамилия обязательна к заполнению" Component="Model" Popup="false"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="User" Property="Email" Title="Email">
                 <EditTemplate Context="user">
                     <RadzenTextBox @bind-Value="user.Email" Style="width:100%; display: block" Name="Email"/>
-                    <RadzenRequiredValidator Text="Email обязателен к заполнению" Component="Model" Popup="true"/>
+                    <RadzenRequiredValidator Text="Email обязателен к заполнению" Component="Model" Popup="false"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
                         <RadzenDataGridColumn TItem="User" Property="DriverLicence" Title="Вод. удостоверение">
